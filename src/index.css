@@ -32,6 +32,49 @@
 	font-family: 'Montserrat', sans-serif;
 }
 
+body {
+	/* Border Radius Values */
+	--privy-border-radius-sm: 4px;
+	--privy-border-radius-md: 8px;
+	--privy-border-radius-lg: 16px;
+	--privy-border-radius-full: 9999px;
+  
+	/* Background Colors */
+	/* Using the palette’s background, secondary, and divider colors */
+	--privy-color-background:       #11070C; /* corresponds to --background */
+	--privy-color-background-2:     #2C2628; /* corresponds to --secondary */
+	--privy-color-background-3:     #3C2F34; /* corresponds to --divider */
+  
+	/* Foreground (Text) Colors */
+	/* Primary text is light (#ECECEC) while secondary and tertiary text can use accent variants */
+	--privy-color-foreground:       #ECECEC; /* corresponds to --primary */
+	--privy-color-foreground-2:     #D2ADB8; /* corresponds to --highlight */
+	--privy-color-foreground-3:     #9D808B; /* corresponds to --disabled */
+	--privy-color-foreground-4:     #A87A8B; /* corresponds to --focus */
+	--privy-color-foreground-accent: #ECECEC; /* good contrast on accent backgrounds */
+  
+	/* Accent Colors */
+	/* The palette’s main accent is used directly. The lighter and darker variants below
+	   are custom-tweaked values (feel free to adjust them as needed) */
+	--privy-color-accent:           #472F3D; /* corresponds to --accent */
+	--privy-color-accent-light:     #6A4C5A; /* a lighter variant of the accent */
+	--privy-color-accent-lightest:  #8C6977; /* an even lighter version */
+	--privy-color-accent-dark:      #331F2A; /* a darker variant of the accent */
+	--privy-color-accent-darkest:   #1F0F18; /* the darkest variant */
+  
+	/* Status Colors */
+	/* Since your palette doesn’t include success or error colors, these are standard choices */
+	--privy-color-success:          #28a745;
+	--privy-color-error:            #dc3545;
+	--privy-color-error-light:      #e57373;
+  
+	/* Additional Colors from the Palette */
+	--privy-color-active:           #3A2E34; /* corresponds to --active */
+	--privy-color-higherlight:      #E4C6CF; /* corresponds to --higherlight */
+	--privy-color-divider:          #3C2F34; /* repeats the divider value */
+	--privy-color-focus:            #A87A8B; /* corresponds to --focus */
+  }
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

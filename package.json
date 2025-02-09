@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@privy-io/react-auth": "^2.4.2",
     "@tailwindcss/vite": "^4.0.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "use-sync-external-store": "^1.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
