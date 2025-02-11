@@ -1,6 +1,8 @@
 import './App.css'
 import Sidebar from './components/Sidebar/Sidebar'
 import Yield from './components/Yield/Yield'
+import Swap from "./components/Swap/Swap"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
 	return (
@@ -9,7 +11,18 @@ function App() {
 				<Sidebar></Sidebar>
 			</div>
 			<div className="w-7/8 h-full">
-				<Yield></Yield>
+				<BrowserRouter>
+					<Routes>
+						<Route path="/">
+
+						</Route>
+						<Route path="/yield" element={<Yield></Yield>}/>
+						
+							
+						<Route path="/swap" element={<Swap/>}/>
+
+					</Routes>
+				</BrowserRouter>
 			</div>
 		</div>
   	)

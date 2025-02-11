@@ -5,9 +5,11 @@
 	--primary: #ECECEC;
 	--secondary: #2C2628;
 	--accent: #472F3D;
+	--accent-2: #6C5964;
 	--active: #3A2E34;
 	--higherlight: #E4C6CF;
 	--highlight: #D2ADB8;
+	--less-highlight: #B08A95;
 	--disabled: #9D808B;
 	--divider: #3C2F34;
 	--focus: #A87A8B;
@@ -56,7 +58,7 @@ body {
 	/* Accent Colors */
 	/* The palette’s main accent is used directly. The lighter and darker variants below
 	   are custom-tweaked values (feel free to adjust them as needed) */
-	--privy-color-accent:           #472F3D; /* corresponds to --accent */
+	--privy-color-accent:           #D2ADB8; /* corresponds to --accent */
 	--privy-color-accent-light:     #6A4C5A; /* a lighter variant of the accent */
 	--privy-color-accent-lightest:  #8C6977; /* an even lighter version */
 	--privy-color-accent-dark:      #331F2A; /* a darker variant of the accent */
@@ -68,11 +70,6 @@ body {
 	--privy-color-error:            #dc3545;
 	--privy-color-error-light:      #e57373;
   
-	/* Additional Colors from the Palette */
-	--privy-color-active:           #3A2E34; /* corresponds to --active */
-	--privy-color-higherlight:      #E4C6CF; /* corresponds to --higherlight */
-	--privy-color-divider:          #3C2F34; /* repeats the divider value */
-	--privy-color-focus:            #A87A8B; /* corresponds to --focus */
   }
 
 @tailwind base;
@@ -95,4 +92,39 @@ body {
   .animate-fadeIn {
     animation: fadeIn 0.15s ease-out forwards;
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+
+/* WebKit-based browsers */
+::-webkit-scrollbar {
+    width: 8px; /* Adjust scrollbar width */
+    height: 8px; /* Adjust scrollbar height for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+    background: var(--secondary); /* Track color */
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent); /* Scrollbar color */
+    border-radius: 4px !important;
+    border: 2px solid var(--secondary); /* Creates spacing */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-2); /* Slightly lighter for hover */
+}
+
+/* Firefox */
+* {
+    scrollbar-color: var(--accent) var(--secondary);
+    scrollbar-width: thin;
 }
