@@ -4,6 +4,8 @@ import LoginButton from "./LoginButton";
 // import SendTransaction from "./SendTransaction";
 import { useState, useEffect } from "react";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
+import { Link } from "react-router";
+
 
 function Sidebar() {
     const [active, setActive] = useState("Home");
@@ -30,10 +32,10 @@ function Sidebar() {
         <>
             <aside className="bg-(--secondary) h-full p-6 flex-col flex justify-between">
                 <div className="flex-col gap-1">
-                    <SidebarContent setActive={setActive} active={active} text="Home" />
-                    <SidebarContent setActive={setActive} active={active} text="Yield" />
-                    <SidebarContent setActive={setActive} active={active} text="Swap" />
-                    <SidebarContent setActive={setActive} active={active} text="Bridge" />
+                    <SidebarContent setActive={setActive} active={active} text="Home" to="/"/>
+                    <SidebarContent setActive={setActive} active={active} text="Yield" to="/yield" />
+                    <SidebarContent setActive={setActive} active={active} text="Swap" to="/swap" />
+                    <SidebarContent setActive={setActive} active={active} text="Bridge" to="/bridge" />
                 </div>
 
                 <div>

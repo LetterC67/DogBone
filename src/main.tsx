@@ -6,7 +6,7 @@ import App from './App.tsx'
 import { sonic } from "viem/chains"
 
 createRoot(document.getElementById('root')!).render(
-	<StrictMode>
+	// <StrictMode>
 		<PrivyProvider
 		appId="cm6xon0se016t1ko0g21g92qa"
 		config={{
@@ -24,5 +24,6 @@ createRoot(document.getElementById('root')!).render(
 		>
 			<App />
 		</PrivyProvider>
-	</StrictMode>,
+	// </StrictMode>
+	,
 )

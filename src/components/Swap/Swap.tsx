@@ -1,10 +1,13 @@
 // src/Swap.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TokenModal from './TokenModal';
 import { Token } from './types';
 import { IoSwapVertical } from "react-icons/io5";
 import TokenList from './TokenList';
-
+import { getQuote } from '../../api/Odos';
+import { ethers } from 'ethers';
+import { usePrivy } from '@privy-io/react-auth';
+import { FaWallet } from 'react-icons/fa';
 
 
 
@@ -28,15 +31,46 @@ const Swap: React.FC = () => {
     const [fromAmount, setFromAmount] = useState<string>('');
     const [toAmount, setToAmount] = useState<string>('');
     const [activeModal, setActiveModal] = useState<'from' | 'to' | null>(null);
+    const [isFetchingPrice, setIsFetchingPrice] = useState<boolean>(false);
+    const { authenticated, login } = usePrivy();
 
     // Swap the token selections (and corresponding amounts)
     const swapTokens = () => {
         setFromToken(toToken);
         setToToken(fromToken);
-        setFromAmount(toAmount);
-        setToAmount(fromAmount);
+        // setFromAmount(toAmount);
+        // setToAmount(fromAmount);
     };
 
+    useEffect(() => {
+        let valid = true;
+    
+        const fetchQuote = async () => {
+            setIsFetchingPrice(true);
+            const inputAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
+            const response = await getQuote({
+                inputToken: fromToken.address,
+                outputToken: toToken.address,
+                inputAmount: inputAmount.toString(),
+            });
+            if (!valid) return;
+            const outputAmount = ethers.formatUnits(response?.outAmounts[0], toToken.decimals);
+            setToAmount(parseFloat(outputAmount).toFixed(4));
+            setIsFetchingPrice(false);
+        };
+    
+        if (fromAmount && fromToken && toToken) {
+            fetchQuote();
+        }
+
+        if (!fromAmount) {
+            setToAmount('');
+        }
+    
+        return () => {
+          valid = false;
+        };
+    }, [fromToken, toToken, fromAmount]);
     // Simulate a swap action (replace with your real logic)
     const handleSwap = () => {
         alert(`Swapping ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`);
@@ -58,7 +92,7 @@ const Swap: React.FC = () => {
                     <span className="text-sm" style={{ color: 'var(--higherlight)' }}>From</span>
                     <button
                     onClick={() => setActiveModal('from')}
-                    className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-md"
+                    className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                     >
                     {fromToken.icon && (
                         <img src={fromToken.icon} alt={fromToken.symbol} className="w-6 h-6" />
@@ -106,7 +140,7 @@ const Swap: React.FC = () => {
                     <span className="text-sm" style={{ color: 'var(--higherlight)' }}>To</span>
                     <button
                     onClick={() => setActiveModal('to')}
-                    className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-md"
+                    className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                     >
                     {toToken.icon && (
                         <img src={toToken.icon} alt={toToken.symbol} className="w-6 h-6" />
@@ -128,10 +162,9 @@ const Swap: React.FC = () => {
                 <input
                     type="number"
                     placeholder="0.0"
-                    className="w-full bg-transparent text-2xl font-bold outline-none"
-                    style={{ color: 'var(--primary)' }}
+                    className={`hover:cursor-not-allowed w-full bg-transparent text-2xl font-bold outline-none transition duration-200 ${isFetchingPrice ? 'text-(--disabled)' : 'text-(--primary)'}`}
                     value={toAmount}
-                    onChange={(e) => setToAmount(e.target.value)}
+                    disabled={true}
                 />
                 <div className="text-right text-xs mt-1" style={{ color: 'var(--less-highlight)' }}>
                     Balance: {toToken.balance}
@@ -140,10 +173,14 @@ const Swap: React.FC = () => {
             </div>
 
             <button
-                onClick={handleSwap}
+                onClick={authenticated ? handleSwap : login}
                 className="mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer"
             >
-                Swap
+                {authenticated ? 'Swap' : 
+                <span className="flex flex-row gap-2 w-full justify-center items-center">
+                    <FaWallet size={16}/>
+                    <span>Please Log In</span>
+                </span>}
             </button>
 
             {/* Token Selection Modal */}
