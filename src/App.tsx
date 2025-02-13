@@ -4,28 +4,34 @@ import Yield from './components/Yield/Yield'
 import Swap from "./components/Swap/Swap"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Bridge from './components/Bridge/Bridge';
+import {DataProvider} from './context/DataContext';
+import { StrictMode } from 'react';
 
 function App() {
 	return (
-		<BrowserRouter>
-			<div className="h-screen w-screen flex-row flex">
-				<div className="w-1/8 h-full text-lg font-bold">
-					<Sidebar></Sidebar>
-				</div>
-				<div className="w-7/8 h-full">
-						<Routes>
-							<Route path="/">
+		<StrictMode>
+			<DataProvider>
+			<BrowserRouter>
+				<div className="h-screen w-screen flex-row flex">
+					<div className="w-1/8 h-full text-lg font-bold">
+						<Sidebar></Sidebar>
+					</div>
+					<div className="w-7/8 h-full">
+							<Routes>
+								<Route path="/">
 
-							</Route>
-							<Route path="/yield" element={<Yield></Yield>}/>
-							
+								</Route>
+								<Route path="/yield" element={<Yield></Yield>}/>
 								
-							<Route path="/swap" element={<Swap/>}/>
-							<Route path="/bridge" element={<Bridge/>}></Route>
-						</Routes>
+									
+								<Route path="/swap" element={<Swap/>}/>
+								<Route path="/bridge" element={<Bridge/>}></Route>
+							</Routes>
+					</div>
 				</div>
-			</div>
-		</BrowserRouter>
+			</BrowserRouter>
+			</DataProvider>
+		</StrictMode>
   	)
 }
 
