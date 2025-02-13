@@ -14,6 +14,16 @@ const chainIdMapping: Record<string, string> = JSON.parse(
   JSON.stringify(supportedChains)
 );
 
+/**
+ * Interface for the arguments required to bridge tokens between two chains
+ * @param walletClient - The wallet client object
+ * @param srcChainId - The source chain ID (eip155 chainId format, not the chainId specified by deBridge)
+ * @param dstChainId - The destination chain ID (eip155 chainId format, not the chainId specified by deBridge)
+ * @param srcChainTokenIn - The address of the token to be bridged
+ * @param srcAmountIn - The amount of tokens to be bridged (in string format, not in wei, e.g "0.1", "100", etc.)
+ * @param dstChainTokenOut - The address of the token to be received on the destination chain
+ * @param externalCall - Optional object containing the address and data for an external call to be made after the bridge transaction is completed
+ */
 export interface BridgeArgs {
   walletClient: ConnectedWallet;
   srcChainId: number;

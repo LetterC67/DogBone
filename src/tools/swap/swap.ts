@@ -7,6 +7,15 @@ import {
 } from '../utils/erc20Utils';
 import { createPublicClient, custom, parseUnits, Address } from 'viem';
 import { odosExecute } from './odos';
+
+/**
+ * Interface for the arguments required to swap tokens
+ * @param walletClient - The wallet client object
+ * @param chainId - The chain ID (eip155 chainId format)
+ * @param tokenIn - The address of the token to be swapped
+ * @param tokenOut - The address of the token to receive
+ * @param amountIn - The amount of tokens to be swapped (in string format, not in wei, e.g "0.1", "100", etc.)
+ */
 export interface SwapArgs {
   walletClient: ConnectedWallet;
   chainId: number;
