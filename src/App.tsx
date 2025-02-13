@@ -4,6 +4,7 @@ import Yield from './components/Yield/Yield'
 import Swap from "./components/Swap/Swap"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Bridge from './components/Bridge/Bridge';
+import { AllTools } from './tools/AllTools';
 import {DataProvider} from './context/DataContext';
 import { StrictMode } from 'react';
 
@@ -23,9 +24,9 @@ function App() {
 								</Route>
 								<Route path="/yield" element={<Yield></Yield>}/>
 								
-									
-								<Route path="/swap" element={<Swap/>}/>
-								<Route path="/bridge" element={<Bridge/>}></Route>
+							<Route path="/swap" element={<Swap/>}/>
+							<Route path="/bridge" element={<Bridge/>}></Route>
+							<Route path="/alltools" element={<AllTools/>}></Route>
 							</Routes>
 					</div>
 				</div>

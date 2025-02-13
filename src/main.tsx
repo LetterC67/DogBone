@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import {PrivyProvider} from '@privy-io/react-auth';
 import App from './App.tsx'
-import { sonic } from "viem/chains"
+import { sonic, mainnet, polygon, base, arbitrum } from "viem/chains"
 
 createRoot(document.getElementById('root')!).render(
 	// <StrictMode>
@@ -16,7 +16,8 @@ createRoot(document.getElementById('root')!).render(
 				accentColor: '#472F3D',
 				logo: 'https://your-logo-url',
 			},
-			supportedChains: [sonic],
+			defaultChain: sonic,
+			supportedChains: [sonic, mainnet, polygon, base, arbitrum],
 			embeddedWallets: {
 				createOnLogin: 'users-without-wallets',
 			},
