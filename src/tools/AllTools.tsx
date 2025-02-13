@@ -3,6 +3,7 @@ import { bridge } from "./bridge/bridge";
 import { useWallets } from "@privy-io/react-auth";
 import { depositSilo } from "./silo/depositSilo";
 import { wrapNative } from "./utils/wrapNative";
+import { depositLST } from "./lst/DepositLST";
 
 export const AllTools = () => {
     const {ready, wallets} = useWallets();
@@ -32,6 +33,8 @@ export const AllTools = () => {
             <button className="button" onClick={() => bridge({walletClient: wallet, srcChainId: 137, dstChainId: 146, srcChainTokenIn: "0x0000000000000000000000000000000000000000", srcAmountIn: "3", dstChainTokenOut: "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE"})}>Bridge</button>
             <button onClick={() => depositSilo({walletClient: wallet, vaultAddress: "0x4E216C15697C1392fE59e1014B009505E05810Df", amount: "0.001", isCollateral: true})}>Deposit Silo</button>
             <button onClick={() => wrapNative({walletClient: wallet, chainId: 146, amount: "0.01"})}>Wrap Native</button>
+            <button onClick={() => depositLST({walletClient: wallet, vaultAddress: "0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21", amount: "0.001"})}>Origin Sonic</button>
+            <button onClick={() => depositLST({walletClient: wallet, vaultAddress: "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955", amount: "0.01"})}>Beets Staked Sonic</button>
         </div>
     )
 }
