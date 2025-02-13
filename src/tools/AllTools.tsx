@@ -1,0 +1,31 @@
+import { swap } from "./swap/swap";
+import { useWallets } from "@privy-io/react-auth";
+
+export const AllTools = () => {
+    const {ready, wallets} = useWallets();
+    const wallet = wallets[0];
+
+    console.log("Ready", ready);
+    console.log("Wallets", wallets);
+    console.log("wallet address", wallet?.address);
+    return (
+        <div>
+            <h1 className="text-2xl font-bold">All Tools</h1>
+            <div className="flex flex-row space-x-4">
+                <div className="bg-gray-200 p-4 rounded-lg w-1/3">
+                    <h2 className="text-lg font-bold">Swap</h2>
+                    <p>Swap tokens on the blockchain</p>
+                </div>
+                <div className="bg-gray-200 p-4 rounded-lg w-1/3">
+                    <h2 className="text-lg font-bold">Yield</h2>
+                    <p>Yield farming on the blockchain</p>
+                </div>
+                <div className="bg-gray-200 p-4 rounded-lg w-1/3">
+                    <h2 className="text-lg font-bold">Bridge</h2>
+                    <p>Bridge tokens between chains</p>
+                </div>
+            </div>
+            <button onClick={() => swap({ walletClient: wallet, chainId: "146", tokenIn: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894", tokenOut: "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE", amountIn: "0.1"})}>Swap</button>
+        </div>
+    )
+}
