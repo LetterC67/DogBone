@@ -2,7 +2,7 @@ import { ConnectedWallet } from '@privy-io/react-auth';
 
 interface OdosSwapArgs {
   walletClient: ConnectedWallet;
-  chainId: string;
+  chainId: number;
   tokenIn: string;
   tokenOut: string;
   amountIn: bigint;

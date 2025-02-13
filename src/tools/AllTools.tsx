@@ -1,4 +1,5 @@
 import { swap } from "./swap/swap";
+import { bridge } from "./bridge/bridge";
 import { useWallets } from "@privy-io/react-auth";
 
 export const AllTools = () => {
@@ -25,7 +26,8 @@ export const AllTools = () => {
                     <p>Bridge tokens between chains</p>
                 </div>
             </div>
-            <button onClick={() => swap({ walletClient: wallet, chainId: "146", tokenIn: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894", tokenOut: "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE", amountIn: "0.1"})}>Swap</button>
+            <button onClick={() => swap({ walletClient: wallet, chainId: 146, tokenIn: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894", tokenOut: "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE", amountIn: "0.1"})}>Swap</button>
+            <button className="button" onClick={() => bridge({walletClient: wallet, srcChainId: 137, dstChainId: 146, srcChainTokenIn: "0x0000000000000000000000000000000000000000", srcAmountIn: "3", dstChainTokenOut: "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE"})}>Bridge</button>
         </div>
     )
 }

@@ -28,6 +28,13 @@ interface ApproveERC20Args {
   amount: bigint;
 }
 
+interface CheckNeedApprovalArgs {
+  publicClient: PublicClient;
+  account: Address;
+  tokenAddress: Address;
+  spender: Address;
+  amount: bigint;
+}
 export async function getERC20Balance({
   publicClient,
   account,
@@ -101,4 +108,22 @@ export async function approveERC20({
   });
 
   return transactionHash;
+}
+
+export async function checkNeedApproval({
+  publicClient,
+  account,
+  tokenAddress,
+  spender,
+  amount,
+}: CheckNeedApprovalArgs): Promise<boolean> {
+  if (tokenAddress === NATIVE_TOKEN) return false;
+  const allowance = await getERC20Allowance({
+    publicClient,
+    account,
+    tokenAddress,
+    spender,
+  });
+
+  return allowance < amount;
 }

@@ -4,29 +4,43 @@ import {
   getERC20Decimals,
   approveERC20,
   checkNeedApproval,
-} from '../utils/erc20Utils';
+} from '../utils/erc20Utils.ts';
+
 import { createPublicClient, custom, parseUnits, Address } from 'viem';
-import { odosExecute } from './odos';
-export interface SwapArgs {
+import { debridgeQuote } from './debridge.ts';
+import supportedChains from './supportedChains.json';
+
+const chainIdMapping: Record<string, string> = JSON.parse(
+  JSON.stringify(supportedChains)
+);
+
+export interface BridgeArgs {
   walletClient: ConnectedWallet;
-  chainId: number;
-  tokenIn: Address;
-  tokenOut: Address;
-  amountIn: string;
+  srcChainId: number;
+  dstChainId: number;
+  srcChainTokenIn: Address;
+  srcAmountIn: string;
+  dstChainTokenOut: Address;
+  externalCall?: {
+    to: Address;
+    data: `0x${string}`;
+  };
 }
 
-export async function swap({
+export async function bridge({
   walletClient,
-  chainId,
-  tokenIn,
-  tokenOut,
-  amountIn,
-}: SwapArgs): Promise<Address> {
+  srcChainId,
+  dstChainId,
+  srcChainTokenIn,
+  srcAmountIn,
+  dstChainTokenOut,
+  externalCall,
+}: BridgeArgs) {
   if (
     walletClient.chainId.slice(7, walletClient.chainId.length) !==
-    chainId.toString()
+    srcChainId.toString()
   ) {
-    await walletClient.switchChain(chainId);
+    await walletClient.switchChain(Number(srcChainId));
   }
 
   const userAddr = walletClient.address as Address;
@@ -36,33 +50,35 @@ export async function swap({
   });
 
   const parsedAmountIn = parseUnits(
-    amountIn,
-    await getERC20Decimals({ publicClient, tokenAddress: tokenIn })
+    srcAmountIn,
+    await getERC20Decimals({ publicClient, tokenAddress: srcChainTokenIn })
   );
 
   const userBalance = await getERC20Balance({
     publicClient,
     account: userAddr,
-    tokenAddress: tokenIn,
+    tokenAddress: srcChainTokenIn,
   });
 
   if (userBalance < parsedAmountIn) {
-    throw new Error('Insufficient balance');
+    throw new Error('Insufficient balance to bridge');
   }
 
-  const { transaction } = await odosExecute({
+  const transaction = await debridgeQuote({
     walletClient,
-    chainId,
-    tokenIn,
-    tokenOut,
-    amountIn: parsedAmountIn,
+    srcChainId: Number(chainIdMapping[srcChainId]),
+    dstChainId: Number(chainIdMapping[dstChainId]),
+    srcChainTokenIn,
+    srcAmountIn: parsedAmountIn,
+    dstChainTokenOut,
+    externalCall,
   });
 
   if (
     await checkNeedApproval({
       publicClient,
       account: userAddr,
-      tokenAddress: tokenIn,
+      tokenAddress: srcChainTokenIn,
       spender: transaction.to,
       amount: parsedAmountIn,
     })
@@ -70,7 +86,7 @@ export async function swap({
     try {
       const approveTx = await approveERC20({
         provider,
-        tokenAddress: tokenIn,
+        tokenAddress: srcChainTokenIn,
         spender: transaction.to,
         amount: parsedAmountIn,
       });
