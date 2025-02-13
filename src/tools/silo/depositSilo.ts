@@ -9,6 +9,7 @@ import {
 import { ConnectedWallet } from '@privy-io/react-auth';
 import { sonic } from 'viem/chains';
 import SiloAbi from './abi/Silo.abi.json';
+import VaultList from './vaultList.json';
 import {
   getERC20Balance,
   getERC20Decimals,
@@ -16,8 +17,12 @@ import {
   approveERC20,
 } from '../utils/erc20Utils';
 
-const siloAbi = JSON.parse(JSON.stringify(SiloAbi));
-
+interface VaultConfig {
+  marketId: number;
+  vault: Address;
+  token: Address;
+  borrowable: boolean;
+}
 interface DepositArgs {
   walletClient: ConnectedWallet;
   vaultAddress: Address;
@@ -25,18 +30,33 @@ interface DepositArgs {
   isCollateral: boolean;
 }
 
+const siloAbi = JSON.parse(JSON.stringify(SiloAbi));
+const vaultList: VaultConfig[] = JSON.parse(JSON.stringify(VaultList));
+
 export async function depositSilo({
   walletClient,
   vaultAddress,
   amount,
   isCollateral,
 }: DepositArgs): Promise<void> {
+  // Check if vault address is in vault list
+  const vaultConfig = vaultList.find(
+    (vault: VaultConfig) => vault.vault === vaultAddress
+  );
+  if (!vaultConfig) {
+    throw new Error('Vault either not found or not supported');
+  }
+  if (isCollateral && !vaultConfig.borrowable) {
+    throw new Error('Vault does not support use asset as collateral');
+  }
+
   if (
     walletClient.chainId.slice(7, walletClient.chainId.length) !==
     sonic.id.toString()
   ) {
     await walletClient.switchChain(sonic.id);
   }
+
   const userAddr = walletClient.address as Address;
   const provider = await walletClient.getEthereumProvider();
   const publicClient = createPublicClient({
