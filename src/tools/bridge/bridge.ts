@@ -53,9 +53,6 @@ export async function bridge({
     await walletClient.switchChain(Number(srcChainId));
   }
 
-  console.log(walletClient.chainId.slice(7, walletClient.chainId.length));
-  console.log(srcChainId.toString(), dstChainId.toString());
-
   const userAddr = walletClient.address as Address;
   const provider = await walletClient.getEthereumProvider();
   const publicClient = createPublicClient({
