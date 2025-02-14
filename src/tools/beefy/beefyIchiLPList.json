@@ -1,0 +1,26 @@
+[
+    {
+        "name": "wS-stS (stS Deposit)",
+        "vault": "0x5555636503AE6EDE5d0109c5627b8f4B1250B096",
+        "lpToken": "0xa68D5DbAe00960De66DdEaD4d53faea39f21983b",
+        "token": "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955"
+    },
+    {
+        "name": "OS-wS (OS deposit)",
+        "vault": "0x406568d72B086fA9Ad3ec2512f05BaFB24403911",
+        "lpToken": "0xc4A71981DC8ee8ee704b6217DaebAd6ECe185aeb",
+        "token": "0xb1e25689D55734FD3ffFc939c4C3Eb52DFf8A794"
+    },
+    {
+        "name": "USDC.e-scUSD (USDC.e Deposit)",
+        "vault": "0x11e9ba63182f152BB5385c0822fB84Cda92C125C",
+        "lpToken": "0xF77CeeD15596BfC127D17bA45dEA9767BC349Be0",
+        "token": "0x29219dd400f2Bf60E5a23d13Be72B486D4038894"
+    },
+    {
+        "name": "USDC.e-scUSD (scUSD Deposit)",
+        "vault": "0xcb076273698360801A24571F20DD3dd35Be94B80",
+        "lpToken": "0x776C31466F19D4e2c71bCE16c0549a8Bc0E37e17",
+        "token": "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE"
+    }
+]

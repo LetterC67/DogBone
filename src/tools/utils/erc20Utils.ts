@@ -28,6 +28,13 @@ interface ApproveERC20Args {
   amount: bigint;
 }
 
+interface TransferERC20Args {
+  provider: EIP1193Provider;
+  tokenAddress: Address;
+  recipient: Address;
+  amount: bigint;
+}
+
 interface CheckNeedApprovalArgs {
   publicClient: PublicClient;
   account: Address;
@@ -35,6 +42,7 @@ interface CheckNeedApprovalArgs {
   spender: Address;
   amount: bigint;
 }
+
 export async function getERC20Balance({
   publicClient,
   account,
@@ -94,6 +102,32 @@ export async function approveERC20({
     abi: erc20Abi,
     functionName: 'approve',
     args: [spender, amount],
+  });
+
+  const transactionRequest = {
+    to: tokenAddress,
+    value: 0,
+    data: data,
+  };
+
+  const transactionHash = await provider.request({
+    method: 'eth_sendTransaction',
+    params: [transactionRequest],
+  });
+
+  return transactionHash;
+}
+
+export async function transferERC20({
+  provider,
+  tokenAddress,
+  recipient,
+  amount,
+}: TransferERC20Args): Promise<Address> {
+  const data = encodeFunctionData({
+    abi: erc20Abi,
+    functionName: 'transfer',
+    args: [recipient, amount],
   });
 
   const transactionRequest = {
