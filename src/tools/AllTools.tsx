@@ -7,6 +7,7 @@ import { depositLST } from "./lst/DepositLST";
 import { depositIchi } from "./ichi/depositIchi";
 import { depositIchiLPBeefy } from "./beefy/depositIchiLPBeefy";
 import { depositMachFi } from "./machfi/depositMachFi";
+import { depositRingsNative, depositRingsSC } from "./rings/depositRings";
 export const AllTools = () => {
     const {ready, wallets} = useWallets();
     const {exportWallet} = usePrivy();
@@ -43,6 +44,8 @@ export const AllTools = () => {
             <button onClick={exportWallet}>Export Wallet</button>
             <button onClick={() => depositMachFi({walletClient: wallet, vaultAddress: "0x9F5d9f2FDDA7494aA58c90165cF8E6B070Fe92e6", amount: "0.001"})}>Deposit MachFi Native</button>
             <button onClick={() => depositMachFi({walletClient: wallet, vaultAddress: "0xbAA06b4D6f45ac93B6c53962Ea861e6e3052DC74", amount: "0.0001"})}>Deposit MachFi stS</button>
+            <button onClick={() => depositRingsNative({walletClient: wallet, vaultAddress: "0x5e39021Ae7D3f6267dc7995BB5Dd15669060DAe0", amount: "0.001"})}>Deposit Rings Native</button>
+            <button onClick={() => depositRingsSC({walletClient: wallet, vaultAddress: "0x5e39021Ae7D3f6267dc7995BB5Dd15669060DAe0", amount: "0.001"})}>Deposit Rings SC</button>
         </div>
     )
 }
