@@ -4,6 +4,8 @@ import { useWallets } from "@privy-io/react-auth";
 import { depositSilo } from "./silo/depositSilo";
 import { wrapNative } from "./utils/wrapNative";
 import { depositLST } from "./lst/DepositLST";
+import { depositIchi } from "./ichi/depositIchi";
+import { depositIchiLPBeefy } from "./beefy/depositIchiLPBeefy";
 
 export const AllTools = () => {
     const {ready, wallets} = useWallets();
@@ -35,6 +37,8 @@ export const AllTools = () => {
             <button onClick={() => wrapNative({walletClient: wallet, chainId: 146, amount: "0.01"})}>Wrap Native</button>
             <button onClick={() => depositLST({walletClient: wallet, vaultAddress: "0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21", amount: "0.001"})}>Origin Sonic</button>
             <button onClick={() => depositLST({walletClient: wallet, vaultAddress: "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955", amount: "0.01"})}>Beets Staked Sonic</button>
+            <button onClick={() => depositIchi({walletClient: wallet, vaultAddress: "0xa68D5DbAe00960De66DdEaD4d53faea39f21983b", amount: "0.002"})}>Deposit Ichi</button>
+            <button onClick={() => depositIchiLPBeefy({walletClient: wallet, vaultAddress: "0x406568d72B086fA9Ad3ec2512f05BaFB24403911", amount: "0.001"})}>Deposit Beefy</button>
         </div>
     )
 }
