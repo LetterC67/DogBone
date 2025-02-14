@@ -9,6 +9,10 @@ import { availableChains } from "./availableChains";
 import { useData } from "../../context/DataContext";
 import { createTx } from "../../api/deBridge";
 import { ethers } from "ethers";
+import { bridge } from "../../tools/bridge/bridge";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
+import Spinner from "../Common/Spinner";
+import { FaWallet } from "react-icons/fa";
 
 const Bridge: React.FC = () => {
     // "From" side state: default to Ethereum tokens
@@ -19,12 +23,20 @@ const Bridge: React.FC = () => {
     const [toToken, setToToken] = useState<Token>(sampleToTokens[0]);
     const [toAmount, setToAmount] = useState<string>("");
     const [isFetchingBridge, setIsFetchingBridge] = useState<boolean>(false);
-    
+
+    const [fromUsdValue, setFromUsdValue] = useState<number>(0);
+    const [toUsdValue, setToUsdValue] = useState<number>(0);
+
+    const { wallets } = useWallets();
     
 	const { tokenLists } = useData();
     // Modal states
     const [isFromModalOpen, setIsFromModalOpen] = useState<boolean>(false);
     const [isToModalOpen, setIsToModalOpen] = useState<boolean>(false);
+
+    const { authenticated} = usePrivy();
+
+    const [isBridging, setIsBridging] = useState<boolean>(false);
     
     const handleFromTokenSelect = (token: Token, chainId: string) => {
         setFromChain(chainId);
@@ -37,45 +49,82 @@ const Bridge: React.FC = () => {
         setIsToModalOpen(false);
     };
     
-    const handleBridge = () => {
+    const handleBridge = async () => {
         const fromChainName = availableChains.find((c) => c.id === fromChain)?.name;
-        alert(
-            `Bridging ${fromAmount} ${fromToken.symbol} from ${fromChainName} to ${toAmount} ${toToken.symbol} on Sonic chain`
-        );
+        // alert(
+        //     `Bridging ${fromAmount} ${fromToken.symbol} from ${fromChainName} to ${toAmount} ${toToken.symbol} on Sonic chain`
+        // );
+
+        setIsBridging(true);
+        
+        try {
+            await bridge({
+                walletClient: wallets[0],
+                srcChainId: idMap[fromChain],
+                dstChainId: 146,
+                srcChainTokenIn: fromToken.address,
+                srcAmountIn: fromAmount,
+                dstChainTokenOut: toToken.address,
+            });
+        } catch(err) {
+            console.error(err);
+        }
+
+        setIsBridging(false);
     };
     
     const idMap = {
         "eth": 1,
-        "base": 137,
-        "polygon": 8453,
+        "base": 8453,
+        "polygon": 137,
         "arb": 42161,
     }
     useEffect(() => {
         let valid = true;
 
-        const changeToAmount = async () => {
-            if (!valid) return;
-            setIsFetchingBridge(true);
-            const tokenAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
-            const quote = await createTx(idMap[fromChain], fromToken["address"], tokenAmount, 100000014, toToken.address);
+        const fetch = async () => {
+            const changeToAmount = async () => {
+                if (!valid) return;
+                setIsFetchingBridge(true);
+                const tokenAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
+                const quote = await createTx(idMap[fromChain], fromToken["address"], tokenAmount, 100000014, toToken.address);
+              
+                if (quote?.errorCode) {
+                    setToAmount("");
+                    setToUsdValue(0);
+                    setIsFetchingBridge(false);
+                    return;
+                }
 
-            const outputAmount = ethers.formatUnits(quote?.estimation?.dstChainTokenOut.amount, toToken.decimals);
+                const outputAmount = ethers.formatUnits(quote?.estimation?.dstChainTokenOut.amount, toToken.decimals);
+                
+                if (!valid) return;
+                setToAmount(parseFloat(outputAmount).toFixed(4));
+                setFromUsdValue(quote?.estimation?.srcChainTokenIn.approximateUsdValue);
+                setToUsdValue(quote?.estimation?.dstChainTokenOut.approximateUsdValue);
+
+                setIsFetchingBridge(false);
+            }
             
-            if (!valid) return;
-            setToAmount(parseFloat(outputAmount).toFixed(4));
-            setIsFetchingBridge(false);
-        }
-        
-        if (fromAmount && fromToken && toToken && fromChain) {
-            changeToAmount();
+            if (fromAmount && fromToken && toToken && fromChain) {
+                changeToAmount();
+            }
+
+            if (!fromAmount) {
+                setToAmount('');
+            }
         }
 
-        if (!fromAmount) {
-            setToAmount('');
-        }
+        fetch();
+
+        // fetch every 30s
+        const interval = setInterval(() => {
+            fetch();
+        }, 30000);
 
         return () => {
             valid = false;
+            clearInterval(interval);
         }
     }, [fromAmount, fromToken, fromChain, toToken]);
    
@@ -125,8 +174,14 @@ const Bridge: React.FC = () => {
                         value={fromAmount}
                         onChange={(e) => setFromAmount(e.target.value)}
                     />
-                    <div className="text-right text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                        Balance: {fromToken.balance}
+                    <div className="w-full flex flex-row justify-between items-center content-center">
+
+                        <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
+                            ~${fromUsdValue.toFixed(2)}
+                        </div>
+                        <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
+                            Balance: 382.228
+                        </div>
                     </div>
                 </div>
 
@@ -165,18 +220,29 @@ const Bridge: React.FC = () => {
                     onChange={(e) => setToAmount(e.target.value)}
                     disabled={true}
                 />
-                <div className="text-right text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                    Balance: {toToken.balance}
-                </div>
+                    <div className="w-full flex flex-row justify-between items-center content-center">
+                        <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
+                            ~${toUsdValue.toFixed(2)}
+                        </div>
+                        <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
+                            Balance: 382.228
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <button
                 onClick={handleBridge}
-                className="mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 hover:bg-[var(--highlight)] focus:outline-none"
-                style={{ backgroundColor: "var(--focus)", color: "var(--primary)" }}
+                className={`mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer 
+                    ${isBridging ? 'disabled:opacity-50' : 'opacity-100'}
+                    `}
+                
             >
-                Bridge
+                {authenticated ? isBridging ? <Spinner/> : 'Bridge' : 
+                <span className="flex flex-row gap-2 w-full justify-center items-center">
+                    <FaWallet size={16}/>
+                    <span>Please Log In</span>
+                </span>}
             </button>
 
             {/* From Token Modal */}

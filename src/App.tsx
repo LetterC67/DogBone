@@ -14,10 +14,10 @@ function App() {
 			<DataProvider>
 			<BrowserRouter>
 				<div className="h-screen w-screen flex-row flex">
-					<div className="w-1/8 h-full text-lg font-bold">
+					<div className="w-1/6 h-full text-lg font-bold">
 						<Sidebar></Sidebar>
 					</div>
-					<div className="w-7/8 h-full">
+					<div className="w-5/6 h-full">
 							<Routes>
 								<Route path="/">
 

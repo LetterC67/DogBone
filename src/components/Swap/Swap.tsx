@@ -5,11 +5,11 @@ import { Token } from './types';
 import { IoSwapVertical } from "react-icons/io5";
 import TokenList from './TokenList';
 import { getQuote } from '../../api/Odos';
-import { ethers } from 'ethers';
-import { usePrivy } from '@privy-io/react-auth';
+import { ethers, resolveProperties } from 'ethers';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { FaWallet } from 'react-icons/fa';
-
-
+import { swap } from '../../tools/swap/swap'
+import Spinner from '../../components/Common/Spinner';
 
 // Convert the TokenList object into an array of tokens
 const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
@@ -33,6 +33,10 @@ const Swap: React.FC = () => {
     const [activeModal, setActiveModal] = useState<'from' | 'to' | null>(null);
     const [isFetchingPrice, setIsFetchingPrice] = useState<boolean>(false);
     const { authenticated, login } = usePrivy();
+    const { wallets } = useWallets();
+    const [isSwapping, setIsSwapping] = useState<boolean>(false);
+    const [fromUsdValue, setFromUsdValue] = useState<number>(0);
+    const [toUsdValue, setToUsdValue] = useState<number>(0);
 
     // Swap the token selections (and corresponding amounts)
     const swapTokens = () => {
@@ -45,35 +49,59 @@ const Swap: React.FC = () => {
     useEffect(() => {
         let valid = true;
     
-        const fetchQuote = async () => {
-            setIsFetchingPrice(true);
-            const inputAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
-            const response = await getQuote({
-                inputToken: fromToken.address,
-                outputToken: toToken.address,
-                inputAmount: inputAmount.toString(),
-            });
-            if (!valid) return;
-            const outputAmount = ethers.formatUnits(response?.outAmounts[0], toToken.decimals);
-            setToAmount(parseFloat(outputAmount).toFixed(4));
-            setIsFetchingPrice(false);
-        };
-    
-        if (fromAmount && fromToken && toToken) {
-            fetchQuote();
+        const fetch = async () => {
+            const fetchQuote = async () => {
+                setIsFetchingPrice(true);
+                const inputAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
+                const response = await getQuote({
+                    inputToken: fromToken.address,
+                    outputToken: toToken.address,
+                    inputAmount: inputAmount.toString(),
+                });
+                if (!valid) return;
+                const outputAmount = ethers.formatUnits(response?.outAmounts[0], toToken.decimals);
+                setToAmount(parseFloat(outputAmount).toFixed(4));
+                setToUsdValue(response?.outValues[0]);
+                setFromUsdValue(response?.inValues[0]);
+                setIsFetchingPrice(false);
+            };
+        
+            if (fromAmount && fromToken && toToken) {
+                fetchQuote();
+            }
+
+            if (!fromAmount) {
+                setToAmount('');
+            }
         }
 
-        if (!fromAmount) {
-            setToAmount('');
-        }
-    
+        fetch();
+
+        const interval = setInterval(fetch, 30000);
+        
         return () => {
-          valid = false;
+            valid = false;
+            clearInterval(interval);
         };
     }, [fromToken, toToken, fromAmount]);
     // Simulate a swap action (replace with your real logic)
-    const handleSwap = () => {
-        alert(`Swapping ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`);
+    const handleSwap = async () => {
+        // alert(`Swapping ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`);
+        // const inputAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
+        // console.log(wallets[0].address);
+        setIsSwapping(true);
+        try {
+            await swap({
+                walletClient: wallets[0],
+                chainId: 146,
+                tokenIn: fromToken.address,
+                tokenOut: toToken.address,
+                amountIn: fromAmount.toString()
+            });
+        } catch (error) {
+            console.error('Error swapping tokens:', error);
+        }
+        setIsSwapping(false);
     };
 
     return (
@@ -119,10 +147,14 @@ const Swap: React.FC = () => {
                     value={fromAmount}
                     onChange={(e) => setFromAmount(e.target.value)}
                 />
-                <div className="text-right text-xs mt-1" style={{ color: 'var(--less-highlight)' }}>
-                    Balance: {fromToken.balance}
-                </div>
-                </div>
+                    <div className="w-full flex flex-row justify-between items-center content-center">
+                        <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
+                            ~${fromUsdValue.toFixed(2)}
+                        </div>
+                        <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
+                            Balance: 382.228
+                        </div>
+                    </div>                </div>
 
                 {/* Swap Arrow/Button */}
                 <div className="flex justify-center">
@@ -166,17 +198,24 @@ const Swap: React.FC = () => {
                     value={toAmount}
                     disabled={true}
                 />
-                <div className="text-right text-xs mt-1" style={{ color: 'var(--less-highlight)' }}>
-                    Balance: {toToken.balance}
-                </div>
+                    <div className="w-full flex flex-row justify-between items-center content-center">
+                        <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
+                            ~${toUsdValue.toFixed(2)}
+                        </div>
+                        <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
+                            Balance: 382.228
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <button
                 onClick={authenticated ? handleSwap : login}
-                className="mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer"
+                className={`mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer 
+                ${isSwapping ? 'disabled:opacity-50' : 'opacity-100'}
+                `}
             >
-                {authenticated ? 'Swap' : 
+                {authenticated ? isSwapping ? <Spinner/> : 'Swap' : 
                 <span className="flex flex-row gap-2 w-full justify-center items-center">
                     <FaWallet size={16}/>
                     <span>Please Log In</span>
