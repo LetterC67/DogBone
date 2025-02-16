@@ -15,6 +15,7 @@ import { getOriginOSAPY } from './lst/getOriginOSAPY';
 import { getBeetsSTSAPY } from './lst/getBeetsSTSAPY';
 import { getBeefyIchiAPR } from './beefy/getBeefyIchiAPR';
 import { getSiloAPR } from './silo/getSiloAPR';
+import { getMachFiAPR } from './machfi/getMachFiAPR';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -242,10 +243,20 @@ export const AllTools = () => {
           Get Beefy Ichi APR
         </button>
         <button
-            className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => getSiloAPR("0xE8e1A980a7fc8D47D337d704FA73FBb81eE55C25")}
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() =>
+            getSiloAPR('0xE8e1A980a7fc8D47D337d704FA73FBb81eE55C25')
+          }
         >
-            Get Silo APR
+          Get Silo APR
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() =>
+            getMachFiAPR('0x9F5d9f2FDDA7494aA58c90165cF8E6B070Fe92e6')
+          }
+        >
+          Get MachFi APY
         </button>
       </div>
     </div>
