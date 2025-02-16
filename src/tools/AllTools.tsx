@@ -14,6 +14,7 @@ import { depositEggsLeverage } from './eggs/depositEggsLeverage';
 import { getOriginOSAPY } from './lst/getOriginOSAPY';
 import { getBeetsSTSAPY } from './lst/getBeetsSTSAPY';
 import { getBeefyIchiAPR } from './beefy/getBeefyIchiAPR';
+import { getSiloAPR } from './silo/getSiloAPR';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -25,20 +26,6 @@ export const AllTools = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold">All Tools</h1>
-      <div className="flex flex-row space-x-4">
-        <div className="bg-gray-200 p-4 rounded-lg w-1/3">
-          <h2 className="text-lg font-bold">Swap</h2>
-          <p>Swap tokens on the blockchain</p>
-        </div>
-        <div className="bg-gray-200 p-4 rounded-lg w-1/3">
-          <h2 className="text-lg font-bold">Yield</h2>
-          <p>Yield farming on the blockchain</p>
-        </div>
-        <div className="bg-gray-200 p-4 rounded-lg w-1/3">
-          <h2 className="text-lg font-bold">Bridge</h2>
-          <p>Bridge tokens between chains</p>
-        </div>
-      </div>
       <div className="flex flex-col space-y-2">
         <button
           className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -253,6 +240,12 @@ export const AllTools = () => {
           }
         >
           Get Beefy Ichi APR
+        </button>
+        <button
+            className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => getSiloAPR("0xE8e1A980a7fc8D47D337d704FA73FBb81eE55C25")}
+        >
+            Get Silo APR
         </button>
       </div>
     </div>
