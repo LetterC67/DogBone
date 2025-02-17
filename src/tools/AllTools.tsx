@@ -23,6 +23,7 @@ import { viewSiloPosition } from './silo/viewSiloPosition';
 import { viewMachFiPosition } from './machfi/viewMachFiPosition';
 import { viewBeefyIchiLPPosition } from './beefy/viewBeefyIchiLPPosition';
 import { viewLTokenPosition } from './yel/viewLTokenPosition';
+import { viewRingsPosition } from './rings/viewRingsPosition';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -302,6 +303,12 @@ export const AllTools = () => {
         >
           View LToken Position
 
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewRingsPosition({vaultAddress: "0x5e39021Ae7D3f6267dc7995BB5Dd15669060DAe0", userAddress: wallet.address as Address})}
+        >
+          View Rings Position
         </button>
       </div>
     </div>
