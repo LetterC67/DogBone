@@ -17,6 +17,8 @@ import { getBeefyIchiAPR } from './beefy/getBeefyIchiAPR';
 import { getSiloAPR } from './silo/getSiloAPR';
 import { getMachFiAPR } from './machfi/getMachFiAPR';
 import { getLTokenAPY } from './yel/getLTokenAPY';
+import { viewLSTPosition } from './lst/viewLSTPosition';
+import { Address } from 'viem';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -264,6 +266,12 @@ export const AllTools = () => {
           onClick={() => getLTokenAPY("0x92Dd17b19F74E696502Ee9eD478901F24c5d9a9A")}
         >
           Get LToken APY
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewLSTPosition({vaultAddress: "0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21", userAddress: wallet.address as Address})}
+        >
+          Get LST Position
         </button>
       </div>
     </div>
