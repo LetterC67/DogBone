@@ -19,6 +19,7 @@ import { getMachFiAPR } from './machfi/getMachFiAPR';
 import { getLTokenAPY } from './yel/getLTokenAPY';
 import { viewLSTPosition } from './lst/viewLSTPosition';
 import { Address } from 'viem';
+import { viewSiloPosition } from './silo/viewSiloPosition';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -272,6 +273,12 @@ export const AllTools = () => {
           onClick={() => viewLSTPosition({vaultAddress: "0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21", userAddress: wallet.address as Address})}
         >
           Get LST Position
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewSiloPosition({vaultAddress: "0x34BB967d21bfED31F2A2Eb4478A520c254b16d2e", userAddress: wallet.address as Address})}
+        >
+          View Silo Position
         </button>
       </div>
     </div>
