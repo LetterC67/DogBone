@@ -21,6 +21,7 @@ import { viewLSTPosition } from './lst/viewLSTPosition';
 import { Address } from 'viem';
 import { viewSiloPosition } from './silo/viewSiloPosition';
 import { viewMachFiPosition } from './machfi/viewMachFiPosition';
+import { viewBeefyIchiLPPosition } from './beefy/viewBeefyIchiLPPosition';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -287,6 +288,12 @@ export const AllTools = () => {
         >
 
           View MachFi Position
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewBeefyIchiLPPosition({vaultAddress: "0x406568d72B086fA9Ad3ec2512f05BaFB24403911", userAddress: wallet.address as Address})}
+        >
+          View Beefy Ichi LP Position
         </button>
       </div>
     </div>
