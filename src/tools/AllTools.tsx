@@ -25,6 +25,7 @@ import { viewBeefyIchiLPPosition } from './beefy/viewBeefyIchiLPPosition';
 import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
+import { viewIchiPosition } from './ichi/viewIchiPosition';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -316,6 +317,12 @@ export const AllTools = () => {
           onClick={() => getIchiAPR("0xa68D5DbAe00960De66DdEaD4d53faea39f21983b")}
         >
           Get ICHI APR
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewIchiPosition({vaultAddress: "0xc4A71981DC8ee8ee704b6217DaebAd6ECe185aeb", userAddress: wallet.address as Address})}
+        >
+          View ICHI Position
         </button>
       </div>
     </div>

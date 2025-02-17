@@ -1,7 +1,7 @@
 import { Address } from 'viem';
 
 // get api key from .env
-const apiKey = import.meta.env.COINGECKO_API_KEY || '';
+const apiKey = import.meta.env.VITE_COINGECKO_API_KEY || '';
 
 export async function getTokenPriceByAddresses(tokenAddresses: Address[]) {
   const url =
