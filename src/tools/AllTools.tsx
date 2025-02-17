@@ -22,6 +22,7 @@ import { Address } from 'viem';
 import { viewSiloPosition } from './silo/viewSiloPosition';
 import { viewMachFiPosition } from './machfi/viewMachFiPosition';
 import { viewBeefyIchiLPPosition } from './beefy/viewBeefyIchiLPPosition';
+import { viewLTokenPosition } from './yel/viewLTokenPosition';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -294,6 +295,13 @@ export const AllTools = () => {
           onClick={() => viewBeefyIchiLPPosition({vaultAddress: "0x406568d72B086fA9Ad3ec2512f05BaFB24403911", userAddress: wallet.address as Address})}
         >
           View Beefy Ichi LP Position
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewLTokenPosition({vaultAddress: "0x555733fBa1CA24ec45e7027E00C4B6c5065BaC96", userAddress: wallet.address as Address})}
+        >
+          View LToken Position
+
         </button>
       </div>
     </div>
