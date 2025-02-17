@@ -1,10 +1,12 @@
 [
     {
         "name": "stS",
-        "vault": "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955"
+        "vault": "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955",
+        "token": "0x0000000000000000000000000000000000000000"
     },
     {
         "name": "OS",
-        "vault": "0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21"
+        "vault": "0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21",
+        "token": "0x0000000000000000000000000000000000000000"
     }
 ]

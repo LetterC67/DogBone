@@ -1,15 +1,28 @@
 [
-    {
-        "inputs": [],
-        "name": "mintAsCollateral",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "payable",
-        "type": "function"
-    }      
+  {
+      "inputs": [],
+      "name": "mintAsCollateral",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "supplyRatePerTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }      
 ]
