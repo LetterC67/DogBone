@@ -3,7 +3,7 @@
         "type": "beefy",
         "lists": [
             {
-                "name": " Beefy SWAPX (Ichi) WS-stS (stS deposit)",
+                "name": "Beefy SWAPX (Ichi) WS-stS (stS deposit)",
                 "vault": "0x5555636503AE6EDE5d0109c5627b8f4B1250B096",
                 "token": "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955"
             },

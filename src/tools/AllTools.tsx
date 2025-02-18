@@ -11,8 +11,7 @@ import { depositRingsNative, depositRingsSC } from './rings/depositRings';
 import { DepositLToken } from './yel/depositLToken';
 import { depositEggs } from './eggs/depositEggs';
 import { depositEggsLeverage } from './eggs/depositEggsLeverage';
-import { getOriginOSAPY } from './lst/getOriginOSAPY';
-import { getBeetsSTSAPY } from './lst/getBeetsSTSAPY';
+import { getLSTAPY } from './lst/getLSTAPY';
 import { getBeefyIchiAPR } from './beefy/getBeefyIchiAPR';
 import { getSiloAPR } from './silo/getSiloAPR';
 import { getMachFiAPR } from './machfi/getMachFiAPR';
@@ -26,6 +25,7 @@ import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
 import { viewIchiPosition } from './ichi/viewIchiPosition';
+import { getVaultAPR, getVaultPosition, depositVault } from './ToolAPI';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -74,7 +74,6 @@ export const AllTools = () => {
               walletClient: wallet,
               vaultAddress: '0x4E216C15697C1392fE59e1014B009505E05810Df',
               amount: '0.001',
-              isCollateral: true,
             })
           }
         >
@@ -219,7 +218,7 @@ export const AllTools = () => {
         <button
           className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => {
-            getOriginOSAPY()
+            getLSTAPY("0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21")
               .then((result) => {
                 console.log(result);
               })
@@ -233,7 +232,7 @@ export const AllTools = () => {
         <button
           className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => {
-            getBeetsSTSAPY()
+            getLSTAPY("0xE5DA20F15420aD15DE0fa650600aFc998bbE3955")
               .then((result) => {
                 console.log(result);
               })
@@ -323,6 +322,24 @@ export const AllTools = () => {
           onClick={() => viewIchiPosition({vaultAddress: "0xc4A71981DC8ee8ee704b6217DaebAd6ECe185aeb", userAddress: wallet.address as Address})}
         >
           View ICHI Position
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getVaultAPR("Beefy SWAPX (Ichi) WS-stS (stS deposit)")}
+        >
+          Get APR Based on API Tool
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getVaultPosition(wallet, "SWAPX Ichi wS-oS (oS deposit)")}
+        >
+          Get View Position on API Tool
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => depositVault(wallet, "SWAPX Ichi wS-stS (stS deposit)", "0.001")}
+        >
+          Deposit on API Tool
         </button>
       </div>
     </div>

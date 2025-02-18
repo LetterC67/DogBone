@@ -39,5 +39,5 @@ export async function getSiloAPR(vaultAddress: Address) {
 
   console.log('Deposit APR: ', formatUnits(depositAPR, 16));
 
-  return formatUnits(depositAPR, 16);
+  return Number(formatUnits(depositAPR, 16));
 }

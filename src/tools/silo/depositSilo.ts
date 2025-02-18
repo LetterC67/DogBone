@@ -27,7 +27,6 @@ interface DepositArgs {
   walletClient: ConnectedWallet;
   vaultAddress: Address;
   amount: string;
-  isCollateral: boolean;
 }
 
 const siloAbi = JSON.parse(JSON.stringify(SiloAbi));
@@ -37,7 +36,6 @@ export async function depositSilo({
   walletClient,
   vaultAddress,
   amount,
-  isCollateral,
 }: DepositArgs): Promise<void> {
   // Check if vault address is in vault list
   const vaultConfig = vaultList.find(
@@ -46,7 +44,7 @@ export async function depositSilo({
   if (!vaultConfig) {
     throw new Error('Vault either not found or not supported');
   }
-  if (isCollateral && !vaultConfig.borrowable) {
+  if (!vaultConfig.borrowable) {
     throw new Error('Vault does not support use asset as collateral');
   }
 
@@ -105,7 +103,7 @@ export async function depositSilo({
   const transactionData = encodeFunctionData({
     abi: siloAbi,
     functionName: 'deposit',
-    args: [parsedAmount, userAddr, isCollateral ? 1 : 0],
+    args: [parsedAmount, userAddr, 1],
   });
 
   const transactionRequest = {
