@@ -32,8 +32,8 @@ export interface BridgeArgs {
   srcAmountIn: string;
   dstChainTokenOut: Address;
   externalCall?: {
-    to: Address;
-    data: `0x${string}`;
+    target: Address;  
+    targetPayload: Address;
   };
 }
 

@@ -60,7 +60,7 @@ export async function swap({
   }
 
   const { transaction } = await odosExecute({
-    walletClient,
+    receiver: walletClient.address as Address,
     chainId,
     tokenIn,
     tokenOut,

@@ -11,12 +11,21 @@ import { depositRingsNative, depositRingsSC } from './rings/depositRings';
 import { DepositLToken } from './yel/depositLToken';
 import { depositEggs } from './eggs/depositEggs';
 import { depositEggsLeverage } from './eggs/depositEggsLeverage';
-import { getOriginOSAPY } from './lst/getOriginOSAPY';
-import { getBeetsSTSAPY } from './lst/getBeetsSTSAPY';
+import { getLSTAPY } from './lst/getLSTAPY';
 import { getBeefyIchiAPR } from './beefy/getBeefyIchiAPR';
 import { getSiloAPR } from './silo/getSiloAPR';
 import { getMachFiAPR } from './machfi/getMachFiAPR';
 import { getLTokenAPY } from './yel/getLTokenAPY';
+import { viewLSTPosition } from './lst/viewLSTPosition';
+import { Address } from 'viem';
+import { viewSiloPosition } from './silo/viewSiloPosition';
+import { viewMachFiPosition } from './machfi/viewMachFiPosition';
+import { viewBeefyIchiLPPosition } from './beefy/viewBeefyIchiLPPosition';
+import { viewLTokenPosition } from './yel/viewLTokenPosition';
+import { viewRingsPosition } from './rings/viewRingsPosition';
+import { getIchiAPR } from './ichi/getIchiAPR';
+import { viewIchiPosition } from './ichi/viewIchiPosition';
+import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap } from './ToolAPI';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -65,7 +74,6 @@ export const AllTools = () => {
               walletClient: wallet,
               vaultAddress: '0x4E216C15697C1392fE59e1014B009505E05810Df',
               amount: '0.001',
-              isCollateral: true,
             })
           }
         >
@@ -210,7 +218,7 @@ export const AllTools = () => {
         <button
           className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => {
-            getOriginOSAPY()
+            getLSTAPY("0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21")
               .then((result) => {
                 console.log(result);
               })
@@ -224,7 +232,7 @@ export const AllTools = () => {
         <button
           className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => {
-            getBeetsSTSAPY()
+            getLSTAPY("0xE5DA20F15420aD15DE0fa650600aFc998bbE3955")
               .then((result) => {
                 console.log(result);
               })
@@ -264,6 +272,97 @@ export const AllTools = () => {
           onClick={() => getLTokenAPY("0x92Dd17b19F74E696502Ee9eD478901F24c5d9a9A")}
         >
           Get LToken APY
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewLSTPosition({vaultAddress: "0xe25A2B256ffb3AD73678d5e80DE8d2F6022fAb21", userAddress: wallet.address as Address})}
+        >
+          Get LST Position
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewSiloPosition({vaultAddress: "0x34BB967d21bfED31F2A2Eb4478A520c254b16d2e", userAddress: wallet.address as Address})}
+        >
+          View Silo Position
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewMachFiPosition({vaultAddress: "0xbAA06b4D6f45ac93B6c53962Ea861e6e3052DC74", userAddress: wallet.address as Address})}
+        >
+
+          View MachFi Position
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewBeefyIchiLPPosition({vaultAddress: "0x406568d72B086fA9Ad3ec2512f05BaFB24403911", userAddress: wallet.address as Address})}
+        >
+          View Beefy Ichi LP Position
+        </button>
+        <button
+          className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => viewLTokenPosition({vaultAddress: "0x555733fBa1CA24ec45e7027E00C4B6c5065BaC96", userAddress: wallet.address as Address})}
+        >
+          View LToken Position
+
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewRingsPosition({vaultAddress: "0x5e39021Ae7D3f6267dc7995BB5Dd15669060DAe0", userAddress: wallet.address as Address})}
+        >
+          View Rings Position
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getIchiAPR("0xa68D5DbAe00960De66DdEaD4d53faea39f21983b")}
+        >
+          Get ICHI APR
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewIchiPosition({vaultAddress: "0xc4A71981DC8ee8ee704b6217DaebAd6ECe185aeb", userAddress: wallet.address as Address})}
+        >
+          View ICHI Position
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getVaultAPR("Beefy SWAPX (Ichi) WS-stS (stS deposit)")}
+        >
+          Get APR Based on API Tool
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getVaultPosition(wallet, "SWAPX Ichi wS-oS (oS deposit)")}
+        >
+          Get View Position on API Tool
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => depositVault(wallet, "SWAPX Ichi wS-stS (stS deposit)", "0.001")}
+        >
+          Deposit on API Tool
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => zap(
+            wallet,
+            "0x0000000000000000000000000000000000000000",
+            "0.001",
+            "Beefy SWAPX (Ichi) WS-stS (stS deposit)"
+          )}
+        >
+          Zap Native Token (S) into Beefy SWAPX (Ichi) WS-stS (stS deposit) strategy
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => bridgeAndZap(
+            wallet,
+            137,
+            "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+            "0.1",
+            "Silo USDC.e (Market id 20)"
+          )}
+        >
+         Bridge 0.1 USDT from Polygon to deposit into Silo USDC.e (Market id 20) strategy
         </button>
       </div>
     </div>

@@ -1,7 +1,7 @@
-import { ConnectedWallet } from '@privy-io/react-auth';
+import { Address } from 'viem';
 
 interface OdosSwapArgs {
-  walletClient: ConnectedWallet;
+  receiver: Address
   chainId: number;
   tokenIn: string;
   tokenOut: string;
@@ -9,7 +9,7 @@ interface OdosSwapArgs {
 }
 
 export async function getOdosSwapQuote({
-  walletClient,
+  receiver,
   chainId,
   tokenIn,
   tokenOut,
@@ -31,7 +31,7 @@ export async function getOdosSwapQuote({
         proportion: 1,
       },
     ],
-    userAddr: walletClient.address,
+    userAddr: receiver,
     slippageLimitPercent: 0.5,
     referralCode: 0,
     disableRFQs: true,
@@ -60,7 +60,7 @@ export async function getOdosSwapQuote({
 }
 
 export async function odosAssemble(
-  walletClient: ConnectedWallet,
+  receiver: Address,
   pathId: string
 ) {
   const assembleUrl = 'https://api.odos.xyz/sor/assemble';
@@ -68,7 +68,7 @@ export async function odosAssemble(
   console.log('Path ID:', pathId);
 
   const assembleRequestBody = {
-    userAddr: walletClient.address,
+    userAddr: receiver,
     pathId: pathId,
     simulate: false,
   };
@@ -88,20 +88,20 @@ export async function odosAssemble(
 }
 
 export async function odosExecute({
-  walletClient,
+  receiver,
   chainId,
   tokenIn,
   tokenOut,
   amountIn,
 }: OdosSwapArgs) {
   const { pathId } = await getOdosSwapQuote({
-    walletClient,
+    receiver,
     chainId,
     tokenIn,
     tokenOut,
     amountIn,
   });
-  const assembledTransaction = await odosAssemble(walletClient, pathId);
+  const assembledTransaction = await odosAssemble(receiver, pathId);
   console.log('assembled tx: ', assembledTransaction);
   return assembledTransaction;
 }

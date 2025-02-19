@@ -9,8 +9,8 @@ interface DebridgeArgs {
     srcAmountIn: bigint;
     dstChainTokenOut: Address;
     externalCall?: {
-        to: Address;
-        data: `0x${string}`;
+        target: Address;  
+        targetPayload: Address;
     };
 }
 
@@ -40,11 +40,14 @@ export async function debridgeQuote({
         enableEstimate: "false",
         dlnHook: externalCall
           ? JSON.stringify({
-              type: "evm_transaction_call",
+              type: "evm_hook_data_v1",
               data: {
-                to: externalCall.to,
-                calldata: externalCall.data,
-                gas: 0
+                fallbackAddress: userAddress,
+                target: externalCall.target,
+                reward: "0",
+                isNonAtomic: false,
+                isSuccessRequired: true,
+                targetPayload: externalCall.targetPayload,                
               },
             })
           : "",

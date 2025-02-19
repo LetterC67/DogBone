@@ -27,5 +27,5 @@ export async function getLTokenAPY(vaultAddress: Address) {
 
   const data = await response.json();
   console.log('APY: ', Number(data.data[data.data.length - 1].apy).toFixed(2));
-  return Number(data.data[data.data.length - 1].apy).toFixed(2);
+  return Number(Number(data.data[data.data.length - 1].apy).toFixed(2));
 }

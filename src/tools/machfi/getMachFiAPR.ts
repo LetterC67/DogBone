@@ -38,5 +38,5 @@ export async function getMachFiAPR(vaultAddress: Address) {
   const depositAPY =
     ((1 + Number(formatEther(rewardPerSecond))) ** SECONDS_PER_YEAR - 1) * 100;
   console.log('Deposit APY: ', depositAPY.toFixed(2));
-  return depositAPY.toFixed(2);
+  return Number(depositAPY.toFixed(2));
 }
