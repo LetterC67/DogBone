@@ -25,7 +25,7 @@ import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
 import { viewIchiPosition } from './ichi/viewIchiPosition';
-import { getVaultAPR, getVaultPosition, depositVault } from './ToolAPI';
+import { getVaultAPR, getVaultPosition, depositVault, zap } from './ToolAPI';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -340,6 +340,17 @@ export const AllTools = () => {
           onClick={() => depositVault(wallet, "SWAPX Ichi wS-stS (stS deposit)", "0.001")}
         >
           Deposit on API Tool
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => zap(
+            wallet,
+            "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955",
+            "0.001",
+            "Beefy SWAPX (Ichi) WS-stS (stS deposit)"
+          )}
+        >
+          Zap
         </button>
       </div>
     </div>

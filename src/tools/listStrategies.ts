@@ -21,42 +21,56 @@ import { DepositLToken } from './yel/depositLToken';
 import { getLTokenAPY } from './yel/getLTokenAPY';
 import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsAPR } from './rings/viewRingsAPR';
+import { getBeefyIchiFuncSelector } from './beefy/getBeefyIchiFuncSelector';
+import { getIchiFuncSelector } from './ichi/getIchiFuncSelector';
+import { getLSTFuncSelector } from './lst/getLSTFuncSelector';
+import { getMachFiFuncSelector } from './machfi/getMachFiFuncSelector';
+import { getRingsFuncSelector } from './rings/getRingsFuncSelector';
+import { getSiloFuncSelector } from './silo/getSiloFuncSelector';
+import { getLTokenFuncSelector } from './yel/getLTokenFuncSelector';
 
 export const strategyFunctions = {
   beefy: {
     deposit: depositIchiLPBeefy,
     viewAPR: getBeefyIchiAPR,
     viewPosition: viewBeefyIchiLPPosition,
+    funcSelector: getBeefyIchiFuncSelector
   },
   ichi: {
     deposit: depositIchi,
     viewAPR: getIchiAPR,
     viewPosition: viewIchiPosition,
+    funcSelector: getIchiFuncSelector
   },
   LST: {
     deposit: depositLST,
     viewAPR: getLSTAPY,
     viewPosition: viewLSTPosition,
+    funcSelector: getLSTFuncSelector
   },
   MachFi: {
     deposit: depositMachFi,
     viewAPR: getMachFiAPR,
     viewPosition: viewMachFiPosition,
+    funcSelector: getMachFiFuncSelector
   },
   rings: {
     deposit: depositRingsSC,
     viewAPR: viewRingsAPR,
     viewPosition: viewRingsPosition,
+    funcSelector: getRingsFuncSelector
   },
   silo: {
     deposit: depositSilo,
     viewAPR: getSiloAPR,
     viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector
   },
   yel: {
     deposit: DepositLToken,
     viewAPR: getLTokenAPY,
     viewPosition: viewLTokenPosition,
+    funcSelector: getLTokenFuncSelector
   },
 };
 
