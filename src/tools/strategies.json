@@ -303,5 +303,15 @@
                 "token": "0x9fDbC3f8Abc05Fa8f3Ad3C17D2F806c1230c4564"
             }
         ]
+    },
+    {
+        "type": "Bone1",
+        "lists": [
+            {
+                "name": "Bone 1 - Silo stS-S (stS deposit) looping 17x leverage",
+                "vault": "0x396922EF30Cf012973343f7174db850c7D265278",
+                "token": "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955"
+            }
+        ]
     }
 ]

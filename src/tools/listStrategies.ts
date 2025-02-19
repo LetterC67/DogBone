@@ -28,6 +28,7 @@ import { getMachFiFuncSelector } from './machfi/getMachFiFuncSelector';
 import { getRingsFuncSelector } from './rings/getRingsFuncSelector';
 import { getSiloFuncSelector } from './silo/getSiloFuncSelector';
 import { getLTokenFuncSelector } from './yel/getLTokenFuncSelector';
+import { depositDogBone_Bone1 } from './dogbone/dogbone_silo_st_s_st_looping/Deposit_DogBone_Bone1';
 
 export const strategyFunctions = {
   beefy: {
@@ -72,6 +73,12 @@ export const strategyFunctions = {
     viewPosition: viewLTokenPosition,
     funcSelector: getLTokenFuncSelector,
   },
+  Bone1: {
+    deposit: depositDogBone_Bone1,
+    viewAPR: getLTokenAPY,
+    viewPosition: viewLTokenPosition,
+    funcSelector: getLTokenFuncSelector,
+  }
 };
 
 export const nameToTypeMapping: Record<string, string> = {};
