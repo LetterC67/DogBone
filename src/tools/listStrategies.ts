@@ -34,43 +34,43 @@ export const strategyFunctions = {
     deposit: depositIchiLPBeefy,
     viewAPR: getBeefyIchiAPR,
     viewPosition: viewBeefyIchiLPPosition,
-    funcSelector: getBeefyIchiFuncSelector
+    funcSelector: getBeefyIchiFuncSelector,
   },
   ichi: {
     deposit: depositIchi,
     viewAPR: getIchiAPR,
     viewPosition: viewIchiPosition,
-    funcSelector: getIchiFuncSelector
+    funcSelector: getIchiFuncSelector,
   },
   LST: {
     deposit: depositLST,
     viewAPR: getLSTAPY,
     viewPosition: viewLSTPosition,
-    funcSelector: getLSTFuncSelector
+    funcSelector: getLSTFuncSelector,
   },
   MachFi: {
     deposit: depositMachFi,
     viewAPR: getMachFiAPR,
     viewPosition: viewMachFiPosition,
-    funcSelector: getMachFiFuncSelector
+    funcSelector: getMachFiFuncSelector,
   },
   rings: {
     deposit: depositRingsSC,
     viewAPR: viewRingsAPR,
     viewPosition: viewRingsPosition,
-    funcSelector: getRingsFuncSelector
+    funcSelector: getRingsFuncSelector,
   },
   silo: {
     deposit: depositSilo,
     viewAPR: getSiloAPR,
     viewPosition: viewSiloPosition,
-    funcSelector: getSiloFuncSelector
+    funcSelector: getSiloFuncSelector,
   },
   yel: {
     deposit: DepositLToken,
     viewAPR: getLTokenAPY,
     viewPosition: viewLTokenPosition,
-    funcSelector: getLTokenFuncSelector
+    funcSelector: getLTokenFuncSelector,
   },
 };
 
@@ -85,15 +85,20 @@ strategies.forEach((strat) => {
 });
 
 // Also add name to strategy config mapping
-export const nameToConfigMapping: Record<string, { vault: Address, token: Address }> = {};
+export const nameToConfigMapping: Record<
+  string,
+  { vault: Address; token: Address }
+> = {};
 
 strategies.forEach((strat) => {
-  strat.lists.forEach((item: { name: string, vault: string, token: string }) => {
-    if (item.name) {
-      nameToConfigMapping[item.name] = {
-        vault: item.vault as Address,
-        token: item.token as Address,
+  strat.lists.forEach(
+    (item: { name: string; vault: string; token: string }) => {
+      if (item.name) {
+        nameToConfigMapping[item.name] = {
+          vault: item.vault as Address,
+          token: item.token as Address,
+        };
       }
     }
-  });
+  );
 });

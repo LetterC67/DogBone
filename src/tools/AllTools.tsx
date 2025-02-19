@@ -25,7 +25,7 @@ import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
 import { viewIchiPosition } from './ichi/viewIchiPosition';
-import { getVaultAPR, getVaultPosition, depositVault, zap } from './ToolAPI';
+import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap } from './ToolAPI';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -345,12 +345,24 @@ export const AllTools = () => {
           className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
           onClick={() => zap(
             wallet,
-            "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955",
+            "0x0000000000000000000000000000000000000000",
             "0.001",
             "Beefy SWAPX (Ichi) WS-stS (stS deposit)"
           )}
         >
-          Zap
+          Zap Native Token (S) into Beefy SWAPX (Ichi) WS-stS (stS deposit) strategy
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => bridgeAndZap(
+            wallet,
+            137,
+            "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+            "0.1",
+            "Silo USDC.e (Market id 20)"
+          )}
+        >
+         Bridge 0.1 USDT from Polygon to deposit into Silo USDC.e (Market id 20) strategy
         </button>
       </div>
     </div>

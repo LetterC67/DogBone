@@ -2,6 +2,7 @@ import {
   Address,
   createPublicClient,
   custom,
+  encodeAbiParameters,
   encodeFunctionData,
   parseUnits,
 } from 'viem';
@@ -21,6 +22,7 @@ import {
 } from './utils/erc20Utils';
 import ZapAbi from './zap.abi.json';
 import { NATIVE_TOKEN, ZAP_CONTRACT } from './constants';
+import { bridge } from './bridge/bridge';
 
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 
@@ -163,7 +165,7 @@ export async function zap(
       fromAmount: parsedAmountIn,
       router: transaction.to as Address,
       data: transaction.data,
-      value: BigInt(transaction.value)
+      value: BigInt(transaction.value),
     },
     {
       vault: vault,
@@ -197,5 +199,87 @@ export async function zap(
     return transactionHash;
   } catch (error) {
     throw new Error('Failed to zap: ' + error);
+  }
+}
+
+export async function bridgeAndZap(
+  walletClient: ConnectedWallet,
+  fromChain: number,
+  fromToken: Address,
+  amount: string,
+  toStrategy: string
+) {
+  const strategy = nameToTypeMapping[toStrategy];
+  if (!strategy) {
+    throw new Error('Strategy not found');
+  }
+
+  const strategyFunction =
+    strategyFunctions[strategy as keyof typeof strategyFunctions];
+  const { vault, token } = nameToConfigMapping[toStrategy];
+
+  const userAddr = walletClient.address as Address;
+  const depositSelector = await strategyFunction.funcSelector(vault);
+  const externalCallData = getExternalCall(
+    vault,
+    token,
+    userAddr,
+    depositSelector
+  );
+
+  return await bridge({
+    walletClient,
+    srcChainId: fromChain,
+    dstChainId: sonic.id,
+    srcChainTokenIn: fromToken,
+    srcAmountIn: amount,
+    dstChainTokenOut: token,
+    externalCall: externalCallData
+  });
+}
+
+export function getExternalCall(
+  vault: Address,
+  token: Address,
+  userAddr: Address,
+  depositSelector: Address
+): {target: Address, targetPayload: Address } {
+  const callData = encodeFunctionData({
+    abi: zapAbi,
+    functionName: 'doStrategy',
+    args: [
+      {
+        vault: vault,
+        token: token,
+        amount: 0n,
+        receiver: userAddr,
+        funcSelector: depositSelector,
+      },
+    ],
+  });
+
+  const payloadEncoded = encodeAbiParameters(
+    [
+      {
+        type: 'tuple',
+        components: [
+          { name: 'to', type: 'address' },
+          { name: 'txGas', type: 'uint256' },
+          { name: 'callData', type: 'bytes' },
+        ],
+      },
+    ],
+    [
+      {
+        to: ZAP_CONTRACT,
+        txGas: 0n,
+        callData: callData,
+      },
+    ]
+  );
+
+  return {
+    target: ZAP_CONTRACT,
+    targetPayload: payloadEncoded,
   }
 }
