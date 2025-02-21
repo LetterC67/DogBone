@@ -35,6 +35,7 @@ const notLeveraged = (strategy: string, amount: string) => {
   return {
     leverage: BigInt(0),
     flashAmount: BigInt(0),
+    isProtected: false,
     swapFlashloan: {
       fromToken: NATIVE_TOKEN,
       fromAmount: BigInt(0),

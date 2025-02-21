@@ -103,7 +103,7 @@ export async function depositIchiLPBeefy({
   const transactionRequest = {
     to: vaultAddress,
     data: transactionData,
-    value: '0',
+    value: BigInt(0),
   };
 
   try {

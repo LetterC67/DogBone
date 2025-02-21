@@ -22,7 +22,7 @@ const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 
 console.log('Zap abi is: ', zapAbi);
 
-const LEVERAGE: number = 17;
+const LEVERAGE: number = 16;
 const SILO_VAULT: Address = '0x396922EF30Cf012973343f7174db850c7D265278';
 // const SILO_CONFIG: Address = "0x78C246f67c8A6cE03a1d894d4Cf68004Bd55Deea";
 const TOKEN: Address = '0xE5DA20F15420aD15DE0fa650600aFc998bbE3955';
@@ -142,9 +142,10 @@ export async function depositDogBone_Bone1({
         token: TOKEN,
         amount: parsedAmountIn,
         receiver: userAddr,
-        funcSelector: '0x99fd5b4a',
+        funcSelector: '0xa7377f92',
         leverage: LEVERAGE,
         flashAmount: parsedFlashAmount,
+        isProtected: false,
         swapFlashloan: {
           fromToken: BORROW_TOKEN,
           fromAmount: parsedFlashAmount,
@@ -159,7 +160,7 @@ export async function depositDogBone_Bone1({
   const transactionRequest = {
     to: ZAP_CONTRACT,
     data: transactionData,
-    value: '0',
+    value: BigInt(0),
   };
 
   try {

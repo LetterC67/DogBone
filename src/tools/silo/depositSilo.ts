@@ -109,7 +109,7 @@ export async function depositSilo({
   const transactionRequest = {
     to: vaultAddress,
     data: transactionData,
-    value: '0',
+    value: BigInt(0),
   };
 
   try {

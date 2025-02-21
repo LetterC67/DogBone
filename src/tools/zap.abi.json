@@ -95,6 +95,11 @@
             "internalType": "uint256"
           },
           {
+            "name": "isProtected",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
             "name": "swapFlashloan",
             "type": "tuple",
             "internalType": "struct Zap.Swap",
@@ -415,6 +420,11 @@
             "internalType": "uint256"
           },
           {
+            "name": "isProtected",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
             "name": "swapFlashloan",
             "type": "tuple",
             "internalType": "struct Zap.Swap",
@@ -650,6 +660,11 @@
             "name": "flashAmount",
             "type": "uint256",
             "internalType": "uint256"
+          },
+          {
+            "name": "isProtected",
+            "type": "bool",
+            "internalType": "bool"
           },
           {
             "name": "swapFlashloan",
