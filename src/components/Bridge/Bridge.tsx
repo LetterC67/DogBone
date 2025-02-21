@@ -13,15 +13,31 @@ import { bridge } from "../../tools/bridge/bridge";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import Spinner from "../Common/Spinner";
 import { FaWallet } from "react-icons/fa";
+import { useControl } from "../../context/ControlContext";
+import useFetchTwoBalance from "../../hooks/useFetchTwoBalance";
 
 const Bridge: React.FC = () => {
-    // "From" side state: default to Ethereum tokens
-    const [fromChain, setFromChain] = useState<string>("eth");
-    const [fromToken, setFromToken] = useState<Token>(sampleFromTokens["eth"][0]);
-    const [fromAmount, setFromAmount] = useState<string>("");
-    // "To" side state: chain is fixed to Sonic; user may select any Sonic token
-    const [toToken, setToToken] = useState<Token>(sampleToTokens[0]);
-    const [toAmount, setToAmount] = useState<string>("");
+    // // "From" side state: default to Ethereum tokens
+    // const [fromChain, setFromChain] = useState<string>("eth");
+    // const [fromToken, setFromToken] = useState<Token>(sampleFromTokens["eth"][0]);
+    // const [fromAmount, setFromAmount] = useState<string>("");
+    // // "To" side state: chain is fixed to Sonic; user may select any Sonic token
+    // const [toToken, setToToken] = useState<Token>(sampleToTokens[0]);
+    // const [toAmount, setToAmount] = useState<string>("");
+
+    const {
+        fromChainBridge,
+        setFromChainBridge,
+        fromTokenBridge,
+        setFromTokenBridge,
+        fromAmountBridge,
+        setFromAmountBridge,
+        toTokenBridge,
+        setToTokenBridge,
+        toAmountBridge,
+        setToAmountBridge
+    } = useControl();
+
     const [isFetchingBridge, setIsFetchingBridge] = useState<boolean>(false);
 
     const [fromUsdValue, setFromUsdValue] = useState<number>(0);
@@ -39,18 +55,19 @@ const Bridge: React.FC = () => {
     const [isBridging, setIsBridging] = useState<boolean>(false);
     
     const handleFromTokenSelect = (token: Token, chainId: string) => {
-        setFromChain(chainId);
-        setFromToken(token);
+        setFromChainBridge(chainId);
+        setFromTokenBridge(token);
         setIsFromModalOpen(false);
     };
     
     const handleToTokenSelect = (token: Token) => {
-        setToToken(token);
+        setToTokenBridge(token);
         setIsToModalOpen(false);
     };
     
+    const { userBalance:fromBalance, userBalance2:toBalance } = useFetchTwoBalance(fromTokenBridge, fromChainBridge, toTokenBridge, "146");
     const handleBridge = async () => {
-        const fromChainName = availableChains.find((c) => c.id === fromChain)?.name;
+        const fromChainName = availableChains.find((c) => c.id === fromChainBridge)?.name;
         // alert(
         //     `Bridging ${fromAmount} ${fromToken.symbol} from ${fromChainName} to ${toAmount} ${toToken.symbol} on Sonic chain`
         // );
@@ -62,9 +79,9 @@ const Bridge: React.FC = () => {
                 walletClient: wallets[0],
                 srcChainId: idMap[fromChain],
                 dstChainId: 146,
-                srcChainTokenIn: fromToken.address,
-                srcAmountIn: fromAmount,
-                dstChainTokenOut: toToken.address,
+                srcChainTokenIn: fromTokenBridge.address,
+                srcAmountIn: fromAmountBridge,
+                dstChainTokenOut: toTokenBridge.address,
             });
         } catch(err) {
             console.error(err);
@@ -86,32 +103,33 @@ const Bridge: React.FC = () => {
             const changeToAmount = async () => {
                 if (!valid) return;
                 setIsFetchingBridge(true);
-                const tokenAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
-                const quote = await createTx(idMap[fromChain], fromToken["address"], tokenAmount, 100000014, toToken.address);
+                const tokenAmount = ethers.parseUnits(fromAmountBridge, fromTokenBridge.decimals);
+                const quote = await createTx(idMap[fromChainBridge], fromTokenBridge["address"], tokenAmount, 100000014, toTokenBridge.address);
               
                 if (quote?.errorCode) {
-                    setToAmount("");
+                    setToAmountBridge("");
                     setToUsdValue(0);
+                    setFromUsdValue(0);
                     setIsFetchingBridge(false);
                     return;
                 }
 
-                const outputAmount = ethers.formatUnits(quote?.estimation?.dstChainTokenOut.amount, toToken.decimals);
+                const outputAmount = ethers.formatUnits(quote?.estimation?.dstChainTokenOut.amount, toTokenBridge.decimals);
                 
                 if (!valid) return;
-                setToAmount(parseFloat(outputAmount).toFixed(4));
+                setToAmountBridge(parseFloat(outputAmount).toFixed(4));
                 setFromUsdValue(quote?.estimation?.srcChainTokenIn.approximateUsdValue);
                 setToUsdValue(quote?.estimation?.dstChainTokenOut.approximateUsdValue);
 
                 setIsFetchingBridge(false);
             }
             
-            if (fromAmount && fromToken && toToken && fromChain) {
+            if (fromAmountBridge && fromTokenBridge && toTokenBridge && fromChainBridge) {
                 changeToAmount();
             }
 
-            if (!fromAmount) {
-                setToAmount('');
+            if (!fromAmountBridge) {
+                setToAmountBridge('');
             }
         }
 
@@ -126,7 +144,7 @@ const Bridge: React.FC = () => {
             valid = false;
             clearInterval(interval);
         }
-    }, [fromAmount, fromToken, fromChain, toToken]);
+    }, [fromAmountBridge, fromTokenBridge, fromChainBridge, toTokenBridge]);
    
 
     return (
@@ -143,17 +161,17 @@ const Bridge: React.FC = () => {
                 <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--accent)" }}>
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-sm" style={{ color: "var(--higherlight)" }}>
-                        From ({availableChains.find((c) => c.id === fromChain)?.name})
+                        From ({availableChains.find((c) => c.id === fromChainBridge)?.name})
                         </span>
                         <button
                         onClick={() => setIsFromModalOpen(true)}
                         className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-md"
                         >
-                        {fromToken.logoURI && (
-                            <img src={fromToken.logoURI} alt={fromToken.symbol} className="w-6 h-6" />
+                        {fromTokenBridge.logoURI && (
+                            <img src={fromTokenBridge.logoURI} alt={fromTokenBridge.symbol} className="w-6 h-6" />
                         )}
                         <span className="text-lg font-medium" style={{ color: "var(--primary)" }}>
-                            {fromToken.symbol}
+                            {fromTokenBridge.symbol}
                         </span>
                         <svg
                             className="w-4 h-4 transition-colors duration-200"
@@ -171,8 +189,8 @@ const Bridge: React.FC = () => {
                         placeholder="0.0"
                         className="w-full bg-transparent text-2xl font-bold outline-none"
                         style={{ color: "var(--primary)" }}
-                        value={fromAmount}
-                        onChange={(e) => setFromAmount(e.target.value)}
+                        value={fromAmountBridge}
+                        onChange={(e) => setFromAmountBridge(e.target.value)}
                     />
                     <div className="w-full flex flex-row justify-between items-center content-center">
 
@@ -180,7 +198,7 @@ const Bridge: React.FC = () => {
                             ~${fromUsdValue.toFixed(2)}
                         </div>
                         <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                            Balance: 382.228
+                            Balance: {fromBalance != null ? parseFloat(fromBalance).toFixed(4) : '-'}
                         </div>
                     </div>
                 </div>
@@ -195,11 +213,11 @@ const Bridge: React.FC = () => {
                     onClick={() => setIsToModalOpen(true)}
                     className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-md"
                     >
-                    {toToken.logoURI && (
-                        <img src={toToken.logoURI} alt={toToken.symbol} className="w-6 h-6" />
+                    {toTokenBridge.logoURI && (
+                        <img src={toTokenBridge.logoURI} alt={toTokenBridge.symbol} className="w-6 h-6" />
                     )}
                     <span className="text-lg font-medium" style={{ color: "var(--primary)" }}>
-                        {toToken.symbol}
+                        {toTokenBridge.symbol}
                     </span>
                     <svg
                         className="w-4 h-4 transition-colors duration-200"
@@ -216,8 +234,8 @@ const Bridge: React.FC = () => {
                     type="number"
                     placeholder="0.0"
                     className={`w-full bg-transparent text-2xl font-bold outline-none hover:cursor-not-allowed transition duration-300 ${isFetchingBridge ? 'text-(--disabled)' : 'text-(--primary)'}`}
-                    value={toAmount}
-                    onChange={(e) => setToAmount(e.target.value)}
+                    value={toAmountBridge}
+                    onChange={(e) => setToAmountBridge(e.target.value)}
                     disabled={true}
                 />
                     <div className="w-full flex flex-row justify-between items-center content-center">
@@ -225,7 +243,7 @@ const Bridge: React.FC = () => {
                             ~${toUsdValue.toFixed(2)}
                         </div>
                         <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                            Balance: 382.228
+                            Balance: {toBalance != null ? parseFloat(toBalance).toFixed(4) : '-'}
                         </div>
                     </div>
                 </div>
@@ -248,7 +266,7 @@ const Bridge: React.FC = () => {
             {/* From Token Modal */}
             {isFromModalOpen && (
                 <FromTokenModal
-                currentChain={fromChain}
+                currentChain={fromChainBridge}
                 availableChains={availableChains}
                 sampleTokens={tokenLists}
                 onSelect={handleFromTokenSelect}

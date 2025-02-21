@@ -1,5 +1,5 @@
 import { Address, createPublicClient, formatUnits, http } from 'viem';
-import LTokenList from './lTokenList.json';
+import LTokenList from './LTokenList.json';
 import LTokenAbi from './LToken.abi.json';
 import { sonic } from 'viem/chains';
 import { getERC20Balance, getERC20Decimals } from '../utils/erc20Utils';

@@ -1,12 +1,22 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {getTokenList} from "../api/deBridge";
+import { getVaultAPR, getVaultPosition} from "../tools/ToolAPI";
+import Strategies from "../tools/strategies.json"
+import Providers from "../data/provider.json";
+import { sampleToTokens } from "../data/sonicTokens";
+import { useWallets } from "@privy-io/react-auth";
+// import {sonicTokens as sampleToTokens} from "../data/sonicTokens.tsx";
+import { getTokenPriceByAddresses } from "../tools/coingecko/getTokenPriceByAddresses";
 
 // Create a context
-const DataContext = createContext({ tokenLists: [], loading: true });
+const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {} });
 
 export const DataProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [tokenLists, setTokenLists] = useState<{ [chainId: string]: Token[] }>({});
+    const [aprList, setAprList] = useState({});
+    const [strategyList, setStrategyList] = useState<any[]>([]);
+    const [tokenPriceSonic, setTokenPriceSonic] = useState<any>({});
 
     function changeForm(data: { [chainId: string]: { [address: string]: Token } }) {
         const result: { [chainId: string]: Token[] } = {};
@@ -43,8 +53,96 @@ export const DataProvider = ({ children }) => {
         fetch();
     }, []);
 
+    const { wallets } = useWallets();
+
+    useEffect(() => {
+        async function fetchApr(type: string, address: string, name: string, provider: any, strategy: any) {
+            let apr = 0;
+            try {
+                apr = await getVaultAPR(name);
+            } catch {
+                console.log("error");
+            }
+            let position = 0;
+            if (wallets.length > 0) {
+                position = await getVaultPosition(wallets[0], name);
+            }
+            return {
+                type: provider.type,
+                name: strategy.name,
+                vault: strategy.vault,
+                token: sampleToTokens.find(
+                    (token) => token.address.toLowerCase() === address.toLowerCase()
+                ),
+                apr: apr,
+                "provider": Providers.filter((p) => p.name === provider.type)[0],
+                position: typeof position === "string" ? position : 0
+            };
+        }
+        
+        async function fetch() {
+            const promises: Promise<any>[] = [];
+            for (const provider of Strategies) {
+                for (const strategy of provider.lists) {
+                    promises.push(
+                        fetchApr(provider.type, strategy.token, strategy.name, provider, strategy)
+                    );
+                }
+            }
+            console.log("fethed");
+            // Wait for all fetchApr promises to resolve
+            const finalizedData = await Promise.all(promises);
+            // Save the finalized data into strategyList
+            setStrategyList(finalizedData);
+            console.log("finalizedData", finalizedData);
+        }
+        
+
+        fetch();
+
+        // const interval = setInterval(() => {
+        //     fetch();
+        // }, 20000);
+
+        // return () => clearInterval(interval);
+    }, [wallets.length]);
+
+    useEffect(() => {
+        async function fetch() {
+            const tokenAddressList = [];
+            for (const token of sampleToTokens) {
+                tokenAddressList.push(token.address);
+            }
+
+            const price = await getTokenPriceByAddresses(tokenAddressList);
+
+            const result: { [address: string]: any } = {};
+            for (let i = 0; i < tokenAddressList.length; i++) {
+                result[tokenAddressList[i]] = price[i];
+            }
+            
+            console.log("token price", result);
+            setTokenPriceSonic(result);
+        }
+
+        // fetch every 1 minute
+        fetch();
+
+        const interval = setInterval(() => {
+            fetch();
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        if (Object.keys(tokenLists).length === 4) {
+            setLoading(false);
+        }
+    }, [tokenLists]);
+
     return (
-        <DataContext.Provider value={{ tokenLists, loading }}>
+        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic }}>
             {children}
         </DataContext.Provider>
     );

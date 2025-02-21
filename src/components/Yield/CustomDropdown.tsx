@@ -35,11 +35,11 @@ export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens
   
     // Filter tokens by searchTerm
     const filteredTokens = tokens.filter((t) =>
-        t.ticker.toLowerCase().includes(searchTerm.toLowerCase()) || t.name.toLowerCase().includes(searchTerm.toLowerCase())
+        t.symbol.toLowerCase().includes(searchTerm.toLowerCase()) || t.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   
     return (
-        <div className="ml-2 relative w-72 p-2" ref={dropdownRef}>
+        <div className="ml-2 relative w-96 p-2" ref={dropdownRef}>
             {/* Dropdown trigger */}
             <div
             onClick={toggleDropdown}
@@ -54,8 +54,8 @@ export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens
             {/* Dropdown menu */}
             {isOpen && (
             <div
-                className={`p-2 absolute left-0 top-full mt-1 w-full border-2 border-[var(--divider)] 
-                rounded-xl shadow-lg bg-[var(--secondary)] animate-fadeIn`}
+                className={`p-2 h-96 absolute left-0 top-full mt-1 w-full border-2 border-[var(--divider)] 
+                rounded-xl shadow-lg bg-[var(--secondary)] animate-fadeIn  overflow-scroll`}
             >
                 {/* Search box */}
                 <input
@@ -68,8 +68,9 @@ export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens
                 />
     
                 {/* Token list */}
+                <div className="w-full h-full">
                 {filteredTokens.map((token) => {
-                    const isSelected = selectedTokens.includes(token.ticker);
+                    const isSelected = selectedTokens.includes(token.symbol);
                     return (
                         <label
                         key={token.value}
@@ -79,14 +80,14 @@ export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens
                         >
                             <div className="flex items-center">
                                 <img
-                                    src={token.image_url}
+                                    src={token.logoURI}
                                     alt={token.name}
                                     className="w-10 h-10 ml-2 mr-2"
                                 />
                                 <div>
                                     <div className="flex flex-row items-center gap-2">
                                         <span className="text-lg">
-                                        {token.ticker}
+                                        {token.symbol}
                                         </span>
                                     </div>
                                     <small className="text-[var(--highlight)] text-md">
@@ -97,13 +98,14 @@ export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens
                             <input
                                 type="checkbox"
                                 checked={isSelected}
-                                onChange={() => handleSelect(token.ticker)}
+                                onChange={() => handleSelect(token.symbol)}
                                 className="form-checkbox h-5 w-5 !accent-[var(--highlight)]
                                         !focus:ring-[var(--focus)] rounded-full"
                             />
                         </label>
                     );
                 })}
+                </div>
             </div>
             )}
         </div>

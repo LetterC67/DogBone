@@ -7,10 +7,12 @@ import Bridge from './components/Bridge/Bridge';
 import { AllTools } from './tools/AllTools';
 import {DataProvider} from './context/DataContext';
 import { StrictMode } from 'react';
+import { ControlProvider } from './context/ControlContext';
 
 function App() {
 	return (
 		<StrictMode>
+			<ControlProvider>
 			<DataProvider>
 			<BrowserRouter>
 				<div className="h-screen w-screen flex-row flex">
@@ -32,6 +34,7 @@ function App() {
 				</div>
 			</BrowserRouter>
 			</DataProvider>
+			</ControlProvider>
 		</StrictMode>
   	)
 }
