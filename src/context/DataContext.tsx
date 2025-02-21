@@ -56,6 +56,9 @@ export const DataProvider = ({ children }) => {
     const { wallets } = useWallets();
 
     useEffect(() => {
+        let valid = true;
+        let cnt = 0;
+
         async function fetchApr(type: string, address: string, name: string, provider: any, strategy: any) {
             let apr = 0;
             try {
@@ -64,9 +67,16 @@ export const DataProvider = ({ children }) => {
                 console.log("error");
             }
             let position = 0;
+            console.log("fetching apr", name);
             if (wallets.length > 0) {
-                position = await getVaultPosition(wallets[0], name);
+                try {
+                    position = await getVaultPosition(wallets[0], name);
+                } catch {
+                    position = 0;
+                }
             }
+            cnt += 1;
+            console.log("position", position,  typeof position, wallets.length, cnt);
             return {
                 type: provider.type,
                 name: strategy.name,
@@ -76,7 +86,7 @@ export const DataProvider = ({ children }) => {
                 ),
                 apr: apr,
                 "provider": Providers.filter((p) => p.name === provider.type)[0],
-                position: typeof position === "string" ? position : 0
+                position: position
             };
         }
         
@@ -92,12 +102,14 @@ export const DataProvider = ({ children }) => {
             console.log("fethed");
             // Wait for all fetchApr promises to resolve
             const finalizedData = await Promise.all(promises);
+            console.log("DONE NOW ", valid);
             // Save the finalized data into strategyList
-            setStrategyList(finalizedData);
+            if (valid)
+                setStrategyList(finalizedData);
             console.log("finalizedData", finalizedData);
         }
         
-
+        console.log("RUN NOW", wallets.length);
         fetch();
 
         // const interval = setInterval(() => {
@@ -105,6 +117,9 @@ export const DataProvider = ({ children }) => {
         // }, 20000);
 
         // return () => clearInterval(interval);
+        return () => {
+            valid = false;
+        };
     }, [wallets.length]);
 
     useEffect(() => {

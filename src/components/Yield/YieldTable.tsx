@@ -172,7 +172,12 @@ function YieldTable() {
                                                     {element.position == 0 ? '0' : parseFloat(element.position).toFixed(4)} 
                                                 </span>
                                                 <span className="text-sm text-(--highlight) font-light">
-                                                    ~${element.position == 0 ? '0' : (parseFloat(element.position) * tokenPriceSonic[element.token.address] ? tokenPriceSonic[element.token.address] : 0).toFixed(3)
+                                                    ~${
+                                                    element.position == 0 ? 
+                                                    '0' 
+                                                    : 
+                                                    tokenPriceSonic[element.token.address] 
+                                                    ? (parseFloat(element.position) * tokenPriceSonic[element.token.address]).toFixed(3) : 0
                                                     } 
                                                 </span>
                                             </div>
