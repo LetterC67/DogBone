@@ -29,6 +29,21 @@ import { getRingsFuncSelector } from './rings/getRingsFuncSelector';
 import { getSiloFuncSelector } from './silo/getSiloFuncSelector';
 import { getLTokenFuncSelector } from './yel/getLTokenFuncSelector';
 import { depositDogBone_Bone1 } from './dogbone/dogbone_silo_st_s_st_looping/Deposit_DogBone_Bone1';
+import { NATIVE_TOKEN } from './constants';
+
+const notLeveraged = (strategy: string, amount: string) => {
+  return {
+    leverage: BigInt(0),
+    flashAmount: BigInt(0),
+    swapFlashloan: {
+      fromToken: NATIVE_TOKEN,
+      fromAmount: BigInt(0),
+      router: NATIVE_TOKEN,
+      data: NATIVE_TOKEN,
+      value: BigInt(0)
+    }
+  };
+}
 
 export const strategyFunctions = {
   beefy: {
@@ -36,48 +51,56 @@ export const strategyFunctions = {
     viewAPR: getBeefyIchiAPR,
     viewPosition: viewBeefyIchiLPPosition,
     funcSelector: getBeefyIchiFuncSelector,
+    leverage: notLeveraged
   },
   ichi: {
     deposit: depositIchi,
     viewAPR: getIchiAPR,
     viewPosition: viewIchiPosition,
     funcSelector: getIchiFuncSelector,
+    leverage: notLeveraged
   },
   LST: {
     deposit: depositLST,
     viewAPR: getLSTAPY,
     viewPosition: viewLSTPosition,
     funcSelector: getLSTFuncSelector,
+    leverage: notLeveraged
   },
   MachFi: {
     deposit: depositMachFi,
     viewAPR: getMachFiAPR,
     viewPosition: viewMachFiPosition,
     funcSelector: getMachFiFuncSelector,
+    leverage: notLeveraged
   },
   rings: {
     deposit: depositRingsSC,
     viewAPR: viewRingsAPR,
     viewPosition: viewRingsPosition,
     funcSelector: getRingsFuncSelector,
+    leverage: notLeveraged
   },
   silo: {
     deposit: depositSilo,
     viewAPR: getSiloAPR,
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged
   },
   yel: {
     deposit: DepositLToken,
     viewAPR: getLTokenAPY,
     viewPosition: viewLTokenPosition,
     funcSelector: getLTokenFuncSelector,
+    leverage: notLeveraged
   },
   Bone1: {
     deposit: depositDogBone_Bone1,
     viewAPR: getLTokenAPY,
     viewPosition: viewLTokenPosition,
     funcSelector: getLTokenFuncSelector,
+    leverage: notLeveraged
   }
 };
 
