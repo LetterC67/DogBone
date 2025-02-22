@@ -8,11 +8,28 @@ import { AllTools } from './tools/AllTools';
 import {DataProvider} from './context/DataContext';
 import { StrictMode } from 'react';
 import { ControlProvider } from './context/ControlContext';
+import { AgentProvider } from './context/AgentContext';
+import FullChat from './components/Chat/FullChat';
+import MiniChat from './components/Chat/MiniChat';
+
+function IntegrateMiniChat({element}: {element: JSX.Element}) {
+	return (
+		<div className="h-screen w-full flex flex-col">
+			<div className='flex-1 h-1'>
+				{element}
+			</div>
+			<div className='flex flex-col items-center w-full p-6'>
+				<MiniChat></MiniChat>
+			</div>
+		</div>
+	)
+}
 
 function App() {
 	return (
 		<StrictMode>
 			<ControlProvider>
+				<AgentProvider>
 			<DataProvider>
 			<BrowserRouter>
 				<div className="h-screen w-screen flex-row flex">
@@ -21,19 +38,22 @@ function App() {
 					</div>
 					<div className="w-5/6 h-full">
 							<Routes>
-								<Route path="/">
-
+								<Route path="/" element={<FullChat></FullChat>}>
+									
 								</Route>
-								<Route path="/yield" element={<Yield></Yield>}/>
-								
-							<Route path="/swap" element={<Swap/>}/>
-							<Route path="/bridge" element={<Bridge/>}></Route>
-							<Route path="/alltools" element={<AllTools/>}></Route>
 							</Routes>
+							<Routes>
+								<Route path="/yield" element={<IntegrateMiniChat element={<Yield/>}/>}/>	
+								<Route path="/swap" element={<IntegrateMiniChat element={<Swap/>}/>} />
+								<Route path="/bridge"element={<IntegrateMiniChat element={<Bridge/>}/>}></Route>
+								<Route path="/alltools" element={<AllTools/>}></Route>
+							</Routes>
+								
 					</div>
 				</div>
 			</BrowserRouter>
 			</DataProvider>
+				</AgentProvider>
 			</ControlProvider>
 		</StrictMode>
   	)

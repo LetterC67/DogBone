@@ -14,7 +14,7 @@ function Yield() {
                     {/* <div className='w-3/5 pl-6'>
                         <Navbar />  
                     </div> */}
-                    <div className="h-2/3 w-7/10 bg-(--secondary) rounded-lg  border-2 border-(--divider)">
+                    <div className="h-4/5 w-7/10 bg-(--secondary) rounded-lg  border-2 border-(--divider)">
                         <YieldTable />
                     </div>
                 </div>
