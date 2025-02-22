@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import LTokenList from './lTokenList.json';
+import LTokenList from './LTokenList.json';
 
 interface LTokenConfig {
   name: string;

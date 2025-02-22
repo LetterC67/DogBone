@@ -2,7 +2,7 @@ const URL = "https://api.odos.xyz"
 
 async function getQuote({ inputToken, outputToken, inputAmount }: { inputToken: string, outputToken: string, inputAmount: string }) {
     const quote_url = `${URL}/sor/quote/v2`;
-    console.log(inputToken, outputToken, inputAmount);
+    // console.log(inputToken, outputToken, inputAmount);
     const body = {
         "chainId": 146,
         "inputTokens": [

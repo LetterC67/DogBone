@@ -26,7 +26,7 @@ function Sidebar() {
                 console.log("hello");
             }
         }
-      }, [ready, wallets]);
+      }, [ready, wallets.length]);
 
     return (
         <>

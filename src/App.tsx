@@ -6,30 +6,38 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Bridge from './components/Bridge/Bridge';
 import { AllTools } from './tools/AllTools';
 import { Testing } from './tools/Testing';
+import {DataProvider} from './context/DataContext';
+import { StrictMode } from 'react';
+import { ControlProvider } from './context/ControlContext';
 
 function App() {
 	return (
-		<BrowserRouter>
-			<div className="h-screen w-screen flex-row flex">
-				<div className="w-1/8 h-full text-lg font-bold">
-					<Sidebar></Sidebar>
-				</div>
-				<div className="w-7/8 h-full">
-						<Routes>
-							<Route path="/">
+		<StrictMode>
+			<ControlProvider>
+			<DataProvider>
+			<BrowserRouter>
+				<div className="h-screen w-screen flex-row flex">
+					<div className="w-1/6 h-full text-lg font-bold">
+						<Sidebar></Sidebar>
+					</div>
+					<div className="w-5/6 h-full">
+							<Routes>
+								<Route path="/">
 
-							</Route>
-							<Route path="/yield" element={<Yield></Yield>}/>
-							
+								</Route>
+								<Route path="/yield" element={<Yield></Yield>}/>
 								
 							<Route path="/swap" element={<Swap/>}/>
 							<Route path="/bridge" element={<Bridge/>}></Route>
 							<Route path="/alltools" element={<AllTools/>}></Route>
 							<Route path="/test" element={<Testing/>}></Route>
 						</Routes>
+          </div>
 				</div>
-			</div>
-		</BrowserRouter>
+			</BrowserRouter>
+			</DataProvider>
+			</ControlProvider>
+		</StrictMode>
   	)
 }
 

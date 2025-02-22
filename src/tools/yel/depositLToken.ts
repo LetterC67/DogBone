@@ -1,7 +1,7 @@
 import { ConnectedWallet } from '@privy-io/react-auth';
 import { Address, createPublicClient, custom, encodeFunctionData, parseUnits } from 'viem';
 import { sonic } from 'viem/chains';
-import LTokenList from './lTokenList.json';
+import LTokenList from './LTokenList.json';
 import LTokenAbi from "./LToken.abi.json"
 import { approveERC20, checkNeedApproval, getERC20Balance, getERC20Decimals } from '../utils/erc20Utils';
 

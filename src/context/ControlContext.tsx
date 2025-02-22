@@ -1,0 +1,136 @@
+import { createContext, useContext, useState } from "react";
+import { sampleToTokens } from "../components/Bridge/sampleToTokens";
+import { sampleFromTokens } from "../components/Bridge/sampleFromTokens";
+import TokenList from "../components/Swap/TokenList"
+
+const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
+    address,
+    name: tokenData.name,
+    symbol: tokenData.symbol,
+    decimals: tokenData.decimals,
+    assetId: tokenData.assetId,
+    assetType: tokenData.assetType,
+    protocolId: tokenData.protocolId,
+    isRebasing: tokenData.isRebasing,
+    icon: tokenData.img,
+    balance: 1000, // Dummy balance for demonstration
+  }));
+
+const ControlContext = createContext({
+    stategyTab: "",
+    setStrategyTab: (tab: string) => {},
+    strategyAmount: "",
+    setStrategyAmount: (amount: string) => {},
+    strategyToken: null,
+    setStrategyToken: (token: any) => {},
+    strategy: {},
+    setStrategy: (strategy: any) => {},
+    isInStrategyTab: false,
+    setIsInStrategyTab: (isIn: boolean) => {},
+    showOnlyDeposited: false,
+    setShowOnlyDeposited: (show: boolean) => {},
+    fromChainBridge: "",
+    setFromChainBridge: (chain: string) => {},
+    fromTokenBridge: {},
+    setFromTokenBridge: (token: any) => {},
+    fromAmountBridge: "",
+    setFromAmountBridge: (amount: string) => {},
+    toTokenBridge: {},
+    setToTokenBridge: (token: any) => {},
+    toAmountBridge: "",
+    setToAmountBridge: (amount: string) => {},
+    fromTokenSwap: {},
+    setFromTokenSwap: (token: any) => {},
+    toTokenSwap: {},
+    setToTokenSwap: (token: any) => {},
+    fromAmountSwap: "",
+    setFromAmountSwap: (amount: string) => {},
+    toAmountSwap: "",
+    setToAmountSwap: (amount: string) => {}
+})
+
+export const ControlProvider = ({ children }: { children: React.ReactNode }) => {
+    const [strategyTab, setStrategyTab] = useState<string>("Deposit");
+    const [strategyAmount, setStrategyAmount] = useState<string>("");
+    const [strategyToken, setStrategyToken] = useState<any>({
+        "address": "0x0000000000000000000000000000000000000000",
+        "name": "Sonic",
+        "symbol": "S",
+        "decimals": 18,
+        "assetId": "sonic",
+        "assetType": "sonic",
+        "protocolId": "native",
+        "isRebasing": false,
+        "icon": "https://sonicscan.org/assets/sonic/images/svg/logos/token-light.svg?v=25.2.1.0"
+    });
+    const [strategy, setStrategy] = useState<any>(
+        {
+            "type": "rings",
+            "name": "Rings stkscUSD Vault",
+            "vault": "0x5e39021Ae7D3f6267dc7995BB5Dd15669060DAe0",
+            "token": {
+              "symbol": "scUSD",
+              "name": "Sonic USD",
+              "decimals": 6,
+              "address": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+              "logoURI": "https://tokens.debridge.finance/Logo/100000014/0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae/small/token-logo.png",
+              "tags": [],
+              "eip2612": false
+            },
+            "apr": 5
+        }
+    );
+    const [isInStrategyTab, setIsInStrategyTab] = useState<boolean>(false);
+    const [showOnlyDeposited, setShowOnlyDeposited] = useState<boolean>(false);
+
+    const [fromChainBridge, setFromChainBridge] = useState<string>("eth");
+    const [fromTokenBridge, setFromTokenBridge] = useState<Token>(sampleFromTokens["eth"][0]);
+    const [fromAmountBridge, setFromAmountBridge] = useState<string>("");
+    // "To" side state: chain is fixed to Sonic; user may select any Sonic token
+    const [toTokenBridge, setToTokenBridge] = useState<Token>(sampleToTokens[0]);
+    const [toAmountBridge, setToAmountBridge] = useState<string>("");
+
+    const [fromTokenSwap, setFromTokenSwap] = useState<Token>(tokens[0]);
+    const [toTokenSwap, setToTokenSwap] = useState<Token>(tokens[1]);
+    const [fromAmountSwap, setFromAmountSwap] = useState<string>('');
+    const [toAmountSwap, setToAmountSwap] = useState<string>('');
+
+    return (
+        <ControlContext.Provider value={{
+            strategyTab,
+            setStrategyTab,
+            strategyAmount,
+            setStrategyAmount,
+            strategyToken,
+            setStrategyToken,
+            strategy,
+            setStrategy,
+            isInStrategyTab,
+            setIsInStrategyTab,
+            showOnlyDeposited,
+            setShowOnlyDeposited,
+            fromChainBridge,
+            setFromChainBridge,
+            fromTokenBridge,
+            setFromTokenBridge,
+            fromAmountBridge,
+            setFromAmountBridge,
+            toTokenBridge,
+            setToTokenBridge,
+            toAmountBridge,
+            setToAmountBridge,
+            fromTokenSwap,
+            setFromTokenSwap,
+            toTokenSwap,
+            setToTokenSwap,
+            fromAmountSwap,
+            setFromAmountSwap,
+            toAmountSwap,
+            setToAmountSwap
+        }}>
+            {children}
+        </ControlContext.Provider>
+    )
+}
+
+export const useControl = () => useContext(ControlContext);
