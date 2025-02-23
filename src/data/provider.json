@@ -33,5 +33,15 @@
         "name": "yel",
         "full_name": "Yel Finance",
         "img": "https://s2.coinmarketcap.com/static/img/coins/64x64/11301.png"
+    },
+    {
+        "name": "Bone1",
+        "full_name": "Dog Bone 1",
+        "img": "https://i.ibb.co/X9xZZ65/DALL-E-2025-02-23-15-29-16-A-minimalist-logo-design-of-a-dog-bone-with-a-cryptocurrency-theme-The-bo.webp"
+    },
+    {
+        "name": "Bone2",
+        "full_name": "Dog Bone 2",
+        "img": "https://i.ibb.co/X9xZZ65/DALL-E-2025-02-23-15-29-16-A-minimalist-logo-design-of-a-dog-bone-with-a-cryptocurrency-theme-The-bo.webp" 
     }
 ]

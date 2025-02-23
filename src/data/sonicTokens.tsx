@@ -271,6 +271,15 @@ const sampleToTokensData: { [address: string]: Token } = {
     "logoURI": "https://sonicscan.org/token/images/yoko_32.png",
     "tags": [],
     "eip2612": false
+  },
+  "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1": {
+    "symbol": "wOS",
+    "name": "Wrapped Origin Sonic",
+    "decimal": 18,
+    "address": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1",
+    "logoURI": "https://sonicscan.org/token/images/wos_64.svg",
+    "tags": [],
+    "eip2612": false
   }
 };
 

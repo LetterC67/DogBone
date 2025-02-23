@@ -34,5 +34,5 @@ export async function getBone1APY() {
         args: [BORROW_VAULT],
     })) as bigint;
 
-    return formatUnits((depositAPR + stSAPR) * LEVERAGE - borrowAPR * (LEVERAGE - BigInt(1)), 16);
+    return Number(formatUnits((depositAPR + stSAPR) * LEVERAGE - borrowAPR * (LEVERAGE - BigInt(1)), 16));
 }
