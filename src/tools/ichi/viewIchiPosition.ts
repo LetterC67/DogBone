@@ -100,12 +100,10 @@ export async function viewIchiPosition({
       swpxReward: formatUnits(reward, 18),
     };
   } catch (error) {
-    console.log('Error: ', error);
     return {
       total0: 0,
       total1: 0,
       swpxReward: reward,
     };
-    return 0;
   }
 }
