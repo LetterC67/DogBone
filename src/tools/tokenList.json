@@ -15,6 +15,15 @@
     "tokens": [
       {
         "chainId": 1,
+        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+      },
+
+      {
+        "chainId": 1,
         "address": "0x111111111117dC0aa78b770fA6A738034120C302",
         "name": "1inch",
         "symbol": "1INCH",
