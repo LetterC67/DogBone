@@ -313,5 +313,15 @@
                 "token": "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955"
             }
         ]
+    },
+    {
+        "type": "Bone2",
+        "lists": [
+            {
+                "name": "Bone 2 - Silo wOS - S (wOS deposit) looping 9x leverage",
+                "vault": "0x1d7E3726aFEc5088e11438258193A199F9D5Ba93",
+                "token": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1"
+            }
+        ]
     }
 ]

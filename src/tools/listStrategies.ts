@@ -30,6 +30,7 @@ import { getSiloFuncSelector } from './silo/getSiloFuncSelector';
 import { getLTokenFuncSelector } from './yel/getLTokenFuncSelector';
 import { depositDogBone_Bone1 } from './dogbone/dogbone_silo_st_s_st_looping/Deposit_DogBone_Bone1';
 import { NATIVE_TOKEN } from './constants';
+import { depositDogBone_Bone2 } from './dogbone/dogbone_silo_wos_s_wos_looping/deposit_DogBone_Bone2';
 
 const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -98,6 +99,13 @@ export const strategyFunctions = {
   },
   Bone1: {
     deposit: depositDogBone_Bone1,
+    viewAPR: getLTokenAPY,
+    viewPosition: viewLTokenPosition,
+    funcSelector: getLTokenFuncSelector,
+    leverage: notLeveraged
+  },
+  Bone2: {
+    deposit: depositDogBone_Bone2,
     viewAPR: getLTokenAPY,
     viewPosition: viewLTokenPosition,
     funcSelector: getLTokenFuncSelector,
