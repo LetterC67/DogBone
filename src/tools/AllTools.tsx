@@ -26,6 +26,7 @@ import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
 import { viewIchiPosition } from './ichi/viewIchiPosition';
 import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap } from './ToolAPI';
+import { getTokenAddressBySymbol } from './getTokenAddressBySymbol.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -363,6 +364,15 @@ export const AllTools = () => {
           )}
         >
          Bridge 0.1 USDT from Polygon to deposit into Silo USDC.e (Market id 20) strategy
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => console.log(getTokenAddressBySymbol(
+            "scUSD",
+            146
+          ))}
+        >
+          Get token address by symbol
         </button>
       </div>
     </div>
