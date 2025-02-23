@@ -102,15 +102,15 @@ export const strategyFunctions = {
   Bone1: {
     deposit: depositDogBone_Bone1,
     viewAPR: getBone1APY,
-    viewPosition: viewLTokenPosition,
-    funcSelector: viewSiloPosition,
+    viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector,
     leverage: notLeveraged
   },
   Bone2: {
     deposit: depositDogBone_Bone2,
     viewAPR: getBone2APY,
     viewPosition: viewSiloPosition,
-    funcSelector: getLTokenFuncSelector,
+    funcSelector: getSiloFuncSelector,
     leverage: notLeveraged
   }
 };
