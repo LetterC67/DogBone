@@ -12,6 +12,7 @@ import { swap } from '../../tools/swap/swap'
 import useFetchBalance from '../../hooks/useFetchBalance'
 import Spinner from '../../components/Common/Spinner';
 import { useControl } from '../../context/ControlContext';
+import MiniChat from '../Chat/MiniChat';
 
 // Convert the TokenList object into an array of tokens
 const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({

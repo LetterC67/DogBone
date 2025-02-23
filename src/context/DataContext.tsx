@@ -112,13 +112,14 @@ export const DataProvider = ({ children }) => {
         console.log("RUN NOW", wallets.length);
         fetch();
 
-        // const interval = setInterval(() => {
-        //     fetch();
-        // }, 20000);
+        const interval = setInterval(() => {
+            fetch();
+        }, 60000);
 
-        // return () => clearInterval(interval);
+        // return () => ;
         return () => {
             valid = false;
+            clearInterval(interval);
         };
     }, [wallets.length]);
 
