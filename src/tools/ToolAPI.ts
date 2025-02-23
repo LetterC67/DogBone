@@ -159,6 +159,8 @@ export async function zap(
 
   console.log('Transaction ODOS:', transaction);
 
+  const leverage = strategyFunction.leverage(toStrategy, amount);
+  console.log('Leverage:', leverage);
   const args = [
     {
       fromToken: fromToken,
@@ -173,6 +175,7 @@ export async function zap(
       amount: BigInt(0),
       receiver: userAddr,
       funcSelector: await strategyFunction.funcSelector(vault),
+      ...leverage,
     },
   ];
 
@@ -187,8 +190,10 @@ export async function zap(
   const transactionRequest = {
     to: ZAP_CONTRACT,
     data: transactionData,
-    value: fromToken === NATIVE_TOKEN ? parsedAmountIn : '0',
+    value: fromToken === NATIVE_TOKEN ? parsedAmountIn : BigInt(0),
   };
+
+  console.log('Transaction Request:', transactionRequest);
 
   try {
     const transactionHash = await provider.request({

@@ -5,6 +5,7 @@ import Swap from "./components/Swap/Swap"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Bridge from './components/Bridge/Bridge';
 import { AllTools } from './tools/AllTools';
+import { Testing } from './tools/Testing';
 import {DataProvider} from './context/DataContext';
 import { StrictMode } from 'react';
 import { ControlProvider } from './context/ControlContext';
@@ -47,6 +48,7 @@ function App() {
 								<Route path="/swap" element={<IntegrateMiniChat element={<Swap/>}/>} />
 								<Route path="/bridge"element={<IntegrateMiniChat element={<Bridge/>}/>}></Route>
 								<Route path="/alltools" element={<AllTools/>}></Route>
+								<Route path="/test" element={<Testing/>}></Route>
 							</Routes>
 								
 					</div>

@@ -28,6 +28,26 @@ import { getMachFiFuncSelector } from './machfi/getMachFiFuncSelector';
 import { getRingsFuncSelector } from './rings/getRingsFuncSelector';
 import { getSiloFuncSelector } from './silo/getSiloFuncSelector';
 import { getLTokenFuncSelector } from './yel/getLTokenFuncSelector';
+import { depositDogBone_Bone1 } from './dogbone/dogbone_silo_st_s_st_looping/Deposit_DogBone_Bone1';
+import { NATIVE_TOKEN } from './constants';
+import { depositDogBone_Bone2 } from './dogbone/dogbone_silo_wos_s_wos_looping/deposit_DogBone_Bone2';
+import { getBone1APY } from './dogbone/dogbone_silo_st_s_st_looping/getBone1APY';
+import { getBone2APY } from './dogbone/dogbone_silo_wos_s_wos_looping/getBone2APY';
+
+const notLeveraged = (strategy: string, amount: string) => {
+  return {
+    leverage: BigInt(0),
+    flashAmount: BigInt(0),
+    isProtected: false,
+    swapFlashloan: {
+      fromToken: NATIVE_TOKEN,
+      fromAmount: BigInt(0),
+      router: NATIVE_TOKEN,
+      data: NATIVE_TOKEN,
+      value: BigInt(0)
+    }
+  };
+}
 
 export const strategyFunctions = {
   beefy: {
@@ -35,43 +55,64 @@ export const strategyFunctions = {
     viewAPR: getBeefyIchiAPR,
     viewPosition: viewBeefyIchiLPPosition,
     funcSelector: getBeefyIchiFuncSelector,
+    leverage: notLeveraged
   },
   ichi: {
     deposit: depositIchi,
     viewAPR: getIchiAPR,
     viewPosition: viewIchiPosition,
     funcSelector: getIchiFuncSelector,
+    leverage: notLeveraged
   },
   LST: {
     deposit: depositLST,
     viewAPR: getLSTAPY,
     viewPosition: viewLSTPosition,
     funcSelector: getLSTFuncSelector,
+    leverage: notLeveraged
   },
   MachFi: {
     deposit: depositMachFi,
     viewAPR: getMachFiAPR,
     viewPosition: viewMachFiPosition,
     funcSelector: getMachFiFuncSelector,
+    leverage: notLeveraged
   },
   rings: {
     deposit: depositRingsSC,
     viewAPR: viewRingsAPR,
     viewPosition: viewRingsPosition,
     funcSelector: getRingsFuncSelector,
+    leverage: notLeveraged
   },
   silo: {
     deposit: depositSilo,
     viewAPR: getSiloAPR,
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged
   },
   yel: {
     deposit: DepositLToken,
     viewAPR: getLTokenAPY,
     viewPosition: viewLTokenPosition,
     funcSelector: getLTokenFuncSelector,
+    leverage: notLeveraged
   },
+  Bone1: {
+    deposit: depositDogBone_Bone1,
+    viewAPR: getBone1APY,
+    viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged
+  },
+  Bone2: {
+    deposit: depositDogBone_Bone2,
+    viewAPR: getBone2APY,
+    viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged
+  }
 };
 
 export const nameToTypeMapping: Record<string, string> = {};
