@@ -21,10 +21,12 @@ import {
   getERC20Decimals,
 } from './utils/erc20Utils';
 import ZapAbi from './zap.abi.json';
-import { NATIVE_TOKEN, ZAP_CONTRACT } from './constants';
+import { NATIVE_TOKEN, SONIC_POINTS_APR, ZAP_CONTRACT } from './constants';
 import { bridge } from './bridge/bridge';
+import Strategies from './strategies.json';
 
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
+const stragies = JSON.parse(JSON.stringify(Strategies));
 
 export async function depositVault(
   walletClient: ConnectedWallet,
@@ -58,6 +60,15 @@ export async function getVaultAPR(strategyName: string): Promise<number> {
   const { vault } = nameToConfigMapping[strategyName];
 
   return strategyFunction.viewAPR(vault);
+}
+
+export function getVaultPointsAPR(strategyName: string) {
+  const { points } = nameToConfigMapping[strategyName];
+  return points * SONIC_POINTS_APR;
+}
+
+export async function getVaultTotalAPR(strategyName: string) {
+  return (await getVaultAPR(strategyName)) + getVaultPointsAPR(strategyName);
 }
 
 export async function getVaultPosition(

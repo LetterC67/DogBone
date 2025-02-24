@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {getTokenList} from "../api/deBridge";
-import { getVaultAPR, getVaultPosition} from "../tools/ToolAPI";
+import { getVaultAPR, getVaultPosition, getVaultPointsAPR, getVaultTotalAPR } from "../tools/ToolAPI";
 import Strategies from "../tools/strategies.json"
 import Providers from "../data/provider.json";
 import { sampleToTokens } from "../data/sonicTokens";

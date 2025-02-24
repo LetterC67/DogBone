@@ -128,16 +128,17 @@ strategies.forEach((strat) => {
 // Also add name to strategy config mapping
 export const nameToConfigMapping: Record<
   string,
-  { vault: Address; token: Address }
+  { vault: Address; token: Address, points: number }
 > = {};
 
 strategies.forEach((strat) => {
   strat.lists.forEach(
-    (item: { name: string; vault: string; token: string }) => {
+    (item: { name: string; vault: string; token: string; points: number }) => {
       if (item.name) {
         nameToConfigMapping[item.name] = {
           vault: item.vault as Address,
           token: item.token as Address,
+          points: item.points
         };
       }
     }
