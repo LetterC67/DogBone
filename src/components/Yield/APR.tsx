@@ -6,24 +6,25 @@ function APR({strategyApr, pointApr}: {strategyApr: string | number, pointApr: s
     const [isHovering, setIsHovering] = useState<boolean>(false);
 
     return (
-        <div>
-            <HiInformationCircle className="text-(--higherlight) hover:text-(--less-highlight) transition duration-300 hover:cursor-pointer" 
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-            ></HiInformationCircle>
+        
+            <div className='relative'>
+                <HiInformationCircle className="text-(--higherlight) hover:text-(--less-highlight) transition duration-300 hover:cursor-pointer" 
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                ></HiInformationCircle>
+                { isHovering && 
+                    <div className="absolute rounded-xl translate-x-5 -translate-y-1/2 mt-2 w-54 p-2 bg-(--accent-2) text-white rounded shadow-lg">
 
-            { isHovering && 
-                <div className="absolute translate-x-5 -translate-y-1/2 mt-2 w-48 p-2 bg-(--accent-2) text-white rounded shadow-lg">
+                        <div>
+                            <span>Strategy APR: {strategyApr.toFixed(2)}%</span>
+                        </div>
+                        <div>
+                            <span>Points APR: {pointApr.toFixed(2)}%</span>
+                        </div>
+                    </div>
+                }
 
-                    <div>
-                        <span>Strategy APR: {strategyApr}</span>
-                    </div>
-                    <div>
-                        <span>Points APR: {pointApr}</span>
-                    </div>
-                </div>
-            }
-        </div>
+            </div>
     );
 }
 

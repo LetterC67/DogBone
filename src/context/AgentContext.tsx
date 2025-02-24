@@ -4,7 +4,7 @@ import { useControl } from "./ControlContext";
 import { getTokenAddressBySymbol } from "../tools/utils/getTokenAddressBySymbol";
 import TokenList from "../tools/tokenList.json"
 import { toast } from "react-toastify";
-
+import { useData } from "./DataContext";
 
 const tokenList = JSON.parse(JSON.stringify(TokenList))
 
@@ -61,8 +61,16 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setFromAmountBridge,
         setFromTokenBridge,
         setToTokenBridge,
-        setFromChainBridge
+        setFromChainBridge,
+        setIsInStrategyTab,
+        setStrategyAmount,
+        setStrategyToken,
+        setStrategy,
     } = useControl();
+
+    const {
+        strategyList
+    } = useData();
 
     function isActionCode(code: string) {
         const actionMethod = ['__SWAP__', '__DEPOSIT__', '__BRIDGE__'];
@@ -132,6 +140,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await __MESSAGE__("Swapped successfully!")
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(1);
+                    setResolve(null);
                 }
             );
             setReject(() => 
@@ -140,6 +149,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await __MESSAGE__("Swap failed!");
                     await new Promise(r => setTimeout(r, 2000));
                     reject(1);
+                    setReject(null);
                 });
         });
     }
@@ -201,6 +211,71 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     setReject(null);
                 });
         });
+    }
+
+    async function __DEPOSIT__(inputToken, inputChain, amount, strategyName, message) {
+        console.log(`Depositing ${amount} ${inputToken} to ${strategyName}`);
+
+        let inp = null;
+
+        if (inputToken != null) {
+            inp = await getTokenBySymbol(inputToken, inputChain);
+            if (!inp) {
+                __MESSAGE__(`Cannot find token ${inputToken}`);
+                throw new Error(`Cannot find token ${inputToken}`);
+            }
+        }
+
+        if (inputChain == null) inputChain = 146;
+        // console.log(strategyList);
+
+        const strategy = strategyList.find((strategy) => strategy.name === strategyName);
+
+        if (!strategy) {
+            __MESSAGE__(`Cannot find strategy ${strategyName}`);
+            throw new Error(`Cannot find strategy ${strategyName}`);
+        }
+
+        // console.log(strategyToken);
+
+
+        setStrategyAmount(amount.toString());
+        setStrategyToken(inp);
+        setIsInStrategyTab(true);
+
+
+        setStrategy(strategy);
+
+        setCurrentAction('yield');
+        setCurrentNavigation('yield');
+
+        await __MESSAGE__(message);
+
+        const toastId = toast.loading("Waiting user to deposit...", {
+            closeOnClick: false, // Prevent closing on click
+            draggable: false, // Disable drag to dismiss
+        });
+
+        return new Promise((resolve, reject) => {
+            setResolve(() => 
+                async () => {
+                    toast.dismiss(toastId);
+                    await __MESSAGE__("Deposited successfully!")
+                    await new Promise(r => setTimeout(r, 2000));
+                    resolve(1);
+                    setResolve(null);
+                }
+            );
+            setReject(() => 
+                async () => {
+                    toast.dismiss(toastId);
+                    await __MESSAGE__("Deposit failed!");
+                    await new Promise(r => setTimeout(r, 2000));
+                    reject(1);
+                    setReject(null);
+                });
+        });
+
     }
 
     async function sendMessage(message: string) {

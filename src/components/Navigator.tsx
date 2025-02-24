@@ -10,7 +10,8 @@ function Navigator() {
 
     useEffect(() => {
         if ((currentNavigation == 'swap' && location.pathname != '/swap') || 
-            (currentNavigation == 'bridge' && location.pathname != '/bridge')
+            (currentNavigation == 'bridge' && location.pathname != '/bridge') ||
+            (currentNavigation == 'yield' && location.pathname != '/yield') 
         ) {
             toast.info('Navigate to ' + currentNavigation + ' page in 3 seconds', {
                 position: "top-center",
@@ -27,9 +28,11 @@ function Navigator() {
                     navigate('/swap');
                 else if (currentNavigation == 'bridge')
                     navigate('/bridge');
+                else if (currentNavigation == 'yield')
+                    navigate('/yield');
                 setCurrentNavigation('');
             }, 3000);
-        } else if (location.pathname == '/swap') {
+        } else if (location.pathname == '/swap' || location.pathname == '/bridge' || location.pathname == '/yield') {
             setCurrentNavigation('');
         }
     }, [currentNavigation, setCurrentNavigation]);

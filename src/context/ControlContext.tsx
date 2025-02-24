@@ -46,7 +46,9 @@ const ControlContext = createContext({
     fromAmountSwap: "",
     setFromAmountSwap: (amount: string) => {},
     toAmountSwap: "",
-    setToAmountSwap: (amount: string) => {}
+    setToAmountSwap: (amount: string) => {},
+    strategyChain: 146,
+    setStrategyChain: (chain: number) => {}
 })
 
 export const ControlProvider = ({ children }: { children: React.ReactNode }) => {
@@ -95,6 +97,8 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
     const [fromAmountSwap, setFromAmountSwap] = useState<string>('');
     const [toAmountSwap, setToAmountSwap] = useState<string>('');
 
+    const [strategyChain, setStrategyChain] = useState<number>(146);
+
     return (
         <ControlContext.Provider value={{
             strategyTab,
@@ -126,7 +130,9 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
             fromAmountSwap,
             setFromAmountSwap,
             toAmountSwap,
-            setToAmountSwap
+            setToAmountSwap,
+            strategyChain,
+            setStrategyChain
         }}>
             {children}
         </ControlContext.Provider>

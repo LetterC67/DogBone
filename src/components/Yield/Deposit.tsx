@@ -1,30 +1,16 @@
 import { useControl } from "../../context/ControlContext";
 import TokenModal from "./TokenModal";
-import TokenList from "./TokenList";
 import { useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import StrategyNavbar from "./StrategyNavbar";
-import { depositVault, zap } from "../../tools/ToolAPI";
+import { depositVault, zap, bridgeAndZap } from "../../tools/ToolAPI";
 import {ethers} from "ethers";
 import { FaArrowLeft, FaWallet } from "react-icons/fa";
 import Spinner from '../../components/Common/Spinner';
 import { useData } from "../../context/DataContext";
-import { getUserBalance } from "../../api/common";
+import { useAgent } from "../../context/AgentContext";
 import useFetchBalance  from "../../hooks/useFetchBalance";
-
-
-const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
-    address,
-    name: tokenData.name,
-    symbol: tokenData.symbol,
-    decimals: tokenData.decimals,
-    assetId: tokenData.assetId,
-    assetType: tokenData.assetType,
-    protocolId: tokenData.protocolId,
-    isRebasing: tokenData.isRebasing,
-    icon: tokenData.img,
-    balance: 1000, // Dummy balance for demonstration
-  }));
+import { toast } from "react-toastify";
 
 function Deposit() {
     const { authenticated, login } = usePrivy();
@@ -37,30 +23,83 @@ function Deposit() {
         setStrategyToken,
         strategy,
         setStrategy,
-        setIsInStrategyTab
+        setIsInStrategyTab,
+        strategyChain,
+        setStrategyChain
     } = useControl();
 
     const [activeModal, setActiveModal] = useState<boolean>(false);
     const [isRunning, setIsRunning] = useState<boolean>(false);
     const [valueUSD, setValueUSD] = useState<number>(0);
     const { wallets } = useWallets();
-    const { tokenPriceSonic } = useData();
+    const { tokenPriceSonic, getTokenListByChainId } = useData();
+    const [tokens, setTokens] = useState<any[]>([]);
 
     const { userBalance } = useFetchBalance(strategyToken);
 
+    const {
+        currentAction,
+        reject,
+        resolve
+    } = useAgent();
+
+    useEffect(() => {
+        if (strategyChain) {
+            setTokens(getTokenListByChainId(strategyChain));
+        }
+    }, [strategyChain]);
+    
+    // useEffect(() => {
+    //     console.log(tokens);
+    //     if(tokens)
+    //     setStrategyToken(tokens[0]);
+    // }, [tokens]);
     async function execute() {
-        console.log(strategyAmount);
-        console.log(strategyToken);
+        if (currentAction && currentAction != "yield") return;
+
         setIsRunning(true);
+
         try {
             // await deposit();
-            if (strategyToken.address.toLowerCase() != strategy.token.address.toLowerCase()) {
-                await zap(wallets[0], strategyToken.address, strategyAmount , strategy.name);
+            if (strategyToken.chainId == 146) {
+                if (strategyToken.address.toLowerCase() != strategy.token.address.toLowerCase()) {
+                    await zap(wallets[0], strategyToken.address, strategyAmount , strategy.name);
+                } else {
+                    await depositVault(wallets[0], strategy.name, strategyAmount);
+                }
             } else {
-                await depositVault(wallets[0], strategy.name, strategyAmount);
+                console.log(strategyToken.chainId);
+                console.log(strategyToken.address);
+                console.log(strategy.name);
+                await bridgeAndZap(wallets[0], strategyToken.chainId, strategyToken.address, strategyAmount, strategy.name);
+            }
+
+            if (resolve) {
+                resolve();
+                toast.success("Deposited successfully",
+                    {
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
             }
         } catch(error) {
             console.error(error);
+            if (reject) {
+                reject();
+                toast.error("Failed to deposit",
+                    {
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+            }
             setIsRunning(false);
         }
         setIsRunning(false);
@@ -91,16 +130,16 @@ function Deposit() {
                         {/* From Section */}
                         <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--accent)' }}>
                         <div className="flex justify-between items-center">
-                            <span className="text-sm" style={{ color: 'var(--higherlight)' }}>From</span>
+                            <span className="text-sm" style={{ color: 'var(--higherlight)' }}>Deposit ({strategyChain == 1 ? "Ethereum" : strategyChain == 146 ? "Sonic" : strategyChain == 137 ? "Polygon" : strategyChain == 8453 ? "Base" : "Arbitrum"})</span>
                             <button
                             onClick={() => setActiveModal(true)}
                             className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                             >
-                            {strategyToken.icon && (
-                                <img src={strategyToken.icon} alt={strategyToken.symbol} className="w-6 h-6" />
+                            {strategyToken?.logoURI && (
+                                <img src={strategyToken.logoURI} alt={strategyToken.symbol} className="w-6 h-6" />
                             )}
                             <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
-                                {strategyToken.symbol}
+                                {strategyToken?.symbol}
                             </span>
                             <svg
                                 className="w-4 h-4 transition-colors duration-200"
@@ -192,6 +231,8 @@ function Deposit() {
                             setStrategyToken(token);
                             setActiveModal(null);
                         }}
+                        strategyChain={strategyChain}
+                        setStrategyChain={setStrategyChain}
                         onClose={() => setActiveModal(null)}
                         title="Select a token"
                         />

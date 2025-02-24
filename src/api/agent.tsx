@@ -4,7 +4,7 @@ async function getReply(message: string) {
     await new Promise((r) => setTimeout(r, 1000));
 
     return `
-    const b = await __BRIDGE__('ETH', 1, 'wS', 0.002, 'Bridging 0.002 ETH from ETH to wS on Sonic');
+    const b = await __DEPOSIT__('wS', 146, 0.001, 'Beefy SWAPX (Ichi) wS-stS (wS deposit)', 'Bridging 0.002 ETH from ETH to wS on Sonic');
     await __MESSAGE__("DONE");
     `;
     // return "__MESSAGE__('HALLO')";

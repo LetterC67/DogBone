@@ -4,15 +4,28 @@ import { Token } from './types';
 
 interface TokenModalProps {
   tokens: Token[];
+  strategyChain: number;
+  setStrategyChain: (chainId: number) => void;
   onSelect: (token: Token) => void;
   onClose: () => void;
   title?: string;
 }
 
+const availableChains = [
+    { id: "sonic", name: "Sonic", icon: "https://tokens.debridge.finance/Logo/100000014/0x0000000000000000000000000000000000000000/small/token-logo.svg", chainId: 146 },
+    { id: "eth", name: "Ethereum", icon: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014", chainId: 1 },
+    { id: "base", name: "Base", icon: "https://raw.githubusercontent.com/base/brand-kit/a3b352afcc0839a0a355ccc2ae3279442fa56343/logo/symbol/Base_Symbol_Blue.svg", chainId: 8453 },
+    { id: "polygon", name: "Polygon", icon: "https://cryptologos.cc/logos/polygon-matic-logo.png?v=014", chainId: 137 },
+    { id: "arb", name: "Arbitrum", icon: "https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=014", chainId: 42161 },
+  ];
+  
+
 const TokenModal: React.FC<TokenModalProps> = ({
   tokens,
   onSelect,
   onClose,
+  strategyChain,
+    setStrategyChain,
   title = 'Select a token',
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -86,6 +99,28 @@ const TokenModal: React.FC<TokenModalProps> = ({
                 {title}
                 </h2>
             </div>
+            {/* Chain selection buttons */}
+            <div className="mt-2">
+                <div className="flex flex-wrap gap-2">
+                {availableChains.map((chain) => (
+                    <button
+                    key={chain.id}
+                    onClick={() => setStrategyChain(chain.chainId)}
+                    className={`flex items-center space-x-2 p-2 rounded-lg transition-colors duration-200 ${
+                        strategyChain === chain.chainId
+                        ? "bg-[var(--accent-2)]"
+                        : "bg-transparent hover:bg-[var(--accent-2)]"
+                    }
+                    border-(--divider) border
+                    hover:cursor-pointer
+                    `}
+                    >
+                    {chain.icon && <img src={chain.icon} alt={chain.name} className="w-6 h-6" />}
+                    <span style={{ color: "var(--primary)" }}>{chain.name}</span>
+                    </button>
+                ))}
+                </div>
+            </div>
             <div className="mt-2">
                 <input
                 type="text"
@@ -101,20 +136,21 @@ const TokenModal: React.FC<TokenModalProps> = ({
             </div>
             </div>
 
+            
             {/* Token List */}
             <div>
             {filteredTokens.map((token) => (
                 <div
-                key={token.address}
+                key={token.name}
                 className="token-list-item flex items-center p-4 cursor-pointer transition-colors duration-200"
                 style={{ borderBottom: '1px solid var(--divider)' }}
                 onClick={() => onSelect(token)}
                 >
-                {token.icon && (
+                {token.logoURI && (
                     <img
-                    src={token.icon}
+                    src={token.logoURI}
                     alt={token.symbol}
-                    className="w-8 h-8 mr-3"
+                    className="w-8 h-8 mr-3 rounded-full"
                     />
                 )}
                 <div>

@@ -7,9 +7,10 @@ import { sampleToTokens } from "../data/sonicTokens";
 import { useWallets } from "@privy-io/react-auth";
 // import {sonicTokens as sampleToTokens} from "../data/sonicTokens.tsx";
 import { getTokenPriceByAddresses } from "../tools/coingecko/getTokenPriceByAddresses";
-
+import tokenList from "../tools/tokenList.json";
 // Create a context
-const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {} });
+const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {} });
+
 
 export const DataProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
@@ -17,6 +18,10 @@ export const DataProvider = ({ children }) => {
     const [aprList, setAprList] = useState({});
     const [strategyList, setStrategyList] = useState<any[]>([]);
     const [tokenPriceSonic, setTokenPriceSonic] = useState<any>({});
+    
+    function getTokenListByChainId(chainId: number) {
+        return tokenList.tokens.filter((token) => token.chainId === chainId);
+    }
 
     function changeForm(data: { [chainId: string]: { [address: string]: Token } }) {
         const result: { [chainId: string]: Token[] } = {};
@@ -60,9 +65,10 @@ export const DataProvider = ({ children }) => {
         let cnt = 0;
 
         async function fetchApr(type: string, address: string, name: string, provider: any, strategy: any) {
-            let apr = 0;
+            let apr = 0, point_apr = 0;
             try {
                 apr = await getVaultAPR(name);
+                point_apr = getVaultPointsAPR(name);
             } catch (error) {
                 console.log("error", error);
             }
@@ -85,6 +91,7 @@ export const DataProvider = ({ children }) => {
                     (token) => token.address.toLowerCase() === address.toLowerCase()
                 ),
                 apr: apr,
+                point_apr: point_apr,
                 "provider": Providers.filter((p) => p.name === provider.type)[0],
                 position: position
             };
@@ -114,7 +121,7 @@ export const DataProvider = ({ children }) => {
 
         const interval = setInterval(() => {
             fetch();
-        }, 60000);
+        }, 360000);
 
         // return () => ;
         return () => {
@@ -146,7 +153,7 @@ export const DataProvider = ({ children }) => {
 
         const interval = setInterval(() => {
             fetch();
-        }, 60000);
+        }, 360000);
 
         return () => clearInterval(interval);
     }, []);
@@ -158,7 +165,7 @@ export const DataProvider = ({ children }) => {
     }, [tokenLists]);
 
     return (
-        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic }}>
+        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId }}>
             {children}
         </DataContext.Provider>
     );

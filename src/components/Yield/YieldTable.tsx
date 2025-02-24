@@ -159,8 +159,8 @@ function YieldTable() {
                                 </td>
                                 <td className="">
                                     <span className="flex flex-row-reverse justify-content items-center gap-1">
-                                        {element.apr.toFixed(2)}% 
-                                        {/* <APR strategyApr={element.strategy_apr} pointApr={element.point_apr}></APR> */}
+                                        <APR strategyApr={element.apr} pointApr={element.point_apr}></APR>
+                                        {(element.apr + element.point_apr).toFixed(2)}% 
                                     </span>
                                 </td>
 

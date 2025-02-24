@@ -32,8 +32,8 @@ function App() {
 	return (
 		<StrictMode>
 			<ControlProvider>
-				<AgentProvider>
 			<DataProvider>
+				<AgentProvider>
 			<BrowserRouter>
 			<ToastContainer
 				position="top-right"
@@ -67,8 +67,8 @@ function App() {
 					</div>
 				</div>
 			</BrowserRouter>
-			</DataProvider>
 				</AgentProvider>
+			</DataProvider>
 			</ControlProvider>
 		</StrictMode>
   	)
