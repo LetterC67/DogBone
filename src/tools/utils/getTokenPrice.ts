@@ -53,6 +53,10 @@ export async function getTokenPriceBySymbol(tokenSymbol: string) {
 }
 
 export async function getTokenPriceByAddress(token: Address, chainId: number) {
+    if (token === stablecoinMapping[chainId]) {
+        return String(1);
+    }
+
     const publicClient = createPublicClient({
         chain: chainMapping[chainId as keyof typeof chainMapping],
         transport: http()
@@ -69,7 +73,6 @@ export async function getTokenPriceByAddress(token: Address, chainId: number) {
         tokenOut: stablecoinMapping[chainId],  
         amountIn: parsedAmount
     });
-    console.log("quote: ", getQuote)
-    console.log("quote: ", getQuote.outValues[0]);
-    return getQuote;
+    
+    return String(getQuote.outValues[0]);
 }

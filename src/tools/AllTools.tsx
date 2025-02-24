@@ -28,6 +28,8 @@ import { viewIchiPosition } from './ichi/viewIchiPosition';
 import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap } from './ToolAPI';
 import { getTokenAddressBySymbol } from './getTokenAddressBySymbol.ts';
 import { getTokenPriceByAddress, getTokenPriceBySymbol } from './utils/getTokenPrice.ts';
+import { generateIchiGauge } from './ichi/generateIchiGauge.ts';
+import { dak, dakmim } from './ichi/test.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -387,6 +389,12 @@ export const AllTools = () => {
           onClick={() => getTokenPriceByAddress("0xA04BC7140c26fc9BB1F36B1A604C7A5a88fb0E70", 146)}
         >
           Get token price by address
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => dakmim()}
+        >
+          Generate ichi gauge
         </button>
       </div>
     </div>
