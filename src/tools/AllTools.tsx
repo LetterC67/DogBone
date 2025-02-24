@@ -26,10 +26,12 @@ import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
 import { viewIchiPosition } from './ichi/viewIchiPosition';
 import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap } from './ToolAPI';
-import { getTokenAddressBySymbol } from './getTokenAddressBySymbol.ts';
+import { getTokenAddressBySymbol } from './utils/getTokenAddressBySymbol.ts';
 import { getTokenPriceByAddress, getTokenPriceBySymbol } from './utils/getTokenPrice.ts';
 import { generateIchiGauge } from './ichi/generateIchiGauge.ts';
 import { dak, dakmim } from './ichi/test.ts';
+import { getSonicPoints } from './utils/getSonicPoints.ts';
+import { getRingsPoints } from './utils/getRingsPoints.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -395,6 +397,19 @@ export const AllTools = () => {
           onClick={() => dakmim()}
         >
           Generate ichi gauge
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getSonicPoints(wallet.address as Address)}
+        >
+          Get Sonic Points
+        </button>
+
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getRingsPoints(wallet.address as Address)}
+        >
+          Get Rings Points
         </button>
       </div>
     </div>

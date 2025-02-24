@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect} from "react";
 import { getReply } from "../api/agent";
 import { useControl } from "./ControlContext";
-import { getTokenAddressBySymbol } from "../tools/getTokenAddressBySymbol";
+import { getTokenAddressBySymbol } from "../tools/utils/getTokenAddressBySymbol";
 import TokenList from "../tools/tokenList.json"
 import { toast } from "react-toastify";
 
