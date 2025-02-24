@@ -1,7 +1,8 @@
-import { createPublicClient, Address, http, formatEther } from 'viem';
+import { createPublicClient, Address, http } from 'viem';
 import { sonic } from 'viem/chains';
 import BeefyIchiLPList from './beefyIchiLPList.json';
 import BeefyVaultAbi from './beefyVault.abi.json';
+import { viewBeefyIchiPosition } from '../ichi/viewIchiPosition';
 
 interface BeefyIchiLPConfig {
   name: string;
@@ -50,7 +51,6 @@ export async function viewBeefyIchiLPPosition({
 
   const underlyingBalance = (userShareBalance * pricePerShare) / BigInt(1e18);
 
-  console.log('Beefy Ichi LP Position: ', formatEther(underlyingBalance));
-
-  return formatEther(underlyingBalance);
+  const tokenUnderlyingBalance = await viewBeefyIchiPosition(beefyLPConfig.lpToken, underlyingBalance);
+  return tokenUnderlyingBalance;
 }

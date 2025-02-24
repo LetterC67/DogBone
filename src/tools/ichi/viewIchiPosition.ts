@@ -66,6 +66,62 @@ const quoterAbi = [
   }  
 ];
 
+export async function viewBeefyIchiPosition(vaultAddress: Address, shares: bigint) {
+  const ichiVaultConfig = ichiVaultList.find(
+    (vault: IchiVaultConfig) => vault.vault === vaultAddress
+  );
+
+  if (!ichiVaultConfig) {
+    throw new Error('Ichi vault either not found or not supported');
+  }
+
+  const publicClient = createPublicClient({
+    chain: sonic,
+    transport: http(),
+  });
+
+  const token0 = (await publicClient.readContract({
+    address: vaultAddress,
+    abi: ichiVaultAbi,
+    functionName: 'token0',
+    args: [],
+  })) as Address;
+
+  const token1 = (await publicClient.readContract({
+    address: vaultAddress,
+    abi: ichiVaultAbi,
+    functionName: 'token1',
+    args: [],
+  })) as Address;
+
+  const token0Decimals = await getERC20Decimals({
+    publicClient,
+    tokenAddress: token0,
+  });
+
+  const token1Decimals = await getERC20Decimals({
+    publicClient,
+    tokenAddress: token1,
+  });
+
+  try {
+    const { result } = await publicClient.simulateContract({
+      address: vaultAddress,
+      abi: ichiVaultAbi,
+      functionName: 'withdraw',
+      args: [shares, ichiVaultConfig.gauge],
+      account: ichiVaultConfig.gauge,
+    });
+
+    const [total0, total1] = result;
+    let currentTotal = token0 === ichiVaultConfig.token ? total0 : total1;
+    currentTotal += token0 === ichiVaultConfig.token ? await getQuote(token1, token0, total1) : await getQuote(token0, token1, total0);
+    return formatUnits(currentTotal, token0 === ichiVaultConfig.token ? token0Decimals : token1Decimals);
+  } catch (error) {
+    return String(0);
+  }
+}
+
 export async function viewIchiPosition({
   vaultAddress,
   userAddress,
@@ -144,7 +200,6 @@ export async function viewIchiPosition({
       swpxS = await getQuote(WS_TOKEN, ichiVaultConfig.token, swpxS);
       currentTotal += swpxS;
     }
-    // console.log("ICHIdasdasdasdasdasdasdads: ",currentTotal);
     return formatUnits(currentTotal, token0 === ichiVaultConfig.token ? token0Decimals : token1Decimals);
   } catch (error) {
     return String(0);
