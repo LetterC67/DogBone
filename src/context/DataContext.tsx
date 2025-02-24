@@ -8,6 +8,7 @@ import { useWallets } from "@privy-io/react-auth";
 // import {sonicTokens as sampleToTokens} from "../data/sonicTokens.tsx";
 import { getTokenPriceByAddresses } from "../tools/coingecko/getTokenPriceByAddresses";
 import tokenList from "../tools/tokenList.json";
+import { useControl } from "./ControlContext";
 // Create a context
 const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {} });
 
@@ -18,7 +19,8 @@ export const DataProvider = ({ children }) => {
     const [aprList, setAprList] = useState({});
     const [strategyList, setStrategyList] = useState<any[]>([]);
     const [tokenPriceSonic, setTokenPriceSonic] = useState<any>({});
-    
+    const {strategy, setStrategy} = useControl();
+
     function getTokenListByChainId(chainId: number) {
         return tokenList.tokens.filter((token) => token.chainId === chainId);
     }
@@ -57,6 +59,12 @@ export const DataProvider = ({ children }) => {
 
         fetch();
     }, []);
+
+    useEffect(() => {
+        if (strategy) {
+            setStrategy(strategyList.find((s) => s.name === strategy.name));
+        }
+    }, [strategyList]);
 
     const { wallets } = useWallets();
 
@@ -121,7 +129,7 @@ export const DataProvider = ({ children }) => {
 
         const interval = setInterval(() => {
             fetch();
-        }, 360000);
+        }, 60000);
 
         // return () => ;
         return () => {
