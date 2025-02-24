@@ -15,6 +15,7 @@ import Spinner from "../Common/Spinner";
 import { FaWallet } from "react-icons/fa";
 import { useControl } from "../../context/ControlContext";
 import useFetchTwoBalance from "../../hooks/useFetchTwoBalance";
+import Navigator from "../Navigator";
 
 const Bridge: React.FC = () => {
     // // "From" side state: default to Ethereum tokens
@@ -149,6 +150,7 @@ const Bridge: React.FC = () => {
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center">
+            <Navigator></Navigator>
             <div    
             className="w-full max-w-md p-6 rounded-xl shadow-lg"
             style={{ backgroundColor: "var(--secondary)" }}
@@ -161,17 +163,18 @@ const Bridge: React.FC = () => {
                 <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--accent)" }}>
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-sm" style={{ color: "var(--higherlight)" }}>
-                        From ({availableChains.find((c) => c.id === fromChainBridge)?.name})
+                        From {fromChainBridge && <>({availableChains.find((c) => c.id === fromChainBridge)?.name})</>}
                         </span>
                         <button
                         onClick={() => setIsFromModalOpen(true)}
                         className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-md"
                         >
-                        {fromTokenBridge.logoURI && (
-                            <img src={fromTokenBridge.logoURI} alt={fromTokenBridge.symbol} className="w-6 h-6" />
+                        {fromTokenBridge?.logoURI && (
+                            <img src={fromTokenBridge?.logoURI} alt={fromTokenBridge?.symbol} className="w-6 h-6" />
                         )}
                         <span className="text-lg font-medium" style={{ color: "var(--primary)" }}>
-                            {fromTokenBridge.symbol}
+                            {fromTokenBridge?.symbol}
+                            {fromTokenBridge == null ? 'Select a token' : ''}
                         </span>
                         <svg
                             className="w-4 h-4 transition-colors duration-200"
@@ -213,11 +216,12 @@ const Bridge: React.FC = () => {
                     onClick={() => setIsToModalOpen(true)}
                     className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-md"
                     >
-                    {toTokenBridge.logoURI && (
-                        <img src={toTokenBridge.logoURI} alt={toTokenBridge.symbol} className="w-6 h-6" />
+                    {toTokenBridge?.logoURI && (
+                        <img src={toTokenBridge?.logoURI} alt={toTokenBridge?.symbol} className="w-6 h-6" />
                     )}
                     <span className="text-lg font-medium" style={{ color: "var(--primary)" }}>
-                        {toTokenBridge.symbol}
+                        {toTokenBridge?.symbol}
+                        {toTokenBridge == null ? 'Select a token' : ''}
                     </span>
                     <svg
                         className="w-4 h-4 transition-colors duration-200"

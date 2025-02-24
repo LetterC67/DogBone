@@ -83,15 +83,15 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
     const [isInStrategyTab, setIsInStrategyTab] = useState<boolean>(false);
     const [showOnlyDeposited, setShowOnlyDeposited] = useState<boolean>(false);
 
-    const [fromChainBridge, setFromChainBridge] = useState<string>("eth");
-    const [fromTokenBridge, setFromTokenBridge] = useState<Token>(sampleFromTokens["eth"][0]);
+    const [fromChainBridge, setFromChainBridge] = useState<string | null>(null);
+    const [fromTokenBridge, setFromTokenBridge] = useState<Token | null>(null);
     const [fromAmountBridge, setFromAmountBridge] = useState<string>("");
     // "To" side state: chain is fixed to Sonic; user may select any Sonic token
-    const [toTokenBridge, setToTokenBridge] = useState<Token>(sampleToTokens[0]);
+    const [toTokenBridge, setToTokenBridge] = useState<Token | null>(null);
     const [toAmountBridge, setToAmountBridge] = useState<string>("");
 
-    const [fromTokenSwap, setFromTokenSwap] = useState<Token>(tokens[0]);
-    const [toTokenSwap, setToTokenSwap] = useState<Token>(tokens[1]);
+    const [fromTokenSwap, setFromTokenSwap] = useState<Token | null>(null);
+    const [toTokenSwap, setToTokenSwap] = useState<Token | null>(null);
     const [fromAmountSwap, setFromAmountSwap] = useState<string>('');
     const [toAmountSwap, setToAmountSwap] = useState<string>('');
 

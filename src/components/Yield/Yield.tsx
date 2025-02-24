@@ -1,13 +1,15 @@
-import Navbar from './Navbar';
+import Navigator from '../Navigator';
 import YieldTable from './YieldTable';
 import Deposit from './Deposit';
 import { useControl } from '../../context/ControlContext';
+
 
 function Yield() {
     const {isInStrategyTab} = useControl();
 
     return (
         <>
+            <Navigator></Navigator>
             {isInStrategyTab && <Deposit />}
             {!isInStrategyTab && 
                 <div className="w-full h-full flex flex-col items-center justify-center">

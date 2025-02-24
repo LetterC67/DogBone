@@ -71,7 +71,12 @@ body {
 	--privy-color-error:            #dc3545;
 	--privy-color-error-light:      #e57373;
   
-  }
+	--toastify-color-info: var(--accent);
+	--toastify-color-light: var(--accent);
+	--toastify-text-color-light: var(--primary);
+	/* --toastify-toast-bd-radius: 1.5em; */
+	/* --toastify-color-progress-info: var(--pr); */
+}
 
 @tailwind base;
 @tailwind components;
@@ -128,4 +133,9 @@ input::-webkit-inner-spin-button {
 * {
     scrollbar-color: var(--accent) var(--secondary);
     scrollbar-width: thin;
+}
+
+.Toastify__toast {
+	font-family: 'Montserrat', sans-serif;
+	width: 360px;
 }

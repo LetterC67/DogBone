@@ -13,6 +13,9 @@ import useFetchBalance from '../../hooks/useFetchBalance'
 import Spinner from '../../components/Common/Spinner';
 import { useControl } from '../../context/ControlContext';
 import MiniChat from '../Chat/MiniChat';
+import { useAgent } from '../../context/AgentContext';
+import Navigator from '../Navigator';
+import { toast } from 'react-toastify';
 
 // Convert the TokenList object into an array of tokens
 const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
@@ -54,6 +57,14 @@ const Swap: React.FC = () => {
 
     const { userBalance: fromBalance } = useFetchBalance(fromTokenSwap);
     const { userBalance: toBalance } = useFetchBalance(toTokenSwap);
+
+    const {
+        messages,
+        reject,
+        currentAction,
+        code,
+        resolve
+    } = useAgent();
 
     // Swap the token selections (and corresponding amounts)
     const swapTokens = () => {
@@ -106,6 +117,8 @@ const Swap: React.FC = () => {
         // alert(`Swapping ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`);
         // const inputAmount = ethers.parseUnits(fromAmount, fromToken.decimals);
         // console.log(wallets[0].address);
+        if (currentAction && currentAction != 'swap') return;
+        
         setIsSwapping(true);
         try {
             await swap({
@@ -115,14 +128,30 @@ const Swap: React.FC = () => {
                 tokenOut: toTokenSwap.address,
                 amountIn: fromAmountSwap.toString()
             });
+            setIsSwapping(false);
+            if (resolve) {
+                resolve();
+                toast.success("Swap successful",
+                    {
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+            }
         } catch (error) {
             console.error('Error swapping tokens:', error.message);
+            reject();
+            setIsSwapping(false);
         }
-        setIsSwapping(false);
+        // resolve();
     };
-
+    
     return (
         <div className="w-full h-full flex flex-col items-center justify-center">
+            <Navigator></Navigator>
             <div
             className="w-full max-w-md p-6 rounded-xl shadow-lg"
             style={{ backgroundColor: 'var(--secondary)' }}
@@ -139,11 +168,12 @@ const Swap: React.FC = () => {
                     onClick={() => setActiveModal('from')}
                     className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                     >
-                    {fromTokenSwap.icon && (
-                        <img src={fromTokenSwap.icon} alt={fromTokenSwap.symbol} className="w-6 h-6" />
+                    {fromTokenSwap?.icon && (
+                        <img src={fromTokenSwap?.icon} alt={fromTokenSwap?.symbol} className="w-6 h-6" />
                     )}
                     <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
-                        {fromTokenSwap.symbol}
+                        {fromTokenSwap?.symbol}
+                        {fromTokenSwap == null && 'Select a token'}
                     </span>
                     <svg
                         className="w-4 h-4 transition-colors duration-200"
@@ -191,11 +221,12 @@ const Swap: React.FC = () => {
                     onClick={() => setActiveModal('to')}
                     className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                     >
-                    {toTokenSwap.icon && (
-                        <img src={toTokenSwap.icon} alt={toTokenSwap.symbol} className="w-6 h-6" />
+                    {toTokenSwap?.icon && (
+                        <img src={toTokenSwap?.icon} alt={toTokenSwap?.symbol} className="w-6 h-6" />
                     )}
                     <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
-                        {toTokenSwap.symbol}
+                        {toTokenSwap?.symbol}
+                        {toTokenSwap == null && 'Select a token'}
                     </span>
                     <svg
                         className="w-4 h-4 transition-colors duration-200"

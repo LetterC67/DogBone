@@ -12,6 +12,8 @@ import { ControlProvider } from './context/ControlContext';
 import { AgentProvider } from './context/AgentContext';
 import FullChat from './components/Chat/FullChat';
 import MiniChat from './components/Chat/MiniChat';
+import { ToastContainer, Bounce } from 'react-toastify';
+
 
 function IntegrateMiniChat({element}: {element: JSX.Element}) {
 	return (
@@ -33,6 +35,19 @@ function App() {
 				<AgentProvider>
 			<DataProvider>
 			<BrowserRouter>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick={false}
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="light"
+				transition={Bounce}
+			/>
 				<div className="h-screen w-screen flex-row flex">
 					<div className="w-1/6 h-full text-lg font-bold">
 						<Sidebar></Sidebar>
@@ -42,8 +57,6 @@ function App() {
 								<Route path="/" element={<FullChat></FullChat>}>
 									
 								</Route>
-							</Routes>
-							<Routes>
 								<Route path="/yield" element={<IntegrateMiniChat element={<Yield/>}/>}/>	
 								<Route path="/swap" element={<IntegrateMiniChat element={<Swap/>}/>} />
 								<Route path="/bridge"element={<IntegrateMiniChat element={<Bridge/>}/>}></Route>

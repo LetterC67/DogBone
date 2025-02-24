@@ -18,16 +18,16 @@ function MiniChat() {
 
     // Trigger animation each time the latest message changes.
     useEffect(() => {
-        console.log(agentMessages[agentMessages.length - 1]);
-        setLatestAgentMessage(agentMessages[agentMessages.length - 1]);
-    }, [agentMessages]);
-
-    useEffect(() => {
         setVisible(false);
-            const timer = setTimeout(() => {
-            setVisible(true);
-        }, 50);
+        const timer = setTimeout(() => {
+            setLatestAgentMessage(agentMessages[agentMessages.length - 1]);
+        }, 200);
         return () => clearTimeout(timer);
+    }, [agentMessages]);
+    
+    useEffect(() => {
+        console.log("VISIBILITY ", visible);
+        setVisible(true);
     }, [latestAgentMessage]);
 
     return (
@@ -52,7 +52,7 @@ function MiniChat() {
                     }
                     {/* Thinking indicator if the agent is answering */}
                     {isAnswering && (
-                    <div className="w-full flex items-center mt-2">
+                    <div className="w-full flex items-center">
                         <img
                         src="https://www.svgrepo.com/show/405231/dog-face.svg"
                         alt="Agent Avatar"
