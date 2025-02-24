@@ -10,6 +10,7 @@ import {
   strategyFunctions,
   nameToTypeMapping,
   nameToConfigMapping,
+  notLeveraged,
 } from './listStrategies';
 import { ConnectedWallet } from '@privy-io/react-auth';
 import { odosExecute } from './swap/odos';
@@ -23,10 +24,8 @@ import {
 import ZapAbi from './zap.abi.json';
 import { NATIVE_TOKEN, SONIC_POINTS_APR, ZAP_CONTRACT } from './constants';
 import { bridge } from './bridge/bridge';
-import Strategies from './strategies.json';
 
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
-const stragies = JSON.parse(JSON.stringify(Strategies));
 
 export async function depositVault(
   walletClient: ConnectedWallet,
@@ -270,6 +269,7 @@ export function getExternalCall(
         amount: 0n,
         receiver: userAddr,
         funcSelector: depositSelector,
+        ...notLeveraged("", "")
       },
     ],
   });
