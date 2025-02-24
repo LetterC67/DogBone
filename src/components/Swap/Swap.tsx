@@ -143,7 +143,18 @@ const Swap: React.FC = () => {
             }
         } catch (error) {
             console.error('Error swapping tokens:', error.message);
-            reject();
+            if (reject) {
+                reject();
+                toast.error("Swap failed",
+                    {
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+            }
             setIsSwapping(false);
         }
         // resolve();

@@ -18,6 +18,7 @@ function MiniChat() {
 
     // Trigger animation each time the latest message changes.
     useEffect(() => {
+        console.log("NEW MESSAGES!!");
         setVisible(false);
         const timer = setTimeout(() => {
             setLatestAgentMessage(agentMessages[agentMessages.length - 1]);
@@ -26,7 +27,6 @@ function MiniChat() {
     }, [agentMessages]);
     
     useEffect(() => {
-        console.log("VISIBILITY ", visible);
         setVisible(true);
     }, [latestAgentMessage]);
 

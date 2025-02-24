@@ -58,6 +58,10 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setFromTokenSwap,
         setToTokenSwap,
         setFromAmountSwap,
+        setFromAmountBridge,
+        setFromTokenBridge,
+        setToTokenBridge,
+        setFromChainBridge
     } = useControl();
 
     function isActionCode(code: string) {
@@ -130,7 +134,72 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     resolve(1);
                 }
             );
-            setReject(() => reject);
+            setReject(() => 
+                async () => {
+                    toast.dismiss(toastId);
+                    await __MESSAGE__("Swap failed!");
+                    await new Promise(r => setTimeout(r, 2000));
+                    reject(1);
+                });
+        });
+    }
+
+    async function __BRIDGE__(inputToken, inputChain, outputToken, amount, message) {
+        console.log(`Bridging ${amount} ${inputToken} to ${outputToken}`);
+
+        let inp = null;
+        let out = null;
+        
+        if (inputToken != null) {
+            inp = await getTokenBySymbol(inputToken, inputChain);
+            if (!inp) {
+                __MESSAGE__(`Cannot find token ${inputToken}`);
+                throw new Error(`Cannot find token ${inputToken}`);
+            }
+            
+            out = await getTokenBySymbol(outputToken, 146);
+            if (!out) {
+                __MESSAGE__(`Cannot find token ${outputToken}`);
+                throw new Error(`Cannot find token ${outputToken}`);
+            }
+        }
+        
+        inp.icon = inp.logoURI;
+        out.icon = out.logoURI;
+        
+        setFromAmountBridge(amount.toString());
+        setFromChainBridge(inputChain == 1 ? "eth" : inputChain == 137 ? "polygon" : inputChain == 42161 ? "arb" : "base");
+        setFromTokenBridge(inp);
+        setToTokenBridge(out);
+        // setToAmountSwap('');
+        
+        setCurrentAction('bridge');
+        setCurrentNavigation('bridge');
+        await __MESSAGE__ (message);
+
+        const toastId = toast.loading("Waiting user to bridge...", {
+            closeOnClick: false, // Prevent closing on click
+            draggable: false, // Disable drag to dismiss
+        });
+        
+        return new Promise((resolve, reject) => {
+            setResolve(() => 
+                async () => {
+                    toast.dismiss(toastId);
+                    await __MESSAGE__("Bridged successfully!")
+                    await new Promise(r => setTimeout(r, 2000));
+                    resolve(1);
+                    setResolve(null);
+                }
+            );
+            setReject(() => 
+                async () => {
+                    toast.dismiss(toastId);
+                    await __MESSAGE__("Bridge failed!");
+                    await new Promise(r => setTimeout(r, 2000));
+                    reject(1);
+                    setReject(null);
+                });
         });
     }
 
@@ -160,7 +229,18 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (code) {
-            eval('(async () => {\n' + code + '\n;setCode("");})(); ');
+            eval(`
+                try {
+                    (async () => {
+                        ${code}
+                    })();
+                } catch {
+                
+                }
+
+                setCode('');
+                `
+            );
         }
     }, [code]);
 
