@@ -63,8 +63,8 @@ export const DataProvider = ({ children }) => {
             let apr = 0;
             try {
                 apr = await getVaultAPR(name);
-            } catch {
-                console.log("error");
+            } catch (error) {
+                console.log("error", error);
             }
             let position = 0;
             console.log("fetching apr", name);

@@ -16,6 +16,8 @@ import { FaWallet } from "react-icons/fa";
 import { useControl } from "../../context/ControlContext";
 import useFetchTwoBalance from "../../hooks/useFetchTwoBalance";
 import Navigator from "../Navigator";
+import { useAgent } from "../../context/AgentContext";
+import { toast } from "react-toastify";
 
 const Bridge: React.FC = () => {
     // // "From" side state: default to Ethereum tokens
@@ -54,7 +56,13 @@ const Bridge: React.FC = () => {
     const { authenticated} = usePrivy();
 
     const [isBridging, setIsBridging] = useState<boolean>(false);
-    
+
+    const {
+        currentAction,
+        resolve,
+        reject,
+    } = useAgent();
+
     const handleFromTokenSelect = (token: Token, chainId: string) => {
         setFromChainBridge(chainId);
         setFromTokenBridge(token);
@@ -73,22 +81,47 @@ const Bridge: React.FC = () => {
         //     `Bridging ${fromAmount} ${fromToken.symbol} from ${fromChainName} to ${toAmount} ${toToken.symbol} on Sonic chain`
         // );
 
+        if (currentAction && currentAction != 'bridge') return;
+
         setIsBridging(true);
         
         try {
             await bridge({
                 walletClient: wallets[0],
-                srcChainId: idMap[fromChain],
+                srcChainId: idMap[fromChainBridge],
                 dstChainId: 146,
                 srcChainTokenIn: fromTokenBridge.address,
                 srcAmountIn: fromAmountBridge,
                 dstChainTokenOut: toTokenBridge.address,
             });
+            setIsBridging(false);
+                if(resolve)
+                resolve();
+                toast.success("Bridge successful",
+                    {
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
         } catch(err) {
             console.error(err);
+            if (reject)
+            reject();
+            toast.error("Bridge failed",
+                {
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
+            
+            setIsBridging(false);
         }
-
-        setIsBridging(false);
     };
     
     const idMap = {

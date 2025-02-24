@@ -146,7 +146,7 @@ function YieldTable() {
                                 </td>
                                 <td>
                                     <div className="flex flex-row items-center gap-2 py-4">
-                                        <img src={element.provider.img} alt={element.token?.name} width="36" height="36" />
+                                        <img className="rounded-full" src={element.provider.img} alt={element.token?.name} width="36" height="36" />
                                         <div className="flex flex-col">
                                             <span className="text-lg">
                                                 {element.name}
