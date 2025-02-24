@@ -34,7 +34,7 @@ import { depositDogBone_Bone2 } from './dogbone/dogbone_silo_wos_s_wos_looping/d
 import { getBone1APY } from './dogbone/dogbone_silo_st_s_st_looping/getBone1APY';
 import { getBone2APY } from './dogbone/dogbone_silo_wos_s_wos_looping/getBone2APY';
 
-const notLeveraged = (strategy: string, amount: string) => {
+export const notLeveraged = (strategy: string, amount: string) => {
   return {
     leverage: BigInt(0),
     flashAmount: BigInt(0),
