@@ -8,10 +8,9 @@ import {
 import IchiVaultList from './ichiVaultList.json';
 import IchiVaultAbi from './ichiVault.abi.json';
 import IchiGaugeAbi from './ichiGauge.abi.json';
-import { getTokenPriceByAddresses } from '../coingecko/getTokenPriceByAddresses';
 import { sonic } from 'viem/chains';
 import { getERC20Decimals } from '../utils/erc20Utils';
-import { getTokenPriceByAddress } from '../utils/getTokenPrice';
+import { getTokenPriceByAddress, getTokenPriceByAddresses } from '../utils/getTokenPrice';
 
 interface IchiVaultConfig {
   vault: Address;
@@ -95,7 +94,7 @@ export async function getIchiAPR(vaultAddress: Address) {
     SWPX_TOKEN,
     token0,
     token1,
-  ]);
+  ], sonic.id);
 
   const token0Decimal = await getERC20Decimals({
     publicClient,

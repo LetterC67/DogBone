@@ -3,6 +3,7 @@ import TokenList from "../tokenList.json";
 import { mainnet, arbitrum, polygon, bsc, base, sonic } from "viem/chains";
 import { getOdosSwapQuote } from "../swap/odos";
 import { getERC20Decimals } from "./erc20Utils";
+import { getTokenPriceByAddresses } from "../coingecko/getTokenPriceByAddresses";
 
 interface TokenConfig {
     name: string;
@@ -75,4 +76,13 @@ export async function getTokenPriceByAddress(token: Address, chainId: number) {
     });
     
     return String(getQuote.outValues[0]);
+}
+
+
+export async function getTokenPriceByAddresses(tokenAddresses: Address[], chainId: number) {
+    const result = [];
+    for (const address of tokenAddresses) {
+        result.push(await getTokenPriceByAddress(address, chainId));
+    }
+    return result;
 }
