@@ -6,7 +6,7 @@ import {
   checkNeedApproval,
 } from '../utils/erc20Utils.ts';
 
-import { createPublicClient, custom, parseUnits, Address } from 'viem';
+import { createPublicClient, custom, parseUnits, Address, formatUnits } from 'viem';
 import { debridgeQuote } from './debridge.ts';
 import supportedChains from './supportedChains.json';
 
@@ -74,7 +74,7 @@ export async function bridge({
     throw new Error('Insufficient balance to bridge');
   }
 
-  const transaction = await debridgeQuote({
+  const {transaction, amountOut} = await debridgeQuote({
     walletClient,
     srcChainId: Number(chainIdMapping[srcChainId]),
     dstChainId: Number(chainIdMapping[dstChainId]),
@@ -118,7 +118,22 @@ export async function bridge({
       params: [transactionRequest],
     });
 
-    return transactionHash;
+    await publicClient.waitForTransactionReceipt({ hash: transactionHash });
+
+    const tokenOutDecimal = await getERC20Decimals({
+      publicClient,
+      tokenAddress: dstChainTokenOut,
+    });
+
+    console.log({
+      "txHash": transactionHash,
+      "amountOut": formatUnits(amountOut, tokenOutDecimal),
+    })
+
+    return {
+      "txHash": transactionHash,
+      "amountOut": formatUnits(amountOut, tokenOutDecimal),
+    }
   } catch (error) {
     throw new Error(`Failed to send transaction: ${error}`);
   }

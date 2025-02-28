@@ -71,5 +71,8 @@ export async function debridgeQuote({
         throw new Error("Error in getting Debridge Quote");
     }
 
-    return data.tx;
+    return {
+        transaction: data.tx,
+        amountOut: data.dstChainTokenOut.amount
+    }
 }

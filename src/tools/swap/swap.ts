@@ -5,7 +5,7 @@ import {
   approveERC20,
   checkNeedApproval,
 } from '../utils/erc20Utils';
-import { createPublicClient, custom, parseUnits, Address } from 'viem';
+import { createPublicClient, custom, parseUnits, Address, formatUnits } from 'viem';
 import { odosExecute } from './odos';
 
 /**
@@ -30,7 +30,7 @@ export async function swap({
   tokenIn,
   tokenOut,
   amountIn,
-}: SwapArgs): Promise<Address> {
+}: SwapArgs) {
   if (
     walletClient.chainId.slice(7, walletClient.chainId.length) !==
     chainId.toString()
@@ -89,6 +89,12 @@ export async function swap({
     }
   }
 
+  const beforeTokenOutBalance = await getERC20Balance({
+    publicClient,
+    account: userAddr,
+    tokenAddress: tokenOut,
+  });
+
   const transactionRequest = {
     to: transaction.to,
     value: transaction.value,
@@ -101,7 +107,30 @@ export async function swap({
       params: [transactionRequest],
     });
 
-    return transactionHash;
+    await publicClient.waitForTransactionReceipt({ hash: transactionHash });
+
+    const afterTokenOutBalance = await getERC20Balance({
+      publicClient,
+      account: userAddr,
+      tokenAddress: tokenOut,
+    });
+
+    const tokenOutDecimal = await getERC20Decimals({
+      publicClient,
+      tokenAddress: tokenOut,
+    });
+
+    const amountOut = afterTokenOutBalance - beforeTokenOutBalance;
+
+    console.log({
+      "txHash": transactionHash,
+      "amountOut": formatUnits(amountOut, tokenOutDecimal),
+    })
+
+    return {
+      "txHash": transactionHash,
+      "amountOut": formatUnits(amountOut, tokenOutDecimal),
+    }
   } catch (error) {
     throw new Error(`Failed to send transaction: ${error}`);
   }
