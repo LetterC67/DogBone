@@ -121,7 +121,7 @@ const Swap: React.FC = () => {
         
         setIsSwapping(true);
         try {
-            await swap({
+            const result = await swap({
                 walletClient: wallets[0],
                 chainId: 146,
                 tokenIn: fromTokenSwap.address,
@@ -130,7 +130,7 @@ const Swap: React.FC = () => {
             });
             setIsSwapping(false);
             if (resolve) {
-                resolve();
+                resolve(result.amountOut);
                 toast.success("Swap successful",
                     {
                         autoClose: 2000,

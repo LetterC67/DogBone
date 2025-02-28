@@ -33,6 +33,7 @@ function Sidebar() {
             <aside className="bg-(--secondary) h-full p-6 flex-col flex justify-between">
                 <div className="flex-col gap-1">
                     <SidebarContent setActive={setActive} active={active} text="Home" to="/"/>
+                    <SidebarContent setActive={setActive} active={active} text="Portfolio" to="/portfolio" />
                     <SidebarContent setActive={setActive} active={active} text="Yield" to="/yield" />
                     <SidebarContent setActive={setActive} active={active} text="Swap" to="/swap" />
                     <SidebarContent setActive={setActive} active={active} text="Bridge" to="/bridge" />

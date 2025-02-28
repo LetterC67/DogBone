@@ -171,11 +171,11 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         
         return new Promise((resolve, reject) => {
             setResolve(() => 
-                async () => {
+                async (amount) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__("Swapped successfully!")
                     await new Promise(r => setTimeout(r, 2000));
-                    resolve(1);
+                    resolve(amount);
                     setResolve(null);
                 }
             );
@@ -230,11 +230,11 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         
         return new Promise((resolve, reject) => {
             setResolve(() => 
-                async () => {
+                async (amount) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__("Bridged successfully!")
                     await new Promise(r => setTimeout(r, 2000));
-                    resolve(1);
+                    resolve(amount);
                     setResolve(null);
                 }
             );

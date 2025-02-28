@@ -10,9 +10,12 @@ import { getTokenPriceByAddresses } from "../tools/coingecko/getTokenPriceByAddr
 import tokenList from "../tools/tokenList.json";
 import { useControl } from "./ControlContext";
 import { getTokenPriceBySymbol } from "../tools/utils/getTokenPrice";
+import { getTokenBalance } from "../tools/utils/getTokenBalance";
+import { getSonicPoints } from "../tools/utils/getSonicPoints";
+import { getRingsPoints } from "../tools/utils/getRingsPoints";
 
 // Create a context
-const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {} });
+const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0});
 
 
 export const DataProvider = ({ children }) => {
@@ -21,8 +24,12 @@ export const DataProvider = ({ children }) => {
     const [aprList, setAprList] = useState({});
     const [strategyList, setStrategyList] = useState<any[]>([]);
     const [tokenPriceSonic, setTokenPriceSonic] = useState<any>({});
+    const [tokenBalanceSonic, setTokenBalanceSonic] = useState<any>({});
     const {strategy, setStrategy, setFilteredStrategies, selectedTokens, setSelectedTokens, showOnlyDeposited, allTokens, setAllTokens, agentFilteredStrategies, setAgentFilteredStrategies} = useControl();
-
+    const [sonicPoint, setSonicPoint] = useState(0);
+    const [ringsPoint, setRingsPoint] = useState(0);
+    const { wallets } = useWallets();
+    
     function getTokenListByChainId(chainId: number) {
         return tokenList.tokens.filter((token) => token.chainId === chainId);
     }
@@ -38,6 +45,26 @@ export const DataProvider = ({ children }) => {
         
         return result;
     }
+
+    useEffect(() => {
+        async function fetch() {
+            if (wallets.length === 0) return;
+
+            const sonic = await getSonicPoints(wallets[0].address);
+            const rings = await getRingsPoints(wallets[0].address);
+
+            setSonicPoint(sonic);
+            setRingsPoint(rings);
+        }
+
+        fetch();
+
+        const interval = setInterval(() => {
+            fetch();
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, [wallets.length]);
 
     useEffect(() => {
         async function fetch() {
@@ -62,7 +89,6 @@ export const DataProvider = ({ children }) => {
         fetch();
     }, []);
 
-    const { wallets } = useWallets();
 
     // useEffect(() => {
     //     setFilteredStrategies(strategyList);
@@ -191,21 +217,6 @@ export const DataProvider = ({ children }) => {
         }
 
         async function fetch() {
-            // const tokenAddressList = [];
-            // for (const token of sampleToTokens) {
-            //     tokenAddressList.push(token.address);
-            // }
-
-            // const price = await getTokenPriceBy(tokenAddressList);
-
-            // const result: { [address: string]: any } = {};
-            // for (let i = 0; i < tokenAddressList.length; i++) {
-            //     result[tokenAddressList[i]] = price[i];
-            // }
-            
-            // console.log("token price", result);
-            // setTokenPriceSonic(result);
-
             for (const token of sampleToTokens) {
                 fetchPrice(token);
             }
@@ -222,13 +233,40 @@ export const DataProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        async function fetchBalance(token) {
+            console.log("fetching balance", token.symbol);
+            const balance = await getTokenBalance(146, token.address, wallets[0].address);
+            setTokenBalanceSonic((prev) => ({ ...prev, [token.address]: balance }));
+            console.log("done fetching balance", token.symbol);
+        }
+
+        async function fetch() {
+            for (const token of sampleToTokens) {
+                fetchBalance(token);
+            }
+        }
+
+        // fetch every 1 minute
+        if(wallets.length > 0)
+            fetch();
+
+        const interval = setInterval(() => {
+            if(wallets.length > 0)
+                fetch();
+        }, 360000);
+
+        return () => clearInterval(interval);
+    }, [wallets.length]);
+
+
+    useEffect(() => {
         if (Object.keys(tokenLists).length === 4) {
             setLoading(false);
         }
     }, [tokenLists]);
 
     return (
-        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId }}>
+        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId, tokenBalanceSonic, sonicPoint, ringsPoint }}>
             {children}
         </DataContext.Provider>
     );

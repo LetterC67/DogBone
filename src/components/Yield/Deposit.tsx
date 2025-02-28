@@ -183,7 +183,7 @@ function Deposit() {
                                     ~${valueUSD.toFixed(2)}
                                 </div>
                                 <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                                    Balance: {parseFloat(userBalance).toFixed(4)}
+                                    Balance: {userBalance ? parseFloat(userBalance).toFixed(4) : '-'}
                                 </div>
                             </div>           
                         </div>
@@ -214,7 +214,7 @@ function Deposit() {
                                 APR
                             </div>
                             <div className="text-(--higherlight)">
-                                {strategy.apr.toFixed(2)}%
+                                {strategy.apr.toFixed(2)}% + {strategy.point_apr.toFixed(2)}%
                             </div>
                         </div>
 

@@ -15,7 +15,8 @@
 	--divider: #3C2F34;
 	--focus: #A87A8B;
 	--kanit: 'Kanit', sans-serif;
-	
+	--eb: "EB Garamond", serif;
+
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
 	font-weight: 400;
@@ -34,6 +35,25 @@
 
 	font-family: 'Montserrat', sans-serif;
 }
+
+.mimdak {
+	/* text-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);  */
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+  }
+
+  .spinning-bone {
+	animation: spin 2s linear infinite;
+  }
+
+  .loading-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
 
 body {
 	/* Border Radius Values */

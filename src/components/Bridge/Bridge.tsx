@@ -53,7 +53,7 @@ const Bridge: React.FC = () => {
     const [isFromModalOpen, setIsFromModalOpen] = useState<boolean>(false);
     const [isToModalOpen, setIsToModalOpen] = useState<boolean>(false);
 
-    const { authenticated} = usePrivy();
+    const { authenticated, login } = usePrivy();
 
     const [isBridging, setIsBridging] = useState<boolean>(false);
 
@@ -86,7 +86,7 @@ const Bridge: React.FC = () => {
         setIsBridging(true);
         
         try {
-            await bridge({
+            const result = await bridge({
                 walletClient: wallets[0],
                 srcChainId: idMap[fromChainBridge],
                 dstChainId: 146,
@@ -96,7 +96,7 @@ const Bridge: React.FC = () => {
             });
             setIsBridging(false);
                 if(resolve)
-                resolve();
+                resolve(result.amountOut);
                 toast.success("Bridge successful",
                     {
                         autoClose: 2000,
@@ -287,7 +287,7 @@ const Bridge: React.FC = () => {
             </div>
 
             <button
-                onClick={handleBridge}
+                onClick={authenticated ? handleBridge : login}
                 className={`mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer 
                     ${isBridging ? 'disabled:opacity-50' : 'opacity-100'}
                     `}

@@ -13,7 +13,7 @@ import { AgentProvider } from './context/AgentContext';
 import FullChat from './components/Chat/FullChat';
 import MiniChat from './components/Chat/MiniChat';
 import { ToastContainer, Bounce } from 'react-toastify';
-
+import Portfolio from "./components/Portfolio/Portfolio";
 
 function IntegrateMiniChat({element}: {element: JSX.Element}) {
 	return (
@@ -61,6 +61,7 @@ function App() {
 								<Route path="/swap" element={<IntegrateMiniChat element={<Swap/>}/>} />
 								<Route path="/bridge"element={<IntegrateMiniChat element={<Bridge/>}/>}></Route>
 								<Route path="/alltools" element={<AllTools/>}></Route>
+								<Route path="/portfolio"element={<IntegrateMiniChat element={<Portfolio/>}/>}></Route>
 								<Route path="/test" element={<Testing/>}></Route>
 							</Routes>
 								
