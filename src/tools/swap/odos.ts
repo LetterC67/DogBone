@@ -32,7 +32,7 @@ export async function getOdosSwapQuote({
       },
     ],
     userAddr: receiver,
-    slippageLimitPercent: 0.5,
+    slippageLimitPercent: 1,
     referralCode: 0,
     disableRFQs: true,
     compact: true,

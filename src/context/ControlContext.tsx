@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { sampleToTokens } from "../components/Bridge/sampleToTokens";
 import { sampleFromTokens } from "../components/Bridge/sampleFromTokens";
 import TokenList from "../components/Swap/TokenList"
+import { strategyFunctions } from "../tools/listStrategies";
 
 const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
     address,
@@ -48,12 +49,21 @@ const ControlContext = createContext({
     toAmountSwap: "",
     setToAmountSwap: (amount: string) => {},
     strategyChain: 146,
-    setStrategyChain: (chain: number) => {}
+    setStrategyChain: (chain: number) => {},
+    filteredStrategies: [],
+    setFilteredStrategies: (strategies: any[]) => {},
+    selectedTokens: [],
+    setSelectedTokens: (tokens: string[]) => {},
+    allTokens: [],
+    setAllTokens: (tokens: any[]) => {},
+    agentFilteredStrategies: [],
+    setAgentFilteredStrategies: (strategies: any[]) => {},
 })
 
 export const ControlProvider = ({ children }: { children: React.ReactNode }) => {
     const [strategyTab, setStrategyTab] = useState<string>("Deposit");
     const [strategyAmount, setStrategyAmount] = useState<string>("");
+    const [filteredStrategies, setFilteredStrategies] = useState<any[]>([]);
     const [strategyToken, setStrategyToken] = useState<any>({
         "address": "0x0000000000000000000000000000000000000000",
         "name": "Sonic",
@@ -98,6 +108,11 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
     const [toAmountSwap, setToAmountSwap] = useState<string>('');
 
     const [strategyChain, setStrategyChain] = useState<number>(146);
+    
+    const [allTokens, setAllTokens] = useState<any[]>([]);
+    const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
+
+    const [agentFilteredStrategies, setAgentFilteredStrategies] = useState<any[]>([]);
 
     return (
         <ControlContext.Provider value={{
@@ -132,7 +147,15 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
             toAmountSwap,
             setToAmountSwap,
             strategyChain,
-            setStrategyChain
+            setStrategyChain,
+            filteredStrategies,
+            setFilteredStrategies,
+            selectedTokens,
+            setSelectedTokens,
+            allTokens,
+            setAllTokens,
+            agentFilteredStrategies,
+            setAgentFilteredStrategies
         }}>
             {children}
         </ControlContext.Provider>
