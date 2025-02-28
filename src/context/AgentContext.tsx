@@ -5,6 +5,8 @@ import { getTokenAddressBySymbol } from "../tools/utils/getTokenAddressBySymbol"
 import TokenList from "../tools/tokenList.json"
 import { toast } from "react-toastify";
 import { useData } from "./DataContext";
+import { getTokenBalance } from "../tools/utils/getTokenBalance";
+import { useWallets } from "@privy-io/react-auth";
 
 const tokenList = JSON.parse(JSON.stringify(TokenList))
 
@@ -66,11 +68,17 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setStrategyAmount,
         setStrategyToken,
         setStrategy,
+        setFilteredStrategies,
+        setShowOnlyDeposited,
+        setAgentFilteredStrategies,
+        setStrategyChain
     } = useControl();
 
     const {
         strategyList
     } = useData();
+
+    const { wallets } = useWallets();
 
     function isActionCode(code: string) {
         const actionMethod = ['__SWAP__', '__DEPOSIT__', '__BRIDGE__'];
@@ -84,7 +92,35 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
     }
 
+    function __SET_STRATEGIES__(strategies: any) {
+        setAgentFilteredStrategies(strategies);
+        console.log(strategies);
+        setCurrentNavigation('yield');
+        setIsInStrategyTab(false);
+        setShowOnlyDeposited(false);
+    }
+
+    function __GET_ADDRESS__() {
+        return wallets[0].address;
+    }
+
+    async function __GET_BALANCE__(token: string, chainId: number) {
+        console.log(`Getting balance of ${token} on chain ${chainId}`);
+        let inp = null;
+
+        if (token != null) {
+            inp = await getTokenBySymbol(token, chainId);
+            if (!inp) {
+                __MESSAGE__(`Cannot find token ${token}`);
+                throw new Error(`Cannot find token ${token}`);
+            }
+        }
+
+        return await getTokenBalance(chainId, inp.address, wallets[0].address);
+    }
+
     async function __MESSAGE__(message: string) { 
+        console.log(message);
         if (isAnswering) return;
         setMessages(
             (prev: any) => [...prev, {
@@ -242,7 +278,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setStrategyAmount(amount.toString());
         setStrategyToken(inp);
         setIsInStrategyTab(true);
-
+        setStrategyChain(inputChain);
 
         setStrategy(strategy);
 
@@ -290,8 +326,22 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setIsAnswering(true);
         const reply = await getReply(message);
         
+        console.log(isActionCode(reply), code);
+
         if (!isActionCode(reply)) {
-            eval(reply);
+            eval(`
+                async function run() {
+                    try {
+                        await (async () => {
+                            ${reply}
+                        })();
+                    } catch {
+                    
+                    }
+                }
+                run();
+                `
+            );
         } else {
             if (code != '') {
                 __MESSAGE__("You cannot execute multiple actions at once. Please wait for the current action to finish.");
@@ -304,16 +354,21 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (code) {
+            console.log("Evaluating code");
             eval(`
-                try {
-                    (async () => {
-                        ${code}
-                    })();
-                } catch {
-                
+                async function run() {
+                    try {
+                        await (async () => {
+                            ${code}
+                        })();
+                    } catch {
+                    
+                    } finally {
+                        setCode('');
+                    }
+                    
                 }
-
-                setCode('');
+                run();
                 `
             );
         }

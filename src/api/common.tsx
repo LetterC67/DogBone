@@ -11,7 +11,7 @@ import {
 import { ethers } from 'ethers';
 
 async function getUserBalance(client: any, userAddress: string, tokenAddress: string, chainName: string, lastId = null) {
-    const chain = chainName === "eth" ? mainnet : chainName === "polygon" ? polygon : chainName === "base" ? base : chainName === "arbitrum" ? arbitrum : sonic;
+    const chain = chainName === "eth" ? mainnet : chainName === "polygon" ? polygon : chainName === "base" ? base : chainName === "arb" ? arbitrum : sonic;
     console.log("Get ", client.chainId, chain.id, lastId );
     if (
         (lastId == null && client.chainId.slice(7, client.chainId.length) !== chain.id.toString()) || 

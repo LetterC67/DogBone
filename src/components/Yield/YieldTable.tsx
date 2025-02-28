@@ -52,48 +52,11 @@ const strategies = [
 ]
 
 function YieldTable() {
-    const [allTokens, setAllTokens] = useState<any[]>([]);
-    const [filteredStrategies, setFilteredStrategies] = useState<any[]>([]);
-    const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
     const {strategyList, tokenPriceSonic} = useData();
-    const { setStrategy, setIsInStrategyTab, showOnlyDeposited, setShowOnlyDeposited } = useControl();
+    const { setStrategy, setIsInStrategyTab, showOnlyDeposited, setShowOnlyDeposited, filteredStrategies, setFilteredStrategies, selectedTokens, setSelectedTokens, allTokens} = useControl();
 
-    useEffect(() => {
-        for (const strategy of strategyList) {
-            setAllTokens((prev) => [...prev, strategy.token]);
-        }
 
-        // Unique values
-        setAllTokens((prev) => [...new Set(prev)]);
-    }, [strategyList]);
-
-    useEffect(() => {
-        if (selectedTokens.length != 0) {
-            setFilteredStrategies(strategyList.filter((strategy) => selectedTokens.includes(strategy.token.symbol)));
-        } else {
-            setFilteredStrategies(strategyList);
-        }
-
-        // console.log(showOnlyDeposited);
-        if (showOnlyDeposited) {
-            setFilteredStrategies((prev) => prev.filter((strategy) => strategy.position != 0));
-        }
-    }, [selectedTokens, showOnlyDeposited]);
-
-    useEffect(() => {
-        setFilteredStrategies(strategyList);
-        const _tokens = [];
-
-        if (showOnlyDeposited) {
-            setFilteredStrategies((prev) => prev.filter((strategy) => strategy.position != 0));
-        }
-
-        for (const strategy of strategyList) {
-            _tokens.push(strategy.token);
-        }
-
-        setAllTokens([...new Set(_tokens)]);
-    }, [strategyList]);
+    
 
     function selectStrategy(strategy: any) {
         setStrategy(strategy);
@@ -176,8 +139,8 @@ function YieldTable() {
                                                     element.position == 0 ? 
                                                     '0' 
                                                     : 
-                                                    tokenPriceSonic[element.token.address] 
-                                                    ? (parseFloat(element.position) * tokenPriceSonic[element.token.address]).toFixed(3) : 0
+                                                    tokenPriceSonic[element.token.symbol] 
+                                                    ? (parseFloat(element.position) * tokenPriceSonic[element.token.symbol]).toFixed(3) : 0
                                                     } 
                                                 </span>
                                             </div>

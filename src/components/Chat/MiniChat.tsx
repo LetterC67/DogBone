@@ -6,6 +6,7 @@ function MiniChat() {
     const { agentMessages, isAnswering } = useAgent();
     const [visible, setVisible] = useState(false);
     const [latestAgentMessage, setLatestAgentMessage] = useState<string>('');
+    const [newMessage, setNewMessage] = useState<boolean>(true);
 
     // If no agent message exists, return empty content.
     if (!agentMessages || agentMessages.length === 0) {
@@ -18,17 +19,19 @@ function MiniChat() {
 
     // Trigger animation each time the latest message changes.
     useEffect(() => {
-        console.log("NEW MESSAGES!!");
         setVisible(false);
+        setNewMessage(false);
         const timer = setTimeout(() => {
             setLatestAgentMessage(agentMessages[agentMessages.length - 1]);
+            setNewMessage(true);
         }, 200);
         return () => clearTimeout(timer);
     }, [agentMessages]);
     
     useEffect(() => {
+        if(!newMessage) return;
         setVisible(true);
-    }, [latestAgentMessage]);
+    }, [latestAgentMessage, newMessage]);
 
     return (
         <>

@@ -11,6 +11,7 @@ import { useData } from "../../context/DataContext";
 import { useAgent } from "../../context/AgentContext";
 import useFetchBalance  from "../../hooks/useFetchBalance";
 import { toast } from "react-toastify";
+import { getTokenPriceBySymbol } from "../../tools/utils/getTokenPrice";
 
 function Deposit() {
     const { authenticated, login } = usePrivy();
@@ -35,7 +36,7 @@ function Deposit() {
     const { tokenPriceSonic, getTokenListByChainId } = useData();
     const [tokens, setTokens] = useState<any[]>([]);
 
-    const { userBalance } = useFetchBalance(strategyToken);
+    const { userBalance } = useFetchBalance(strategyToken, strategyChain == 146 ? "sonic" : strategyChain == 137 ? "polygon" : strategyChain == 8453 ? "base" : strategyChain == 42161 ? "arb" : "eth");
 
     const {
         currentAction,
@@ -48,6 +49,23 @@ function Deposit() {
             setTokens(getTokenListByChainId(strategyChain));
         }
     }, [strategyChain]);
+
+    useEffect(() => {
+        let valid = true;
+
+        if (strategyToken && strategyAmount) {
+            getTokenPriceBySymbol(strategyToken.symbol).then((price) => {
+                if (!valid) return;
+                setValueUSD(parseFloat(price) * parseFloat(strategyAmount));
+            });
+        } else {
+            setValueUSD(0);
+        }
+
+        return () => {
+            valid = false;
+        };
+    }, [strategyToken, strategyAmount]);
     
     // useEffect(() => {
     //     console.log(tokens);
@@ -136,7 +154,7 @@ function Deposit() {
                             className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                             >
                             {strategyToken?.logoURI && (
-                                <img src={strategyToken.logoURI} alt={strategyToken.symbol} className="w-6 h-6" />
+                                <img src={strategyToken.logoURI} alt={strategyToken.symbol} className="rounded-full w-6 h-6" />
                             )}
                             <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
                                 {strategyToken?.symbol}

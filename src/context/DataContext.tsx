@@ -9,6 +9,8 @@ import { useWallets } from "@privy-io/react-auth";
 import { getTokenPriceByAddresses } from "../tools/coingecko/getTokenPriceByAddresses";
 import tokenList from "../tools/tokenList.json";
 import { useControl } from "./ControlContext";
+import { getTokenPriceBySymbol } from "../tools/utils/getTokenPrice";
+
 // Create a context
 const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {} });
 
@@ -19,7 +21,7 @@ export const DataProvider = ({ children }) => {
     const [aprList, setAprList] = useState({});
     const [strategyList, setStrategyList] = useState<any[]>([]);
     const [tokenPriceSonic, setTokenPriceSonic] = useState<any>({});
-    const {strategy, setStrategy} = useControl();
+    const {strategy, setStrategy, setFilteredStrategies, selectedTokens, setSelectedTokens, showOnlyDeposited, allTokens, setAllTokens, agentFilteredStrategies, setAgentFilteredStrategies} = useControl();
 
     function getTokenListByChainId(chainId: number) {
         return tokenList.tokens.filter((token) => token.chainId === chainId);
@@ -60,13 +62,57 @@ export const DataProvider = ({ children }) => {
         fetch();
     }, []);
 
+    const { wallets } = useWallets();
+
+    // useEffect(() => {
+    //     setFilteredStrategies(strategyList);
+    //     const _tokens = [];
+
+    //     if (showOnlyDeposited) {
+    //         setFilteredStrategies((prev) => prev.filter((strategy) => strategy.position != 0));
+    //     }
+
+    //     for (const strategy of strategyList) {
+    //         _tokens.push(strategy.token);
+    //     }
+
+    //     setAllTokens([...new Set(_tokens)]);
+    // }, [strategyList]);
+
     useEffect(() => {
-        if (strategy) {
-            setStrategy(strategyList.find((s) => s.name === strategy.name));
+        for (const strategy of strategyList) {
+            setAllTokens((prev) => [...prev, strategy.token]);
         }
+
+        // Unique values
+        setAllTokens((prev) => [...new Set(prev)]);
     }, [strategyList]);
 
-    const { wallets } = useWallets();
+    useEffect(() => {
+        setAgentFilteredStrategies([]);
+    }, [selectedTokens]);
+
+    useEffect(() => {
+        if (selectedTokens.length != 0) {
+            setFilteredStrategies(strategyList.filter((strategy) => selectedTokens.includes(strategy.token.symbol)));
+        } else {
+            setFilteredStrategies(strategyList);
+        }
+        
+        if (agentFilteredStrategies.length != 0) {
+            const newList = [];
+
+            for(const strategy of agentFilteredStrategies) {
+                newList.push(strategyList.find((s) => s.name === strategy.name));
+            }
+            
+            setFilteredStrategies(newList);
+        }
+
+        if (showOnlyDeposited) {
+            setFilteredStrategies((prev) => prev.filter((strategy) => strategy.position != 0));
+        }
+    }, [selectedTokens, showOnlyDeposited, strategyList, agentFilteredStrategies]);
 
     useEffect(() => {
         let valid = true;
@@ -139,21 +185,30 @@ export const DataProvider = ({ children }) => {
     }, [wallets.length]);
 
     useEffect(() => {
+        async function fetchPrice(token) {
+            const price = await getTokenPriceBySymbol(token.symbol);
+            setTokenPriceSonic((prev) => ({ ...prev, [token.symbol]: price }));
+        }
+
         async function fetch() {
-            const tokenAddressList = [];
-            for (const token of sampleToTokens) {
-                tokenAddressList.push(token.address);
-            }
+            // const tokenAddressList = [];
+            // for (const token of sampleToTokens) {
+            //     tokenAddressList.push(token.address);
+            // }
 
-            const price = await getTokenPriceByAddresses(tokenAddressList);
+            // const price = await getTokenPriceBy(tokenAddressList);
 
-            const result: { [address: string]: any } = {};
-            for (let i = 0; i < tokenAddressList.length; i++) {
-                result[tokenAddressList[i]] = price[i];
-            }
+            // const result: { [address: string]: any } = {};
+            // for (let i = 0; i < tokenAddressList.length; i++) {
+            //     result[tokenAddressList[i]] = price[i];
+            // }
             
-            console.log("token price", result);
-            setTokenPriceSonic(result);
+            // console.log("token price", result);
+            // setTokenPriceSonic(result);
+
+            for (const token of sampleToTokens) {
+                fetchPrice(token);
+            }
         }
 
         // fetch every 1 minute
