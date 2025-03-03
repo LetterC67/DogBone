@@ -33,6 +33,8 @@ import { dak, dakmim } from './ichi/test.ts';
 import { getSonicPoints } from './utils/getSonicPoints.ts';
 import { getRingsPoints } from './utils/getRingsPoints.ts';
 import { depositPendle } from './pendle/depositPendle.ts';
+import { viewPendleAPY } from './pendle/viewPendleAPR.ts';
+import { viewPendlePosition } from './pendle/viewPendlePosition.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -421,6 +423,18 @@ export const AllTools = () => {
           })}
         >
           Deposit Pendle
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewPendleAPY("0x6e4e95fab7db1f0524b4b0a05f0b9c96380b7dfa")}
+        >
+          View Pendle APY
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewPendlePosition({vaultAddress: "0x6e4e95fab7db1f0524b4b0a05f0b9c96380b7dfa", userAddress: wallet.address as Address})}
+        >
+          View Pendle Position
         </button>
       </div>
     </div>
