@@ -20,9 +20,11 @@ function usePortfolio() {
     }
 
     useEffect(() => {
-        if (!tokenPriceSonic || !tokenBalanceSonic || !strategyList) {
+        if (!(tokenPriceSonic && tokenBalanceSonic && strategyList)) {
             return;
         }
+
+        let valid = true;
 
         setPortfolio([]);
         let total = 0;
@@ -41,6 +43,7 @@ function usePortfolio() {
             const deposited = totalDeposited(token);
             
             if ((balance != '0' || deposited) && price) {
+                if (!valid) return;
                 setPortfolio((prev) => [
                     ...prev,
                     {
@@ -54,10 +57,15 @@ function usePortfolio() {
                 total += (parseFloat(balance) + parseFloat(deposited)) * parseFloat(price);
             }
 
-            setTotalBalance(total);
         }
+        if (!valid) return;
+        setTotalBalance(total);
 
         console.log("portfolio ", portfolio);
+
+        return () => {
+            valid = false;
+        }
     }, [tokenPriceSonic, tokenBalanceSonic, strategyList]);
     return {portfolio, totalBalance};
 }

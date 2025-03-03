@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import usePortfolio from '../../hooks/usePortfolio';
 import { useData } from '../../context/DataContext';
-import { sonic } from 'wagmi/chains';
+import Navigator from '../Navigator';
 import { usePrivy } from '@privy-io/react-auth';
 
 export default function Portfolio() {
@@ -45,6 +45,7 @@ export default function Portfolio() {
         padding: '2rem'
       }}
     >
+      <Navigator />
       <div className="container h-full" style={{ maxWidth: '1000px', margin: '0 auto' }}>
 
         {/* Summary Cards */}

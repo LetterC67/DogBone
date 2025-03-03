@@ -15,7 +15,7 @@ import { getSonicPoints } from "../tools/utils/getSonicPoints";
 import { getRingsPoints } from "../tools/utils/getRingsPoints";
 
 // Create a context
-const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0});
+const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0, threadID: "" });
 
 
 export const DataProvider = ({ children }) => {
@@ -28,6 +28,7 @@ export const DataProvider = ({ children }) => {
     const {strategy, setStrategy, setFilteredStrategies, selectedTokens, setSelectedTokens, showOnlyDeposited, allTokens, setAllTokens, agentFilteredStrategies, setAgentFilteredStrategies} = useControl();
     const [sonicPoint, setSonicPoint] = useState(0);
     const [ringsPoint, setRingsPoint] = useState(0);
+    const [threadID, setThreadID] = useState("");
     const { wallets } = useWallets();
     
     function getTokenListByChainId(chainId: number) {
@@ -47,6 +48,34 @@ export const DataProvider = ({ children }) => {
     }
 
     useEffect(() => {
+        // Get URL from environment variable
+        const AGENT_URL = import.meta.env.VITE_APP_AGENT_URL;
+        
+        async function getThreadID() {
+            // Get Thread ID from Agent
+            const response = await fetch(`${AGENT_URL}/thread/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "user_address": wallets.length > 0 ? wallets[0].address : "0xANONYMOUS",
+                }),
+            }
+            );
+            const data = await response.json();
+            console.log("thread_id", data.thread_id);
+            return data.thread_id;
+        }
+
+        async function _fetch() {
+            setThreadID(await getThreadID());
+        }
+
+        _fetch();
+    }, [wallets.length]);
+
+    useEffect(() => {
         async function fetch() {
             if (wallets.length === 0) return;
 
@@ -61,7 +90,7 @@ export const DataProvider = ({ children }) => {
 
         const interval = setInterval(() => {
             fetch();
-        }, 60000);
+        }, 360000);
 
         return () => clearInterval(interval);
     }, [wallets.length]);
@@ -201,7 +230,7 @@ export const DataProvider = ({ children }) => {
 
         const interval = setInterval(() => {
             fetch();
-        }, 60000);
+        }, 360000);
 
         // return () => ;
         return () => {
@@ -266,7 +295,7 @@ export const DataProvider = ({ children }) => {
     }, [tokenLists]);
 
     return (
-        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId, tokenBalanceSonic, sonicPoint, ringsPoint }}>
+        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId, tokenBalanceSonic, sonicPoint, ringsPoint, threadID }}>
             {children}
         </DataContext.Provider>
     );

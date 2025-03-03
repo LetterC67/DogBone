@@ -1,9 +1,11 @@
 import { usePrivy } from '@privy-io/react-auth';
 import { FaWallet } from 'react-icons/fa';
+import usePortfolio from '../../hooks/usePortfolio';
 
 function LoginButton() {
     const { ready, authenticated, login, user, logout} = usePrivy();
     const disableLogin = !ready || (ready && authenticated);
+    const { totalBalance } = usePortfolio();
 
     if (ready && !authenticated) {
         return (
@@ -40,7 +42,7 @@ function LoginButton() {
                 <div className="flex items-center gap-2 border-2 text-[var(--less-highlight)] font-[var(--kanit)] px-4 py-2 rounded-lg shadow-md">
                     <FaWallet size={30} />
                     <span className="w-full items-center flex justify-center">
-                        $3883.42
+                        ${totalBalance.toFixed(2)}
                     </span>
                     {/* <span>{user?.id}</span> */}
                 </div>

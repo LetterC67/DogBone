@@ -43,8 +43,7 @@ function ChatInput({maxHeight}: {maxHeight: number}) {
             onKeyDown={handleKeyDown}
             style={{ maxHeight: `${maxHeight}px` }}
             className="w-full pl-6 pr-14 h-14 m-2 py-2  resize-none focus:outline-none overflow-y-auto"
-            placeholder={!authenticated ? 'Login to chat' : 'What you want to do?'}
-            disabled={!authenticated}
+            placeholder={'What you want to do?'}
         />
         <div className="flex flex-col-reverse">
                 <button

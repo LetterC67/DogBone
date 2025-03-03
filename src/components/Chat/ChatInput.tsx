@@ -2,6 +2,7 @@ import { useAgent } from "../../context/AgentContext";
 import { useState, useRef, useEffect } from "react";
 import { MdSend } from "react-icons/md"; // Ensure react-icons is installed
 import { usePrivy } from "@privy-io/react-auth";
+import { getReply } from "../../api/agent";
 
 function ChatInput({maxHeight}: {maxHeight: number}) {
   const { sendMessage } = useAgent();
@@ -19,7 +20,6 @@ function ChatInput({maxHeight}: {maxHeight: number}) {
   }, [message]);
 
   const handleSendMessage = () => {
-    if(!authenticated) return;
     if (message.trim()) {
       sendMessage(message);
       setMessage('');
@@ -43,8 +43,7 @@ function ChatInput({maxHeight}: {maxHeight: number}) {
             onKeyDown={handleKeyDown}
             style={{ maxHeight: `${maxHeight}px` }}
             className={`w-full pl-6 pr-14 h-14 m-2 py-2  resize-none focus:outline-none overflow-y-auto ${!authenticated ? 'hover:cursor-not-allowed' : ''}"`}
-            placeholder={!authenticated ? 'Login to chat' : 'What you want to do?'}
-            disabled={!authenticated}
+            placeholder={ 'What you want to do?'}
         />
         <div className="flex flex-col-reverse">
                 <button

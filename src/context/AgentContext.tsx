@@ -6,8 +6,7 @@ import TokenList from "../tools/tokenList.json"
 import { toast } from "react-toastify";
 import { useData } from "./DataContext";
 import { getTokenBalance } from "../tools/utils/getTokenBalance";
-import { useWallets } from "@privy-io/react-auth";
-
+import { useWallets, usePrivy } from "@privy-io/react-auth";
 const tokenList = JSON.parse(JSON.stringify(TokenList))
 
 
@@ -74,8 +73,11 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setStrategyChain
     } = useControl();
 
+    const { authenticated } = usePrivy();
+
     const {
-        strategyList
+        strategyList,
+        threadID
     } = useData();
 
     const { wallets } = useWallets();
@@ -92,7 +94,19 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
     }
 
-    function __SET_STRATEGIES__(strategies: any) {
+    function containsFunction(code: string) {
+        const actionMethod = ['__SWAP__', '__DEPOSIT__', '__BRIDGE__', '__GET_ADDRESS__', '__GET_BALANCE__'];
+
+        for (const action of actionMethod) {
+            if (code.includes(action)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    async function __SET_STRATEGIES__(strategies: any) {
         setAgentFilteredStrategies(strategies);
         console.log(strategies);
         setCurrentNavigation('yield');
@@ -100,7 +114,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setShowOnlyDeposited(false);
     }
 
-    function __GET_ADDRESS__() {
+    async function __GET_ADDRESS__() {
         return wallets[0].address;
     }
 
@@ -324,24 +338,35 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setUserMessages((prev: any) => [...prev, message]);
         
         setIsAnswering(true);
-        const reply = await getReply(message);
+    
+        const reply = await getReply(message, threadID);
         
         console.log(isActionCode(reply), code);
 
+        if (!authenticated && containsFunction(reply)) {
+            __MESSAGE__("You need to login first.");
+            setIsAnswering(false);
+            return;
+        }
+
         if (!isActionCode(reply)) {
-            eval(`
-                async function run() {
-                    try {
-                        await (async () => {
-                            ${reply}
-                        })();
-                    } catch {
-                    
+            try {
+                eval(`
+                    async function run() {
+                        try {
+                            await (async () => {
+                                ${reply}
+                            })();
+                        } catch {
+                        
+                        }
                     }
-                }
-                run();
-                `
-            );
+                    run();
+                    `
+                );
+            } catch {
+                __MESSAGE__("An error occurred while executing the action.");
+            }
         } else {
             if (code != '') {
                 __MESSAGE__("You cannot execute multiple actions at once. Please wait for the current action to finish.");

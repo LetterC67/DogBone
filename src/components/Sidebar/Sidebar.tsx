@@ -32,6 +32,10 @@ function Sidebar() {
         <>
             <aside className="bg-(--secondary) h-full p-6 flex-col flex justify-between">
                 <div className="flex-col gap-1">
+                    <div className="flex flex-col justify-center items-center gap-3 mb-10">
+                        <img src="https://www.svgrepo.com/show/405231/dog-face.svg" className='w-2/3'></img>
+                        <div style={{fontFamily: "Playwrite IT Moderna"}} className="text-4xl">DogBone</div>
+                    </div>
                     <SidebarContent setActive={setActive} active={active} text="Home" to="/"/>
                     <SidebarContent setActive={setActive} active={active} text="Portfolio" to="/portfolio" />
                     <SidebarContent setActive={setActive} active={active} text="Yield" to="/yield" />

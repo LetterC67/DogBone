@@ -10,6 +10,13 @@ interface TokenConfig {
   chainId: number;
 }
 
+const t = TokenList.tokens.filter((token) => (token.chainId == 146));
+let p = "";
+for (const x of t) {
+  p += x.name + " " + x.symbol + "\n";
+}
+console.log(p);
+
 export function getTokenAddressBySymbol(tokenName: string, chainId: number) {
   const token = tokenList.tokens.find(
     (token: TokenConfig) =>
@@ -19,5 +26,10 @@ export function getTokenAddressBySymbol(tokenName: string, chainId: number) {
   if (token) {
     return token.address;
   }
-  return null;
+
+  const token2 = tokenList.tokens.find(
+    (token: TokenConfig) =>
+      token.address === tokenName && token.chainId === chainId
+  );
+  return token2.address;
 }
