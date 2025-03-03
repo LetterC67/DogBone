@@ -235,6 +235,24 @@ const sampleToTokensData: { [address: string]: Token } = {
     "logoURI": "https://tokens.debridge.finance/Logo/100000014/0xe715cba7b5ccb33790cebff1436809d36cb17e57/small/token-logo.png",
     "tags": [],
     "eip2612": false
+  },
+  "0x9fb76f7ce5fceaa2c42887ff441d46095e494206": {
+    "symbol": "wstkscUSD",
+    "name": "Wrapped Staked Sonic USD",
+    "decimals": 6,
+    "address": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+    "logoURI": "https://tokens.debridge.finance/Logo/100000014/0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae/small/token-logo.png",
+    "tags": [],
+    "eip2612": false
+  },
+  "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47": {
+    "symbol": "wstkscETH",
+    "name": "Wrapped Staked Sonic ETH",
+    "decimals": 18,
+    "address": "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47",
+    "logoURI": "https://tokens.debridge.finance/Logo/100000014/0x3bce5cb273f0f148010bbea2470e7b5df84c7812/small/token-logo.png",
+    "tags": [],
+    "eip2612": false
   }
 };
 

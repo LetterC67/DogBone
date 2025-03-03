@@ -33,6 +33,9 @@ import { NATIVE_TOKEN } from './constants';
 import { depositDogBone_Bone2 } from './dogbone/dogbone_silo_wos_s_wos_looping/deposit_DogBone_Bone2';
 import { getBone1APY } from './dogbone/dogbone_silo_st_s_st_looping/getBone1APY';
 import { getBone2APY } from './dogbone/dogbone_silo_wos_s_wos_looping/getBone2APY';
+import { depositPendle } from './pendle/depositPendle';
+import { viewPendleAPY } from './pendle/viewPendleAPR';
+import { viewPendlePosition } from './pendle/viewPendlePosition';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -110,6 +113,13 @@ export const strategyFunctions = {
     deposit: depositDogBone_Bone2,
     viewAPR: getBone2APY,
     viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged
+  },
+  pendle: {
+    deposit: depositPendle,
+    viewAPR: viewPendleAPY,
+    viewPosition: viewPendlePosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged
   }

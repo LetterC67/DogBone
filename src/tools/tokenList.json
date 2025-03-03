@@ -19899,6 +19899,22 @@
         "address": "0x59524D5667B299c0813Ba3c99a11C038a3908fBC",
         "logoURI": "https://sonicscan.org/token/images/yoko_32.png",
         "chainId": 146
+      },
+      {
+        "symbol": "wstkscUSD",
+        "name": "Wrapped Staked Sonic USD",
+        "decimals": 6,
+        "address": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+        "logoURI": "https://tokens.debridge.finance/Logo/100000014/0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae/small/token-logo.png",
+        "chainId": 146
+      },
+      {
+        "symbol": "wstkscETH",
+        "name": "Wrapped Staked Sonic ETH",
+        "decimals": 18,
+        "address": "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47",
+        "logoURI": "https://tokens.debridge.finance/Logo/100000014/0x3bce5cb273f0f148010bbea2470e7b5df84c7812/small/token-logo.png",
+        "chainId": 146
       }
     ]
   }
