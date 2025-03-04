@@ -33,7 +33,7 @@ function Deposit() {
     const [isRunning, setIsRunning] = useState<boolean>(false);
     const [valueUSD, setValueUSD] = useState<number>(0);
     const { wallets } = useWallets();
-    const { tokenPriceSonic, getTokenListByChainId } = useData();
+    const { tokenPriceSonic, getTokenListByChainId, depositedSonic, refetchPosition } = useData();
     const [tokens, setTokens] = useState<any[]>([]);
 
     const { userBalance } = useFetchBalance(strategyToken, strategyChain == 146 ? "sonic" : strategyChain == 137 ? "polygon" : strategyChain == 8453 ? "base" : strategyChain == 42161 ? "arb" : "eth");
@@ -94,30 +94,31 @@ function Deposit() {
 
             if (resolve) {
                 resolve();
-                toast.success("Deposited successfully",
-                    {
-                        autoClose: 2000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        draggable: true,
-                        progress: undefined,
-                    }
-                );
             }
+            toast.success("Deposited successfully",
+                {
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
+            refetchPosition(strategy);
         } catch(error) {
             console.error(error);
             if (reject) {
                 reject();
-                toast.error("Failed to deposit",
-                    {
-                        autoClose: 2000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        draggable: true,
-                        progress: undefined,
-                    }
-                );
             }
+            toast.error("Failed to deposit",
+                {
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
             setIsRunning(false);
         }
         setIsRunning(false);
@@ -223,7 +224,7 @@ function Deposit() {
                                 Deposited
                             </div>
                             <div className="text-(--higherlight)">
-                                {parseFloat(strategy.position).toFixed(4)}
+                                {depositedSonic[strategy.name] ? parseFloat(depositedSonic[strategy.name]).toFixed(4) : '-'}
                             </div>
                         </div>
                     </div>

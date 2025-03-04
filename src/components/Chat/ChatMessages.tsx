@@ -130,6 +130,7 @@ function ChatMessages() {
                     <div className="justify-center flex flex-wrap flex-row gap-2 w-1/2">
                         <QuickAction content="How can I earn money with my token?"></QuickAction>
                         <QuickAction content="What is special about Sonic chain"></QuickAction>
+                        <QuickAction content="Show me the best strategy for wS token"></QuickAction>
                         <QuickAction content="Write a haiku about DogBone"></QuickAction>
                         <div className="p-2 border-(--divider) border-2 rounded-2xl px-4 hover:bg-(--divider) transition duration-300 hover:cursor-pointer" onClick={login}>
                             Log me in

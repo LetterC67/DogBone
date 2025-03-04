@@ -6,23 +6,31 @@ import { useEffect, useState } from "react";
 const sonicTokens = tokenList.tokens.filter((token) => token.chainId === 146);
 
 function usePortfolio() {
-    const { tokenPriceSonic, tokenBalanceSonic, strategyList } = useData();
+    const { tokenPriceSonic, tokenBalanceSonic, strategyList, depositedSonic } = useData();
     const [totalBalance, setTotalBalance] = useState(0);
     const [portfolio, setPortfolio] = useState<any[]>([]);
+    const [ready, setReady] = useState(false);
 
     function totalDeposited(token: any) {
         return strategyList.reduce((acc, strategy) => {
             if (strategy.token.address === token.address) {
-                return acc + Number(strategy.position);
+                return acc + Number(depositedSonic[strategy.name]);
             }
             return acc;
         }, 0);
     }
 
+    function isEmpty(dict: {}) {
+        return Object.keys(dict).length === 0;
+    }
+
     useEffect(() => {
-        if (!(tokenPriceSonic && tokenBalanceSonic && strategyList)) {
+        if (!(!isEmpty(tokenPriceSonic) && tokenBalanceSonic && strategyList.length > 0 && !isEmpty(depositedSonic))) {
             return;
         }
+
+
+        console.log("deposited ", depositedSonic);
 
         let valid = true;
 
@@ -60,14 +68,14 @@ function usePortfolio() {
         }
         if (!valid) return;
         setTotalBalance(total);
-
-        console.log("portfolio ", portfolio);
+        
+        setReady(true);
 
         return () => {
             valid = false;
         }
     }, [tokenPriceSonic, tokenBalanceSonic, strategyList]);
-    return {portfolio, totalBalance};
+    return {portfolio, totalBalance, ready, tokenPriceSonic, tokenBalanceSonic, depositedSonic};
 }
 
 export default usePortfolio;

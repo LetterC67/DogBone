@@ -34,7 +34,7 @@ const Bone = () => {
 }
 
 function YieldTable() {
-    const {strategyList, tokenPriceSonic} = useData();
+    const {strategyList, tokenPriceSonic, depositedSonic} = useData();
     const { setStrategy, setIsInStrategyTab, showOnlyDeposited, setShowOnlyDeposited, filteredStrategies, setFilteredStrategies, selectedTokens, setSelectedTokens, allTokens} = useControl();
 
 
@@ -130,15 +130,12 @@ function YieldTable() {
                                         <div className="flex flex-row items-center gap-2">
                                             <div className="flex flex-col">
                                                 <span className="text-lg flex flex-row-reverse">
-                                                    {element.position == 0 ? '0' : parseFloat(element.position).toFixed(4)} 
+                                                    {depositedSonic[element.name] ? parseFloat(depositedSonic[element.name]).toFixed(6) : '-'}
                                                 </span>
                                                 <span className="text-sm text-(--highlight) font-light">
                                                     ~${
-                                                    element.position == 0 ? 
-                                                    '0' 
-                                                    : 
-                                                    tokenPriceSonic[element.token.symbol] 
-                                                    ? (parseFloat(element.position) * tokenPriceSonic[element.token.symbol]).toFixed(3) : 0
+                                                    (tokenPriceSonic[element.token.symbol] && depositedSonic[element.name])
+                                                    ? (parseFloat( depositedSonic[element.name]) * tokenPriceSonic[element.token.symbol]).toFixed(2) : 0
                                                     } 
                                                 </span>
                                             </div>

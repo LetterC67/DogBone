@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { useData } from "./DataContext";
 import { getTokenBalance } from "../tools/utils/getTokenBalance";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
+import usePortfolio from "../hooks/usePortfolio";
+
 const tokenList = JSON.parse(JSON.stringify(TokenList))
 
 
@@ -75,6 +77,8 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
     const { authenticated } = usePrivy();
 
+    const { portfolio, totalBalance, tokenPriceSonic: tokenPrice, tokenBalanceSonic: tokenBalance, depositedSonic: depositedAmount } = usePortfolio();
+
     const {
         strategyList,
         threadID
@@ -104,6 +108,13 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         return false;
+    }
+
+    async function __CANCEL__() {
+        if (reject) {
+            reject();
+            __MESSAGE__("Action cancelled.");
+        }
     }
 
     async function __SET_STRATEGIES__(strategies: any) {
@@ -357,8 +368,8 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                             await (async () => {
                                 ${reply}
                             })();
-                        } catch {
-                        
+                        } catch(e) {
+                            console.log(e);
                         }
                     }
                     run();

@@ -16,6 +16,7 @@ import MiniChat from '../Chat/MiniChat';
 import { useAgent } from '../../context/AgentContext';
 import Navigator from '../Navigator';
 import { toast } from 'react-toastify';
+import { useData } from '../../context/DataContext';
 
 // Convert the TokenList object into an array of tokens
 const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
@@ -57,6 +58,8 @@ const Swap: React.FC = () => {
 
     const { userBalance: fromBalance } = useFetchBalance(fromTokenSwap);
     const { userBalance: toBalance } = useFetchBalance(toTokenSwap);
+
+    const { refetchBalance } = useData();
 
     const {
         messages,
@@ -131,30 +134,33 @@ const Swap: React.FC = () => {
             setIsSwapping(false);
             if (resolve) {
                 resolve(result.amountOut);
-                toast.success("Swap successful",
-                    {
-                        autoClose: 2000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        draggable: true,
-                        progress: undefined,
-                    }
-                );
             }
+            toast.success("Swap successful",
+                {
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
+
+            refetchBalance(fromTokenSwap);
+            refetchBalance(toTokenSwap);
         } catch (error) {
             console.error('Error swapping tokens:', error.message);
             if (reject) {
                 reject();
-                toast.error("Swap failed",
-                    {
-                        autoClose: 2000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        draggable: true,
-                        progress: undefined,
-                    }
-                );
             }
+            toast.error("Swap failed",
+                {
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
             setIsSwapping(false);
         }
         // resolve();

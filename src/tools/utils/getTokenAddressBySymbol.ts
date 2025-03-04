@@ -20,16 +20,12 @@ console.log(p);
 export function getTokenAddressBySymbol(tokenName: string, chainId: number) {
   const token = tokenList.tokens.find(
     (token: TokenConfig) =>
-      token.symbol === tokenName && token.chainId === chainId
+      ((token.symbol === tokenName || token.address === tokenName || token.name === tokenName) && token.chainId === chainId)
   );
 
-  if (token) {
-    return token.address;
+  if (!token) {
+    return null;
   }
 
-  const token2 = tokenList.tokens.find(
-    (token: TokenConfig) =>
-      token.address === tokenName && token.chainId === chainId
-  );
-  return token2.address;
+  return token.address;
 }

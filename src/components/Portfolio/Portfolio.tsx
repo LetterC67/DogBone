@@ -1,12 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import usePortfolio from '../../hooks/usePortfolio';
 import { useData } from '../../context/DataContext';
 import Navigator from '../Navigator';
 import { usePrivy } from '@privy-io/react-auth';
 
+
+function BreathingText() {
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setPulse((prev) => !prev);
+    }, 2000); // Pulse every 2 seconds (adjust as needed)
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const textColor = pulse ? 'text-(--accent-2)' : 'text-[#D2ADB8]'; // Highlight pulse
+
+  return (
+    <div
+      className={`text-2xl font-semibold transition-colors duration-2000 ease-in-out ${textColor} p-4 rounded-lg`}
+    >
+      Paws-itively loading your portfolio!
+    </div>
+  );
+}
+
 export default function Portfolio() {
     const [expandedTokens, setExpandedTokens] = useState<string[]>([]);
-    const { portfolio, totalBalance } = usePortfolio();
+    const { portfolio, totalBalance, ready } = usePortfolio();
     const { sonicPoint, ringsPoint } = useData();
     const { authenticated, login } = usePrivy();
 
@@ -35,6 +58,8 @@ export default function Portfolio() {
             </div>
         )
     }
+
+    
 
   return (
     <div
@@ -65,37 +90,47 @@ export default function Portfolio() {
 
         {/* Token List as a Table */}
         <div className="rounded-2xl h-4/5  bg-(--secondary)">
-                <div className="w-full h-full token-list" style={{width:'99%', overflowX: 'auto', overflowY: 'auto'}}>
-                <table
-                    style={{
-                    width: '100%',
-                    borderCollapse: 'collapse',
-                    overflow: 'hidden'
-                    }}
-                    className='rounded-2xl'
-                >
-                    <thead>
-                    <tr style={{ borderBottom: '1px solid var(--divider)' }}>
-                        <th style={{ textAlign: 'left', padding: '1rem 1.5rem' }}>Token</th>
-                        <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Balance</th>
-                        <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Price</th>
-                        <th style={{ textAlign: 'right', padding: '1rem 1.5rem'}} className="w-1/20"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {portfolio.map(asset => (
-                        <TokenRow
-                        key={asset.token.symbol}
-                        token={asset.token}
-                        asset={asset}
-                        isExpanded={expandedTokens.includes(asset.token.symbol)}
-                        onToggle={toggleDetails}
-                        />
-                    ))}
-                    </tbody>
-                </table>
-                </div>
-            </div>
+                  <div className="w-full h-full token-list" style={{width:'99%', overflowX: 'auto', overflowY: 'auto'}}>
+                  {(ready) &&  <table
+                        style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        overflow: 'hidden'
+                        }}
+                        className='rounded-2xl'
+                    >
+                        <thead>
+                        <tr style={{ borderBottom: '1px solid var(--divider)' }}>
+                            <th style={{ textAlign: 'left', padding: '1rem 1.5rem' }}>Token</th>
+                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Balance</th>
+                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Price</th>
+                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem'}} className="w-1/20"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {portfolio.map(asset => (
+                            <TokenRow
+                            key={asset.token.symbol}
+                            token={asset.token}
+                            asset={asset}
+                            isExpanded={expandedTokens.includes(asset.token.symbol)}
+                            onToggle={toggleDetails}
+                            />
+                        ))}
+                        </tbody>
+                    </table>
+                      }
+
+
+                      {!ready && 
+                        <div className="flex items-center justify-center h-full flex-col gap-10 text-2xl">
+                          <div className="w-30 h-30 border-4 border-(--accent-3) border-t-(--highlight) rounded-full animate-spin"></div>
+                          <BreathingText />
+                        </div>
+                      }
+                  </div>
+              </div>
+    
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ import { getSonicPoints } from "../tools/utils/getSonicPoints";
 import { getRingsPoints } from "../tools/utils/getRingsPoints";
 
 // Create a context
-const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0, threadID: "" });
+const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0, threadID: "", depositedSonic: {}, tokenBalanceSonic: {}, refetchBalance: (token) => {}, refetchPosition: (strategy) => {} });
 
 
 export const DataProvider = ({ children }) => {
@@ -25,6 +25,7 @@ export const DataProvider = ({ children }) => {
     const [strategyList, setStrategyList] = useState<any[]>([]);
     const [tokenPriceSonic, setTokenPriceSonic] = useState<any>({});
     const [tokenBalanceSonic, setTokenBalanceSonic] = useState<any>({});
+    const [depositedSonic, setDepositedSonic] = useState<any>({});
     const {strategy, setStrategy, setFilteredStrategies, selectedTokens, setSelectedTokens, showOnlyDeposited, allTokens, setAllTokens, agentFilteredStrategies, setAgentFilteredStrategies} = useControl();
     const [sonicPoint, setSonicPoint] = useState(0);
     const [ringsPoint, setRingsPoint] = useState(0);
@@ -165,127 +166,161 @@ export const DataProvider = ({ children }) => {
         }
 
         if (showOnlyDeposited) {
-            setFilteredStrategies((prev) => prev.filter((strategy) => strategy.position != 0));
+            setFilteredStrategies((prev) => prev.filter((strategy) => depositedSonic[strategy.name] != 0));
         }
     }, [selectedTokens, showOnlyDeposited, strategyList, agentFilteredStrategies]);
 
     useEffect(() => {
-        let valid = true;
-        let cnt = 0;
-
-        async function fetchApr(type: string, address: string, name: string, provider: any, strategy: any) {
-            let apr = 0, point_apr = 0;
-            try {
-                apr = await getVaultAPR(name);
-                point_apr = getVaultPointsAPR(name);
-            } catch (error) {
-                console.log("error", error);
-            }
-            let position = 0;
-            console.log("fetching apr", name);
-            if (wallets.length > 0) {
-                try {
-                    position = await getVaultPosition(wallets[0], name);
-                } catch {
-                    position = 0;
-                }
-            }
-            cnt += 1;
-            console.log("position", position,  typeof position, wallets.length, cnt);
-            return {
-                type: provider.type,
-                name: strategy.name,
-                vault: strategy.vault,
-                token: sampleToTokens.find(
-                    (token) => token.address.toLowerCase() === address.toLowerCase()
-                ),
-                apr: apr,
-                point_apr: point_apr,
-                "provider": Providers.filter((p) => p.name === provider.type)[0],
-                position: position
-            };
+        async function _fetch() {
+            const URL = import.meta.env.VITE_APP_BACKEND_URL;
+            const response = await fetch(`${URL}/apr`);
+            setStrategyList((await response.json()).data);
         }
-        
-        async function fetch() {
-            const promises: Promise<any>[] = [];
-            for (const provider of Strategies) {
-                for (const strategy of provider.lists) {
-                    promises.push(
-                        fetchApr(provider.type, strategy.token, strategy.name, provider, strategy)
-                    );
-                }
-            }
-            console.log("fethed");
-            // Wait for all fetchApr promises to resolve
-            const finalizedData = await Promise.all(promises);
-            console.log("DONE NOW ", valid);
-            // Save the finalized data into strategyList
-            if (valid)
-                setStrategyList(finalizedData);
-            console.log("finalizedData", finalizedData);
+
+        _fetch();
+    }, []);
+
+    
+    // fetch position for a single strategy
+    async function refetchPosition(strategy) {
+        try {
+            const position = await getVaultPosition(wallets[0], strategy.name);
+            // set the position in the state
+            setDepositedSonic((prev) => ({ ...prev, [strategy.name]: position }));
+        } catch(error) {
+            console.log("Error fetching vault position ", error);
+            setDepositedSonic((prev) => ({ ...prev, [strategy.name]: "0" }));
         }
-        
-        console.log("RUN NOW", wallets.length);
-        fetch();
+    }
 
-        const interval = setInterval(() => {
-            fetch();
-        }, 360000);
+    // fetch balance for a single token
+    async function refetchBalance(token) {
+        if (!wallets.length) return null;
 
-        // return () => ;
-        return () => {
-            valid = false;
-            clearInterval(interval);
-        };
-    }, [wallets.length]);
+        const balance = await getTokenBalance(146, token.address, wallets[0].address);
+        setTokenBalanceSonic((prev) => ({ ...prev, [token.address]: balance }));
+    }
 
     useEffect(() => {
-        async function fetchPrice(token) {
-            const price = await getTokenPriceBySymbol(token.symbol);
-            setTokenPriceSonic((prev) => ({ ...prev, [token.symbol]: price }));
+        if (wallets.length === 0) return;
+        if (strategyList.length === 0) return;
+      
+        async function fetchAllPositions() {
+          try {
+            const positionPromises = strategyList.map(async (strategy) => {
+                try {
+                    const position = await getVaultPosition(wallets[0], strategy.name);
+                    return { name: strategy.name, position };
+                } catch(error) {
+                    console.log("Error fetching vault position ", error);
+                    return { name: strategy.name, position: "0" };
+                }
+            });
+      
+            const results = await Promise.all(positionPromises);
+      
+            setDepositedSonic((prev) => {
+              const updated = { ...prev };
+              for (const { name, position } of results) {
+                updated[name] = position;
+              }
+              return updated;
+            });
+          } catch (err) {
+            console.error("Error fetching vault positions:", err);
+          }
         }
+      
+        fetchAllPositions();
+    }, [strategyList, wallets.length]);
+      
 
-        async function fetch() {
-            for (const token of sampleToTokens) {
-                fetchPrice(token);
+    useEffect(() => {
+        async function fetchAllPrices() {
+          try {
+            const pricePromises = sampleToTokens.map(async (token) => {
+            try {
+              const price = await getTokenPriceBySymbol(token.symbol);
+              return { symbol: token.symbol, price };
+            } catch (err) {
+                console.error("Error fetching token price:", err);
+                return { symbol: token.symbol, price: "0" };
             }
+            });
+    
+            const results = await Promise.all(pricePromises);
+    
+            setTokenPriceSonic((prev) => {
+              const updated = { ...prev };
+              for (const { symbol, price } of results) {
+                updated[symbol] = price;
+              }
+              return updated;
+            });
+          } catch (err) {
+            console.error('Error fetching token prices:', err);
+          }
         }
-
-        // fetch every 1 minute
-        fetch();
-
+    
+        fetchAllPrices();
+    
         const interval = setInterval(() => {
-            fetch();
+          fetchAllPrices();
         }, 360000);
-
+    
+        // Clean up
         return () => clearInterval(interval);
     }, []);
 
+    async function refetchBalance(token) {
+        if (!wallets.length) return null;
+
+        const balance = await getTokenBalance(146, token.address, wallets[0].address);
+        setTokenBalanceSonic((prev) => ({ ...prev, [token.address]: balance }));
+    }
+
     useEffect(() => {
-        async function fetchBalance(token) {
-            console.log("fetching balance", token.symbol);
-            const balance = await getTokenBalance(146, token.address, wallets[0].address);
-            setTokenBalanceSonic((prev) => ({ ...prev, [token.address]: balance }));
-            console.log("done fetching balance", token.symbol);
+        // Only fetch if there's at least one wallet
+        if (!wallets.length) return;
+    
+        async function fetchAllBalances() {
+          try {
+            // Map each token to a Promise that retrieves its balance
+            const balancePromises = sampleToTokens.map(async (token) => {
+                try {
+                    const balance = await getTokenBalance(146, token.address, wallets[0].address);
+                    console.log("fetched");
+                    return { address: token.address, balance };
+                } catch (err) {
+                    console.error("Error fetching balance:", err);
+                    return { address: token.address, balance: "0" };
+                }
+            });
+    
+            // Wait until all balances have been fetched
+            const balances = await Promise.all(balancePromises);
+    
+            console.log(balances);
+
+            // Build up a new balance map and update state once
+            setTokenBalanceSonic((prev) => {
+              const updated = { ...prev };
+              for (const { address, balance } of balances) {
+                updated[address] = balance;
+              }
+              return updated;
+            });
+          } catch (err) {
+            console.error("Error fetching balances:", err);
+          }
         }
-
-        async function fetch() {
-            for (const token of sampleToTokens) {
-                fetchBalance(token);
-            }
-        }
-
-        // fetch every 1 minute
-        if(wallets.length > 0)
-            fetch();
-
-        const interval = setInterval(() => {
-            if(wallets.length > 0)
-                fetch();
-        }, 360000);
-
-        return () => clearInterval(interval);
+    
+        fetchAllBalances();
     }, [wallets.length]);
+
+    useEffect(() => {
+        console.log("tokenBalanceSonic", tokenBalanceSonic);
+    }, [tokenBalanceSonic]);
 
 
     useEffect(() => {
@@ -295,7 +330,7 @@ export const DataProvider = ({ children }) => {
     }, [tokenLists]);
 
     return (
-        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId, tokenBalanceSonic, sonicPoint, ringsPoint, threadID }}>
+        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId, tokenBalanceSonic, sonicPoint, ringsPoint, threadID, depositedSonic, refetchBalance, refetchPosition}}>
             {children}
         </DataContext.Provider>
     );

@@ -48,7 +48,7 @@ const Bridge: React.FC = () => {
 
     const { wallets } = useWallets();
     
-	const { tokenLists } = useData();
+	const { tokenLists, refetchBalance } = useData();
     // Modal states
     const [isFromModalOpen, setIsFromModalOpen] = useState<boolean>(false);
     const [isToModalOpen, setIsToModalOpen] = useState<boolean>(false);
@@ -73,6 +73,8 @@ const Bridge: React.FC = () => {
         setToTokenBridge(token);
         setIsToModalOpen(false);
     };
+
+    const [fromError, setFromError] = useState<string | null>(null);
     
     const { userBalance:fromBalance, userBalance2:toBalance } = useFetchTwoBalance(fromTokenBridge, fromChainBridge, toTokenBridge, "146");
     const handleBridge = async () => {
@@ -97,6 +99,7 @@ const Bridge: React.FC = () => {
             setIsBridging(false);
                 if(resolve)
                 resolve(result.amountOut);
+                
                 toast.success("Bridge successful",
                     {
                         autoClose: 2000,
@@ -106,6 +109,8 @@ const Bridge: React.FC = () => {
                         progress: undefined,
                     }
                 );
+
+                refetchBalance(toTokenBridge);
         } catch(err) {
             console.error(err);
             if (reject)
@@ -141,12 +146,17 @@ const Bridge: React.FC = () => {
                 const quote = await createTx(idMap[fromChainBridge], fromTokenBridge["address"], tokenAmount, 100000014, toTokenBridge.address);
               
                 if (quote?.errorCode) {
+                    setFromError(null);
+                    if (quote.errorCode === 12) {
+                        setFromError("Amount too low!");
+                    }
                     setToAmountBridge("");
                     setToUsdValue(0);
                     setFromUsdValue(0);
                     setIsFetchingBridge(false);
                     return;
                 }
+                setFromError(null);
 
                 const outputAmount = ethers.formatUnits(quote?.estimation?.dstChainTokenOut.amount, toTokenBridge.decimals);
                 
@@ -231,7 +241,12 @@ const Bridge: React.FC = () => {
                     <div className="w-full flex flex-row justify-between items-center content-center">
 
                         <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
-                            ~${fromUsdValue.toFixed(2)}
+                            {!fromError && <>~${fromUsdValue.toFixed(2)}</>}
+                            {fromError && 
+                            <div className='text-red-500'>
+                                {fromError}
+                            </div>    
+                            }
                         </div>
                         <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
                             Balance: {fromBalance != null ? parseFloat(fromBalance).toFixed(4) : '-'}
