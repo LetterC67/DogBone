@@ -1,19 +1,28 @@
 import { ConnectedWallet } from '@privy-io/react-auth';
+import { ZAP_CONTRACT } from '../constants';
 
 import {
   getERC20Balance,
   approveERC20,
   checkNeedApproval,
+  getERC20Decimals,
 } from '../utils/erc20Utils';
 
-import { createPublicClient, custom, Address, encodeFunctionData } from 'viem';
+import {
+  createPublicClient,
+  custom,
+  Address,
+  encodeFunctionData,
+  parseUnits,
+} from 'viem';
 import { sonic } from 'viem/chains';
 import BeefyIchiLPList from './beefyIchiLPList.json';
-import BeefyVaultAbi from './beefyVault.abi.json';
-import { depositIchi } from '../ichi/depositIchi';
+import ZapAbi from '../zap.abi.json';
+import { getBeefyIchiFuncSelector } from './getBeefyIchiFuncSelector';
+import { notLeveraged } from '../listStrategies';
 
 const beefyIchiLPList = JSON.parse(JSON.stringify(BeefyIchiLPList));
-const beefyVaultAbi = JSON.parse(JSON.stringify(BeefyVaultAbi));
+const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 
 interface BeefyIchiLPConfig {
   name: string;
@@ -54,54 +63,63 @@ export async function depositIchiLPBeefy({
     transport: custom(provider),
   });
 
-  // DEPOSIT INTO ICHI VAULT TO GET ICHI LP
-  const lpToken = beefyLPConfig.lpToken;
-  const depositIchiTx = await depositIchi({
-    walletClient,
-    vaultAddress: lpToken,
+  const parsedAmountIn = parseUnits(
     amount,
-  });
-  await publicClient.waitForTransactionReceipt({ hash: depositIchiTx });
+    await getERC20Decimals({ publicClient, tokenAddress: beefyLPConfig.token })
+  );
 
-  // DEPOSIT ICHI LP INTO BEEFY
-  const shares = await getERC20Balance({
+  const userBalance = await getERC20Balance({
     publicClient,
     account: userAddr,
-    tokenAddress: lpToken,
+    tokenAddress: beefyLPConfig.token,
   });
 
-  console.log('Share received: ', shares);
+  if (userBalance < parsedAmountIn) {
+    throw new Error('Insufficient balance');
+  }
 
-  if (
-    await checkNeedApproval({
-      publicClient,
-      account: userAddr,
-      tokenAddress: lpToken,
-      spender: vaultAddress,
-      amount: shares,
-    })
-  ) {
+  const needApproval = await checkNeedApproval({
+    publicClient,
+    account: userAddr,
+    tokenAddress: beefyLPConfig.token,
+    spender: ZAP_CONTRACT,
+    amount: parsedAmountIn,
+  });
+
+  if (needApproval) {
     try {
       const approveTx = await approveERC20({
         provider,
-        tokenAddress: lpToken,
-        spender: vaultAddress,
-        amount: shares,
+        tokenAddress: beefyLPConfig.token,
+        spender: ZAP_CONTRACT,
+        amount: parsedAmountIn,
       });
+
       await publicClient.waitForTransactionReceipt({ hash: approveTx });
     } catch (error) {
-      throw new Error('Failed to approve transaction: ' + error);
+      throw new Error('Failed to approve token: ' + error);
     }
   }
 
+  const args = [
+    {
+      vault: vaultAddress,
+      token: beefyLPConfig.token,
+      amount: parsedAmountIn,
+      receiver: userAddr,
+      funcSelector: await getBeefyIchiFuncSelector(vaultAddress),
+      ...notLeveraged('', ''),
+    },
+  ];
+
   const transactionData = encodeFunctionData({
-    abi: beefyVaultAbi,
-    functionName: 'deposit',
-    args: [shares],
+    abi: zapAbi,
+    functionName: 'doStrategy',
+    args: args,
   });
 
   const transactionRequest = {
-    to: vaultAddress,
+    to: ZAP_CONTRACT,
     data: transactionData,
     value: BigInt(0),
   };
@@ -114,6 +132,6 @@ export async function depositIchiLPBeefy({
 
     return transactionHash;
   } catch (error) {
-    throw new Error('Failed to deposit ICHI LP into Beefy: ' + error);
+    throw new Error('Failed to deposit token into Beefy: ' + error);
   }
 }
