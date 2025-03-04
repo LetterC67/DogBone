@@ -71,8 +71,10 @@ export async function debridgeQuote({
         throw new Error("Error in getting Debridge Quote");
     }
 
+    console.log("Debridge Response data:" + JSON.stringify(data));
+
     return {
         transaction: data.tx,
-        amountOut: data.dstChainTokenOut.amount
+        amountOut: data.estimation.dstChainTokenOut.amount
     }
 }

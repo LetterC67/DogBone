@@ -6,9 +6,10 @@ import {
   checkNeedApproval,
 } from '../utils/erc20Utils.ts';
 
-import { createPublicClient, custom, parseUnits, Address, formatUnits } from 'viem';
+import { createPublicClient, custom, parseUnits, Address, formatUnits, http } from 'viem';
 import { debridgeQuote } from './debridge.ts';
 import supportedChains from './supportedChains.json';
+import { sonic } from 'viem/chains';
 
 const chainIdMapping: Record<string, string> = JSON.parse(
   JSON.stringify(supportedChains)
@@ -120,8 +121,13 @@ export async function bridge({
 
     await publicClient.waitForTransactionReceipt({ hash: transactionHash });
 
+    const sonicPublicClient = createPublicClient({
+      chain: sonic,
+      transport: http()
+    });
+
     const tokenOutDecimal = await getERC20Decimals({
-      publicClient,
+      publicClient: sonicPublicClient,
       tokenAddress: dstChainTokenOut,
     });
 
