@@ -1,6 +1,6 @@
 import { Address, createPublicClient, http, parseUnits, PublicClient } from "viem";
 import TokenList from "../tokenList.json";
-import { mainnet, arbitrum, polygon, bsc, base, sonic } from "viem/chains";
+import { mainnet, arbitrum, polygon, bsc, base, sonic, optimism } from "viem/chains";
 import { getOdosSwapQuote } from "../swap/odos";
 import { getERC20Decimals } from "./erc20Utils";
 
@@ -23,6 +23,7 @@ const WSTK_SCUSD = "0x9fb76f7ce5fceaa2c42887ff441d46095e494206" as Address;
 const WSTK_SCETH = "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47" as Address;
 const SCUSD = "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE" as Address;
 const SCETH = "0x3bcE5CB273F0F148010BbEa2470e7b5df84C7812" as Address;
+const OPTIMISM_USDCE = "0x7F5c764cBc14f9669B88837ca1490cCa17c31607" as Address;
 
 
 // Create a mapping between chain id and its stablecoin
@@ -32,7 +33,8 @@ const stablecoinMapping: Record<number, Address> = {
     137: POLYGON_USDT,
     56: BSC_USDT,
     8453: BASE_USDC,
-    146: SONIC_USDC
+    146: SONIC_USDC,
+    10: OPTIMISM_USDCE
 }
 
 // create a mapping betwwen chain id and its viem config
@@ -42,7 +44,8 @@ const chainMapping = {
     137: polygon,
     56: bsc,
     8453: base,
-    146: sonic
+    146: sonic,
+    10: optimism
 }
 
 
@@ -60,7 +63,13 @@ export async function getTokenPriceBySymbol(tokenSymbol: string) {
 }
 
 export async function getTokenPriceByAddress(token: Address, chainId: number) {
+    console.log("?????????????????????");
+    console.log(token);
+    console.log(stablecoinMapping[chainId]);
     if (token === stablecoinMapping[chainId]) {
+        console.log("?????????????????????");
+        console.log(token);
+        console.log(stablecoinMapping[chainId]);
         return String(1);
     }
 
