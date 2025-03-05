@@ -83,7 +83,7 @@ const Swap: React.FC = () => {
         const fetch = async () => {
             const fetchQuote = async () => {
                 setIsFetchingPrice(true);
-                const inputAmount = ethers.parseUnits(fromAmountSwap, fromTokenSwap.decimals);
+                const inputAmount = ethers.parseUnits((Number(fromAmountSwap).toFixed(6)).toString(), fromTokenSwap.decimals);
                 const response = await getQuote({
                     inputToken: fromTokenSwap.address,
                     outputToken: toTokenSwap.address,

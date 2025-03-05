@@ -325,6 +325,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(1);
                     setResolve(null);
+                    setReject(null);
                 }
             );
             setReject(() => 
@@ -334,6 +335,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await new Promise(r => setTimeout(r, 2000));
                     reject(1);
                     setReject(null);
+                    setResolve(null);
                 });
         });
 
@@ -379,8 +381,9 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                 __MESSAGE__("An error occurred while executing the action.");
             }
         } else {
-            if (code != '') {
-                __MESSAGE__("You cannot execute multiple actions at once. Please wait for the current action to finish.");
+            console.log(code);
+            if (code != '' || reject || resolve) {
+                __MESSAGE__("You cannot execute multiple actions at once. Please wait for the current action to finish or cancel it.");
             } else {
                 setCode(reply);
             }
