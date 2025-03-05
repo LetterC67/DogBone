@@ -132,7 +132,7 @@ function YieldTable() {
                                                 <span className="text-lg flex flex-row-reverse">
                                                     {depositedSonic[element.name] ? parseFloat(depositedSonic[element.name]).toFixed(6) : '-'}
                                                 </span>
-                                                <span className="text-sm text-(--highlight) font-light">
+                                                <span className="text-sm text-(--highlight) font-light flex flex-row-reverse">
                                                     ~${
                                                     (tokenPriceSonic[element.token.symbol] && depositedSonic[element.name])
                                                     ? (parseFloat( depositedSonic[element.name]) * tokenPriceSonic[element.token.symbol]).toFixed(2) : 0

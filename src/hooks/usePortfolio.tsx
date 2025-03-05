@@ -25,6 +25,10 @@ function usePortfolio() {
     }
 
     useEffect(() => {
+        console.log(isEmpty(tokenPriceSonic), tokenBalanceSonic, strategyList.length, isEmpty(depositedSonic));
+
+        console.log(depositedSonic);
+
         if (!(!isEmpty(tokenPriceSonic) && tokenBalanceSonic && strategyList.length > 0 && !isEmpty(depositedSonic))) {
             return;
         }
@@ -39,7 +43,7 @@ function usePortfolio() {
 
     
         for (const token of sonicTokens) {
-            const balance = tokenBalanceSonic[token.address];
+            const balance = tokenBalanceSonic[token.symbol];
             let price;
 
             try {
@@ -48,7 +52,9 @@ function usePortfolio() {
                 console.log("Price not found for ", token.symbol);
             }
 
+            
             const deposited = totalDeposited(token);
+            console.log(deposited, token.symbol, price, token.address);
             
             if ((balance != '0' || deposited) && price) {
                 if (!valid) return;
@@ -74,7 +80,7 @@ function usePortfolio() {
         return () => {
             valid = false;
         }
-    }, [tokenPriceSonic, tokenBalanceSonic, strategyList]);
+    }, [tokenPriceSonic, tokenBalanceSonic, strategyList, depositedSonic]);
     return {portfolio, totalBalance, ready, tokenPriceSonic, tokenBalanceSonic, depositedSonic};
 }
 

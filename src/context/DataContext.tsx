@@ -9,10 +9,11 @@ import { useWallets } from "@privy-io/react-auth";
 import { getTokenPriceByAddresses } from "../tools/coingecko/getTokenPriceByAddresses";
 import tokenList from "../tools/tokenList.json";
 import { useControl } from "./ControlContext";
-import { getTokenPriceBySymbol } from "../tools/utils/getTokenPrice";
+import { getTokenPriceBySymbol, getTokenPriceByAddress } from "../tools/utils/getTokenPrice";
 import { getTokenBalance } from "../tools/utils/getTokenBalance";
 import { getSonicPoints } from "../tools/utils/getSonicPoints";
 import { getRingsPoints } from "../tools/utils/getRingsPoints";
+import { getPrice } from "../api/Odos";
 
 // Create a context
 const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0, threadID: "", depositedSonic: {}, tokenBalanceSonic: {}, refetchBalance: (token) => {}, refetchPosition: (strategy) => {} });
@@ -208,16 +209,19 @@ export const DataProvider = ({ children }) => {
         async function fetchAllPositions() {
           try {
             const positionPromises = strategyList.map(async (strategy) => {
+                console.log(strategy.name);
                 try {
                     const position = await getVaultPosition(wallets[0], strategy.name);
-                    return { name: strategy.name, position };
+                    return { name: strategy.name, position: position.toString() };
                 } catch(error) {
+                    console.log(strategy.name);
                     console.log("Error fetching vault position ", error);
                     return { name: strategy.name, position: "0" };
                 }
             });
       
             const results = await Promise.all(positionPromises);
+            console.log("done fetching");
       
             setDepositedSonic((prev) => {
               const updated = { ...prev };
@@ -226,6 +230,8 @@ export const DataProvider = ({ children }) => {
               }
               return updated;
             });
+
+            console.log(results);
           } catch (err) {
             console.error("Error fetching vault positions:", err);
           }
@@ -233,34 +239,41 @@ export const DataProvider = ({ children }) => {
       
         fetchAllPositions();
     }, [strategyList, wallets.length]);
+
+    useEffect(() => {
+        console.log("depositedSonic", depositedSonic);
+    }, [depositedSonic]);
       
 
     useEffect(() => {
         async function fetchAllPrices() {
-          try {
-            const pricePromises = sampleToTokens.map(async (token) => {
-            try {
-              const price = await getTokenPriceBySymbol(token.symbol);
-              return { symbol: token.symbol, price };
-            } catch (err) {
-                console.error("Error fetching token price:", err);
-                return { symbol: token.symbol, price: "0" };
-            }
-            });
-    
-            const results = await Promise.all(pricePromises);
-    
-            setTokenPriceSonic((prev) => {
-              const updated = { ...prev };
-              for (const { symbol, price } of results) {
-                updated[symbol] = price;
-              }
-              return updated;
-            });
-          } catch (err) {
-            console.error('Error fetching token prices:', err);
-          }
+            const prices = await getPrice();
+            // console.log(prices);
+            // convert key tolower
+
+            let prices_ = Object.fromEntries(
+                Object.entries(prices).map(([key, value]) => [key.toLowerCase(), value])
+            );
+
+            prices_["0x9fb76f7ce5fceaa2c42887ff441d46095e494206" ] = 1;
+            prices_["0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47"] = prices_["0x50c42deacd8fc9773493ed674b675be577f2634b"];
+            const btcPrice = await getTokenPriceByAddress("0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", 1);
+            prices_["0xCC0966D8418d412c599A6421b760a847eB169A8c"] = btcPrice;
+            prices_["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77"] = btcPrice;
+
+            const result = Object.fromEntries(
+                Object.entries(prices_).map(([address, price]) => {
+                  const token = tokenList.tokens.find((token) => token.address === address && token.chainId === 146);
+                  const symbol = token ? token.symbol : address; // fallback to address if no symbol found
+                  return [symbol, price];
+                })
+              );
+            setTokenPriceSonic(result);
+
+            console.log(result);
+
         }
+
     
         fetchAllPrices();
     
@@ -272,12 +285,6 @@ export const DataProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, []);
 
-    async function refetchBalance(token) {
-        if (!wallets.length) return null;
-
-        const balance = await getTokenBalance(146, token.address, wallets[0].address);
-        setTokenBalanceSonic((prev) => ({ ...prev, [token.address]: balance }));
-    }
 
     useEffect(() => {
         // Only fetch if there's at least one wallet
@@ -290,10 +297,10 @@ export const DataProvider = ({ children }) => {
                 try {
                     const balance = await getTokenBalance(146, token.address, wallets[0].address);
                     console.log("fetched");
-                    return { address: token.address, balance };
+                    return { symbol: token.symbol, balance };
                 } catch (err) {
                     console.error("Error fetching balance:", err);
-                    return { address: token.address, balance: "0" };
+                    return { address: token.symbol, balance: "0" };
                 }
             });
     
@@ -305,8 +312,8 @@ export const DataProvider = ({ children }) => {
             // Build up a new balance map and update state once
             setTokenBalanceSonic((prev) => {
               const updated = { ...prev };
-              for (const { address, balance } of balances) {
-                updated[address] = balance;
+              for (const { symbol, balance } of balances) {
+                updated[symbol] = balance;
               }
               return updated;
             });

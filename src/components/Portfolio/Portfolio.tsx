@@ -91,7 +91,7 @@ export default function Portfolio() {
         {/* Token List as a Table */}
         <div className="rounded-2xl h-4/5  bg-(--secondary)">
                   <div className="w-full h-full token-list" style={{width:'99%', overflowX: 'auto', overflowY: 'auto'}}>
-                  {(ready) &&  <table
+                  {ready &&  <table
                         style={{
                         width: '100%',
                         borderCollapse: 'collapse',

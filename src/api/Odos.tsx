@@ -39,6 +39,19 @@ async function getQuote({ inputToken, outputToken, inputAmount }: { inputToken: 
     }
 }
 
+async function getPrice() {
+    const price_url = `${URL}/pricing/token/146`;
+
+    const response = await fetch(price_url);
+    
+    const data = await response.json();
+    console.log(data);
+
+    return data.tokenPrices;
+}
+
+
 export {
-    getQuote
+    getQuote,
+    getPrice
 }
