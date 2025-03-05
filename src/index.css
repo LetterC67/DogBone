@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
 	--background	: #11070C;
@@ -158,4 +159,9 @@ input::-webkit-inner-spin-button {
 .Toastify__toast {
 	font-family: 'Montserrat', sans-serif;
 	width: 360px;
+}
+
+.prose,
+.prose * {
+  color: var(--primary) !important;
 }

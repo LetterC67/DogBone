@@ -39,7 +39,9 @@ function ChatMessageItem({ message, attachRef }: ChatMessageItemProps) {
             ${message.isUser ? "bg-(--accent)" : ""}
             ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
         >
+            <div className="text-[--primary] prose prose-lg prose-p:text-white-500">
             <Markdown>{message.message}</Markdown>
+            </div>
         </div>
         </div>
   );

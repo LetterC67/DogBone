@@ -9,6 +9,9 @@ module.exports = {
           primary: "#FF00FF",
           background: "#FFFFFF",
         },
+        typography: () => ({
+          '--primary': "#ECECEC",
+        }),
       },
     },
     plugins: [

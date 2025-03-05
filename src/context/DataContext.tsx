@@ -257,20 +257,20 @@ export const DataProvider = ({ children }) => {
 
             prices_["0x9fb76f7ce5fceaa2c42887ff441d46095e494206" ] = 1;
             prices_["0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47"] = prices_["0x50c42deacd8fc9773493ed674b675be577f2634b"];
-            const btcPrice = await getTokenPriceByAddress("0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", 1);
+            const btcPrice = await getTokenPriceByAddress("0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", 146);
             prices_["0xCC0966D8418d412c599A6421b760a847eB169A8c"] = btcPrice;
             prices_["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77"] = btcPrice;
 
             const result = Object.fromEntries(
                 Object.entries(prices_).map(([address, price]) => {
-                  const token = tokenList.tokens.find((token) => token.address === address && token.chainId === 146);
+                  const token = tokenList.tokens.find((token) => token.address.toLowerCase() === address.toLowerCase() && token.chainId === 146);
                   const symbol = token ? token.symbol : address; // fallback to address if no symbol found
                   return [symbol, price];
                 })
               );
             setTokenPriceSonic(result);
 
-            console.log(result);
+            console.log("price ", result);
 
         }
 
