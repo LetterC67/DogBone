@@ -2,6 +2,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useAgent } from "../../context/AgentContext";
 import { useRef, useEffect, useState } from "react";
 import Markdown from "react-markdown";
+import TipsBox from "../Common/TipSection";
 
 interface ChatMessageItemProps {
   message: any;
@@ -163,16 +164,23 @@ function ChatMessages() {
             })}
             {/* Show the thinking indicator if agent is answering */}
             {isAnswering && (
-            <div className="flex items-center p-2 justify-start">
-                <img
-                src="https://www.svgrepo.com/show/405231/dog-face.svg"
-                alt="Agent Avatar"
-                className="w-8 h-8 mr-2"
-                />
-                <div className="p-2 inline-block rounded-4xl">
-                <span className="animate-pulse">Agent is thinking...</span>
-                </div>
-            </div>
+                <>
+                    <div className="flex items-center p-2 justify-start">
+                        <div className="w-10 h-full flex flex-start">
+                            <img
+                            src="https://www.svgrepo.com/show/405231/dog-face.svg"
+                            alt="Agent Avatar"
+                            className="w-8 h-8 mr-2"
+                            />
+                        </div>
+                        <div className="p-2 inline-block rounded-4xl">
+                            <span className="animate-pulse">
+                                Agent is thinking...
+                            </span>
+                        </div>
+                    </div>
+                    <TipsBox/>
+                </>
             )}
         </div>
         </div>

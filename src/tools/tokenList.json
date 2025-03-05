@@ -19685,15 +19685,6 @@
         "chainId": 146
       },
       {
-
-        "symbol": "S",
-        "name": "Sonic",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000",
-        "logoURI": "https://tokens.debridge.finance/Logo/100000014/0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38/small/token-logo.svg",
-        "chainId": 146
-      },
-      {
         "symbol": "wS",
         "name": "Wrapped Sonic",
         "decimals": 18,
