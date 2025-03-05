@@ -3,7 +3,6 @@ import TokenList from "../tokenList.json";
 import { mainnet, arbitrum, polygon, bsc, base, sonic } from "viem/chains";
 import { getOdosSwapQuote } from "../swap/odos";
 import { getERC20Decimals } from "./erc20Utils";
-import { getTokenPriceByAddresses } from "../coingecko/getTokenPriceByAddresses";
 
 interface TokenConfig {
     name: string;
@@ -18,6 +17,13 @@ const BASE_USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as Address;
 const POLYGON_USDT = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F" as Address;
 const BSC_USDT = "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d" as Address;
 const SONIC_USDC = "0x29219dd400f2Bf60E5a23d13Be72B486D4038894" as Address;
+const SOLV_BTC_BBN = "0xCC0966D8418d412c599A6421b760a847eB169A8c" as Address;
+const SOLV_BTC = "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77" as Address;
+const WSTK_SCUSD = "0x9fb76f7ce5fceaa2c42887ff441d46095e494206" as Address;
+const WSTK_SCETH = "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47" as Address;
+const SCUSD = "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE" as Address;
+const SCETH = "0x3bcE5CB273F0F148010BbEa2470e7b5df84C7812" as Address;
+
 
 // Create a mapping between chain id and its stablecoin
 const stablecoinMapping: Record<number, Address> = {
@@ -56,6 +62,26 @@ export async function getTokenPriceBySymbol(tokenSymbol: string) {
 export async function getTokenPriceByAddress(token: Address, chainId: number) {
     if (token === stablecoinMapping[chainId]) {
         return String(1);
+    }
+
+    if (token == SOLV_BTC || token == SOLV_BTC_BBN) {
+        const getQuote = await getOdosSwapQuote({
+            receiver: "0x4393B9f79ab8E2e683F693E8aAD971814bf0d572",
+            chainId: 1,
+            tokenIn: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+            tokenOut: stablecoinMapping[1],
+            amountIn: parseUnits("1", 8)
+        });
+
+        return String(getQuote.outValues[0]);
+    }
+
+    if (token == WSTK_SCUSD) {
+        token = SCUSD;
+    }
+
+    if (token == WSTK_SCETH) {
+        token = SCETH;
     }
 
     const publicClient = createPublicClient({

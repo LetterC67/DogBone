@@ -19915,6 +19915,14 @@
         "address": "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47",
         "logoURI": "https://tokens.debridge.finance/Logo/100000014/0x3bce5cb273f0f148010bbea2470e7b5df84c7812/small/token-logo.png",
         "chainId": 146
+      },
+      {
+        "symbol": "wOS",
+        "name": "Wrapped Origin Sonic",
+        "decimal": 18,
+        "address": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1",
+        "logoURI": "https://sonicscan.org/token/images/wos_64.svg",
+        "chainId": 146
       }
     ]
   }
