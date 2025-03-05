@@ -19,9 +19,9 @@ const tips = [
 
 const BASE_DURATION = 1000; // base duration in ms
 const PER_CHAR_DURATION = 25; // additional ms per character
-
 const TipSection = () => {
-  const [currentTipIndex, setCurrentTipIndex] = useState(0);
+  const randomIndex = Math.floor(Math.random() * tips.length);
+  const [currentTipIndex, setCurrentTipIndex] = useState(randomIndex);
   const [fade, setFade] = useState('opacity-100');
 
   useEffect(() => {
