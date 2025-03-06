@@ -112,8 +112,13 @@ function YieldTable() {
                                             <span className="text-lg">
                                                 {element.name}
                                             </span>
-                                            <span className="text-sm text-(--highlight) font-light">
-                                                {element.provider.full_name}
+                                            <span className="text-sm text-(--highlight) font-light flex flex-row gap-1">
+                                                {element.provider.full_name} 
+                                                <span>
+                                                    {(element.risk == 'low') && <span className="text-(--success) bg-[#2E4435] text-[#A7D7AC] px-1 rounded-full"> Low Risk</span>}
+                                                    {(element.risk == 'medium') && <span className="text-(--highlight) bg-[#5A4A2F] text-[#E3D7A4] px-1 rounded-full"> Medium Risk</span>}
+                                                    {(element.risk == 'high') && <span className="text-(--error) bg-[#5A2E30] text-[#E7A6A9] px-1 rounded-full"> High Risk</span>}
+                                                </span>
                                             </span>
                                         </div>
                                     </div>

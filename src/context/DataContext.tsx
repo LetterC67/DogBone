@@ -147,7 +147,7 @@ export const DataProvider = ({ children }) => {
 
     useEffect(() => {
         setAgentFilteredStrategies([]);
-    }, [selectedTokens]);
+    }, [selectedTokens, showOnlyDeposited]);
 
     useEffect(() => {
         if (selectedTokens.length != 0) {
@@ -307,7 +307,7 @@ export const DataProvider = ({ children }) => {
             // Wait until all balances have been fetched
             const balances = await Promise.all(balancePromises);
     
-            console.log(balances);
+            console.log("balances ", balances);
 
             // Build up a new balance map and update state once
             setTokenBalanceSonic((prev) => {

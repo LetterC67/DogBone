@@ -41,7 +41,7 @@ function MiniChat() {
                     {/* Latest agent message with avatar and animation */}
                     {!isAnswering && <div className="w-full flex items-center  overflow-y-auto">
                         <img
-                            src="https://www.svgrepo.com/show/405231/dog-face.svg"
+                            src="https://iili.io/3FsujwX.md.png"
                             alt="Agent Avatar"
                             className="w-6 h-6 mr-2"
                         />
@@ -60,7 +60,7 @@ function MiniChat() {
                     {isAnswering && (
                     <div className="w-full flex items-center">
                         <img
-                        src="https://www.svgrepo.com/show/405231/dog-face.svg"
+                        src="https://iili.io/3FsujwX.md.png"
                         alt="Agent Avatar"
                         className="w-6 h-6 mr-2"
                         />

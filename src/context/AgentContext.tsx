@@ -72,7 +72,8 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setFilteredStrategies,
         setShowOnlyDeposited,
         setAgentFilteredStrategies,
-        setStrategyChain
+        setStrategyChain,
+        setStrategyTab
     } = useControl();
 
     const { authenticated } = usePrivy();
@@ -87,7 +88,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     const { wallets } = useWallets();
 
     function isActionCode(code: string) {
-        const actionMethod = ['__SWAP__', '__DEPOSIT__', '__BRIDGE__'];
+        const actionMethod = ['__SWAP__', '__DEPOSIT__', '__BRIDGE__', '__WITHDRAW__'];
 
         for (const action of actionMethod) {
             if (code.includes(action)) {
@@ -99,7 +100,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     function containsFunction(code: string) {
-        const actionMethod = ['__SWAP__', '__DEPOSIT__', '__BRIDGE__', '__GET_ADDRESS__', '__GET_BALANCE__'];
+        const actionMethod = ['__SWAP__', '__DEPOSIT__', '__BRIDGE__', '__WITHDRAW__', '__GET_ADDRESS__', '__GET_BALANCE__'];
 
         for (const action of actionMethod) {
             if (code.includes(action)) {
@@ -201,6 +202,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await __MESSAGE__("Swapped successfully!")
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(amount);
+                    setReject(null);
                     setResolve(null);
                 }
             );
@@ -209,8 +211,9 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__("Swap failed!");
                     await new Promise(r => setTimeout(r, 2000));
-                    reject(1);
+                    reject("Swap failed!");
                     setReject(null);
+                    setResolve(null);
                 });
         });
     }
@@ -261,6 +264,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(amount);
                     setResolve(null);
+                    setReject(null);
                 }
             );
             setReject(() => 
@@ -268,8 +272,57 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__("Bridge failed!");
                     await new Promise(r => setTimeout(r, 2000));
-                    reject(1);
+                    reject("Bridge failed!");
                     setReject(null);
+                    setResolve(null);
+                });
+        });
+    }
+
+    async function __WITHDRAW__(strategyName, amount, message) {
+        console.log(`Withdrawing ${amount} from ${strategyName}`);
+
+        const strategy = strategyList.find((strategy) => strategy.name === strategyName);
+
+        if (!strategy) {
+            __MESSAGE__(`Cannot find strategy ${strategyName}`);
+            throw new Error(`Cannot find strategy ${strategyName}`);
+        }
+
+        setStrategyAmount(amount.toString());
+        setStrategy(strategy);
+        setIsInStrategyTab(true);
+        setStrategyTab("Withdraw");
+
+        setCurrentAction('Withdraw');
+        setCurrentNavigation('yield');
+
+        await __MESSAGE__(message);
+
+        const toastId = toast.loading("Waiting user to withdraw...", {
+            closeOnClick: false, // Prevent closing on click
+            draggable: false, // Disable drag to dismiss
+        });
+
+        return new Promise((resolve, reject) => {
+            setResolve(() => 
+                async () => {
+                    toast.dismiss(toastId);
+                    await __MESSAGE__("Withdrawn successfully!")
+                    await new Promise(r => setTimeout(r, 2000));
+                    resolve(1);
+                    setResolve(null);
+                    setReject(null);
+                }
+            );
+            setReject(() => 
+                async () => {
+                    toast.dismiss(toastId);
+                    await __MESSAGE__("Withdraw failed!");
+                    await new Promise(r => setTimeout(r, 2000));
+                    reject("Withdraw failed!");
+                    setReject(null);
+                    setResolve(null);
                 });
         });
     }
@@ -300,6 +353,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         // console.log(strategyToken);
 
 
+        setStrategyTab("Deposit");
         setStrategyAmount(amount.toString());
         setStrategyToken(inp);
         setIsInStrategyTab(true);
@@ -307,7 +361,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
         setStrategy(strategy);
 
-        setCurrentAction('yield');
+        setCurrentAction('Deposit');
         setCurrentNavigation('yield');
 
         await __MESSAGE__(message);
@@ -333,13 +387,22 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__("Deposit failed!");
                     await new Promise(r => setTimeout(r, 2000));
-                    reject(1);
+                    reject("Deposit failed!");
                     setReject(null);
                     setResolve(null);
                 });
         });
 
     }
+
+    function isValidJavaScript(code) {
+        try {
+          new Function(code);
+          return { valid: true };
+        } catch (err) {
+          return { valid: false, error: err.message };
+        }
+      }
 
     async function sendMessage(message: string) {
         if (isAnswering) return;
@@ -355,6 +418,12 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         const reply = await getReply(message, threadID);
         
         console.log(isActionCode(reply), code);
+
+        if (!isValidJavaScript(reply).valid) {
+            __MESSAGE__(reply);
+            setIsAnswering(false);
+            return;
+        }
 
         if (!authenticated && containsFunction(reply)) {
             __MESSAGE__("You need to login first.");

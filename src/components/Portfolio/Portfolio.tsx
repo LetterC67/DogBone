@@ -3,6 +3,8 @@ import usePortfolio from '../../hooks/usePortfolio';
 import { useData } from '../../context/DataContext';
 import Navigator from '../Navigator';
 import { usePrivy } from '@privy-io/react-auth';
+import { useNavigate } from "react-router-dom";
+import { useControl } from '../../context/ControlContext';
 
 
 function BreathingText() {
@@ -104,7 +106,10 @@ export default function Portfolio() {
                             <th style={{ textAlign: 'left', padding: '1rem 1.5rem' }}>Token</th>
                             <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Balance</th>
                             <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Price</th>
+              
+                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem'}} className=""></th>
                             <th style={{ textAlign: 'right', padding: '1rem 1.5rem'}} className="w-1/20"></th>
+
                         </tr>
                         </thead>
                         <tbody>
@@ -211,6 +216,9 @@ function TokenRow({
   isExpanded: boolean;
   onToggle: (symbol: string) => void;
 }) {
+  const navigate = useNavigate();
+  const { setSelectedTokens, setIsInStrategyTab } = useControl();
+
   return (
     <>
       <tr
@@ -248,6 +256,15 @@ function TokenRow({
             }}
           >
             -
+          </div>
+        </td>
+        <td style={{ padding: '1rem 1.5rem', textAlign: 'center' }}>
+          <div className="bg-(--accent) text-white rounded-4xl p-2 hover:bg-(--accent-2) transition duration-300 hover:cursor-pointer" onClick={() => {
+            setSelectedTokens([token.symbol]);
+            setIsInStrategyTab(false);
+            navigate(`/yield`);
+          }}>
+            Earn
           </div>
         </td>
         <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>

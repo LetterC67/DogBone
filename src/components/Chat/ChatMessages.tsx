@@ -112,7 +112,7 @@ function ChatMessages() {
             className="w-full p-4 h-full overflow-y-auto rounded-4xl flex flex-col items-center justify-center"
             >
                     <div className="text-4xl mb-8 flex flex-row gap-2">
-                        <img src="https://www.svgrepo.com/show/405231/dog-face.svg" className='w-10'></img>
+                        <img src="https://iili.io/3FsujwX.md.png" className='w-10'></img>
                         {displayGreeting()},
                         <span>
                             {wallets.length > 0 && <>{` ${wallets[0].address.substring(0, 4)}...${wallets[0].address.substring(37,41)}`}</>}
@@ -168,7 +168,7 @@ function ChatMessages() {
                     <div className="flex items-center p-2 justify-start">
                         <div className="w-10 h-full flex flex-start">
                             <img
-                            src="https://www.svgrepo.com/show/405231/dog-face.svg"
+                            src="https://iili.io/3FsujwX.md.png"
                             alt="Agent Avatar"
                             className="w-8 h-8 mr-2"
                             />

@@ -3,7 +3,7 @@ import TokenModal from "./TokenModal";
 import { useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import StrategyNavbar from "./StrategyNavbar";
-import { depositVault, zap, bridgeAndZap } from "../../tools/ToolAPI";
+import { depositVault, zap, bridgeAndZap, withdrawVault } from "../../tools/ToolAPI";
 import {ethers} from "ethers";
 import { FaArrowLeft, FaWallet } from "react-icons/fa";
 import Spinner from '../../components/Common/Spinner';
@@ -73,55 +73,92 @@ function Deposit() {
     //     setStrategyToken(tokens[0]);
     // }, [tokens]);
     async function execute() {
-        if (currentAction && currentAction != "yield") return;
+        console.log(strategyTab, currentAction, strategyTab == currentAction);
+        if (currentAction && currentAction != strategyTab) return;
 
         setIsRunning(true);
 
-        try {
-            // await deposit();
-            if (strategyToken.chainId == 146) {
-                if (strategyToken.address.toLowerCase() != strategy.token.address.toLowerCase()) {
-                    await zap(wallets[0], strategyToken.address, strategyAmount , strategy.name);
+        if (strategyTab == "Deposit") {
+            try {
+                // await deposit();
+                if (strategyToken.chainId == 146) {
+                    if (strategyToken.address.toLowerCase() != strategy.token.address.toLowerCase()) {
+                        await zap(wallets[0], strategyToken.address, strategyAmount , strategy.name);
+                    } else {
+                        await depositVault(wallets[0], strategy.name, strategyAmount);
+                    }
                 } else {
-                    await depositVault(wallets[0], strategy.name, strategyAmount);
+                    console.log(strategyToken.chainId);
+                    console.log(strategyToken.address);
+                    console.log(strategy.name);
+                    await bridgeAndZap(wallets[0], strategyToken.chainId, strategyToken.address, strategyAmount, strategy.name);
                 }
-            } else {
-                console.log(strategyToken.chainId);
-                console.log(strategyToken.address);
-                console.log(strategy.name);
-                await bridgeAndZap(wallets[0], strategyToken.chainId, strategyToken.address, strategyAmount, strategy.name);
-            }
 
-            if (resolve) {
-                resolve();
-            }
-            toast.success("Deposited successfully",
-                {
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    draggable: true,
-                    progress: undefined,
+                if (resolve) {
+                    resolve();
                 }
-            );
-            refetchPosition(strategy);
-        } catch(error) {
-            console.error(error);
-            if (reject) {
-                reject();
-            }
-            toast.error("Failed to deposit",
-                {
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    draggable: true,
-                    progress: undefined,
+                toast.success(`Deposited ${strategyAmount} ${strategy.token.symbol} successfully`,
+                    {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+                refetchPosition(strategy);
+            } catch(error) {
+                console.error(error);
+                if (reject) {
+                    reject();
                 }
-            );
+                toast.error("Failed to deposit",
+                    {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+                setIsRunning(false);
+            }
+            setIsRunning(false);
+        } else if (strategyTab == "Withdraw") {
+            try {
+                await withdrawVault(wallets[0], strategy.name, strategyAmount);
+
+                if (resolve) {
+                    resolve();
+                }
+                toast.success(`Withdrawn ${strategyAmount} ${strategy.token.symbol} successfully`,
+                    {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+                refetchPosition(strategy);
+            } catch(error) {
+                console.error(error);
+                if (reject) {
+                    reject();
+                }
+                toast.error("This strategy is currently not available for withdrawal",
+                    {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+                setIsRunning(false);
+            }
             setIsRunning(false);
         }
-        setIsRunning(false);
     }
 
     return (
@@ -149,27 +186,40 @@ function Deposit() {
                         {/* From Section */}
                         <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--accent)' }}>
                         <div className="flex justify-between items-center">
-                            <span className="text-sm" style={{ color: 'var(--higherlight)' }}>Deposit ({strategyChain == 1 ? "Ethereum" : strategyChain == 146 ? "Sonic" : strategyChain == 137 ? "Polygon" : strategyChain == 8453 ? "Base" : "Arbitrum"})</span>
+                            <span className="text-sm" style={{ color: 'var(--higherlight)' }}>{strategyTab} ({strategyChain == 1 ? "Ethereum" : strategyChain == 146 ? "Sonic" : strategyChain == 137 ? "Polygon" : strategyChain == 8453 ? "Base" : "Arbitrum"})</span>
+                            {strategyTab == "Deposit" &&
                             <button
                             onClick={() => setActiveModal(true)}
                             className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                             >
-                            {strategyToken?.logoURI && (
-                                <img src={strategyToken.logoURI} alt={strategyToken.symbol} className="rounded-full w-6 h-6" />
-                            )}
-                            <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
-                                {strategyToken?.symbol}
-                            </span>
-                            <svg
-                                className="w-4 h-4 transition-colors duration-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                style={{ color: 'var(--primary)' }}
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                            </svg>
+                                {strategyToken?.logoURI && (
+                                    <img src={strategyToken.logoURI} alt={strategyToken.symbol} className="rounded-full w-6 h-6" />
+                                )}
+                                <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
+                                    {strategyToken?.symbol}
+                                </span>
+                                <svg
+                                    className="w-4 h-4 transition-colors duration-200"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    style={{ color: 'var(--primary)' }}
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
                             </button>
+                            }
+
+                            {strategyTab == "Withdraw" &&
+                            <div className="flex items-center space-x-2 focus:outline-none p-1 rounded-lg">
+                                {strategy.token.logoURI && (
+                                    <img src={strategy.token.logoURI} alt={strategy.token.symbol} className="rounded-full w-6 h-6" />
+                                )}
+                                <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
+                                    {strategy.token?.symbol}
+                                </span>
+                            </div>
+                            }
                         </div>
                         <input
                             type="number"
@@ -183,9 +233,17 @@ function Deposit() {
                                 <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
                                     ~${valueUSD.toFixed(2)}
                                 </div>
+                                {strategyTab == 'Deposit' && 
                                 <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
                                     Balance: {userBalance ? parseFloat(userBalance).toFixed(4) : '-'}
                                 </div>
+                                }
+
+                                {strategyTab == 'Withdraw' &&
+                                <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
+                                    Deposited: {depositedSonic[strategy.name] ? parseFloat(depositedSonic[strategy.name]).toFixed(4) : '-'}
+                                </div>
+                                }
                             </div>           
                         </div>
 
