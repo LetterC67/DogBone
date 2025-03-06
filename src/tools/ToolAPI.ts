@@ -24,6 +24,7 @@ import {
 import ZapAbi from './zap.abi.json';
 import { NATIVE_TOKEN, SONIC_POINTS_APR, ZAP_CONTRACT } from './constants';
 import { bridge } from './bridge/bridge';
+import { getPendleRoute } from './pendle/depositPendle';
 
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 
@@ -181,13 +182,27 @@ export async function zap(
     }
   }
 
-  const { transaction } = await odosExecute({
-    receiver: ZAP_CONTRACT,
-    chainId: sonic.id,
-    tokenIn: fromToken,
-    tokenOut: token,
-    amountIn: parsedAmountIn,
-  });
+  let transaction;
+
+  if (strategy === 'pendle') {
+    transaction = await getPendleRoute(
+      vault,
+      fromToken,
+      parsedAmountIn,
+      userAddr
+    )
+    transaction = {...transaction, value: "0"}
+  } else {
+    ({ transaction } = await odosExecute({
+      receiver: ZAP_CONTRACT,
+      chainId: sonic.id,
+      tokenIn: fromToken,
+      tokenOut: token,
+      amountIn: parsedAmountIn,
+    }));
+  }
+
+  console.log('Trấnction: ', transaction);
 
   console.log('Transaction ODOS:', transaction);
 
@@ -210,6 +225,7 @@ export async function zap(
       ...leverage,
     },
   ];
+
 
   console.log('Args:', args);
 

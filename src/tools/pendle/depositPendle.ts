@@ -114,3 +114,28 @@ export async function depositPendle({
     throw new Error('Failed to deposit token into Silo: ' + error);
   }
 }
+
+export async function getPendleRoute(vaultAddress: Address, fromToken: Address, parsedAmount: bigint, receiver: Address) {
+  console.log("parsedAmountdsd: ", parsedAmount);
+  const vaultConfig = vaultList.find(
+    (vault: VaultConfig) => vault.vault === vaultAddress
+  );
+  if (!vaultConfig) {
+    throw new Error('Vault either not found or not supported');
+  }
+
+  const PENDLE_API_URL = 'https://api-v2.pendle.finance/core';
+
+  const response = await fetch(
+    `${PENDLE_API_URL}/v1/sdk/${sonic.id}/markets/${vaultConfig.name}/swap?receiver=${receiver}&slippage=0.01&enableAggregator=true&tokenIn=${fromToken}&tokenOut=${vaultConfig.pt}&amountIn=${parsedAmount}`
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to finding route swap to Pendle PT' + await response.text());
+  }
+
+  const data = await response.json();
+  const { tx } = data;
+
+  return tx;
+}

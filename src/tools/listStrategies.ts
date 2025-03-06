@@ -49,6 +49,7 @@ import { withdrawAave } from './aave/withdrawAave';
 import { withdrawVicuna } from './vicuna/withdrawVicuna';
 import { getVicunaFuncSelector } from './vicuna/getVicunaFuncSelector';
 import { getAaveFuncSelector } from './aave/getAaveFuncSelector';
+import { getPendleFuncSelector } from './pendle/getPendleFuncSelector';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -142,7 +143,7 @@ export const strategyFunctions = {
     deposit: depositPendle,
     viewAPR: viewPendleAPY,
     viewPosition: viewPendlePosition,
-    funcSelector: getSiloFuncSelector,
+    funcSelector: getPendleFuncSelector,
     leverage: notLeveraged,
     withdraw: withdrawPendle
   },
