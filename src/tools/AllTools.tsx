@@ -40,6 +40,8 @@ import { viewAavePosition } from './aave/viewAavePosition.ts';
 import { viewVicunaPosition } from './vicuna/viewVicunaPosition.ts';
 import { getVicunaAPY } from './vicuna/getVicunaAPY.ts';
 import { depositVicuna } from './vicuna/depositVicuna.ts';
+import { withdrawAave } from './aave/withdrawAave.ts';
+import { withdrawVicuna } from './vicuna/withdrawVicuna.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -476,6 +478,18 @@ export const AllTools = () => {
           onClick={() => viewVicunaPosition({vaultAddress: "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1", userAddress: wallet.address as Address})}
         >
           View Vicuna Position
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => withdrawAave({walletClient: wallet, vaultAddress: "0x29219dd400f2bf60e5a23d13be72b486d4038894", amount: "0.01"})}
+        >
+          Withdraw Aave
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => withdrawVicuna({walletClient: wallet, vaultAddress: "0x29219dd400f2bf60e5a23d13be72b486d4038894", amount: "0.01"})}
+        >
+          Withdraw Vicuna
         </button>
       </div>
     </div>
