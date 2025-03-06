@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')!).render(
 			appearance: {
 				theme: 'dark',
 				accentColor: '#472F3D',
-				logo: 'https://your-logo-url',
+				logo: '/dogbone.png',
 			},
 			defaultChain: sonic,
 			supportedChains: [sonic, mainnet, polygon, base, arbitrum],

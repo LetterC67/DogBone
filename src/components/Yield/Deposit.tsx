@@ -292,7 +292,7 @@ function Deposit() {
                         className={`mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer 
                         ${isRunning ? 'disabled:opacity-50' : 'opacity-100'}
                         `}
-                        disabled={isRunning || !strategyAmount}
+                        disabled={(isRunning || !strategyAmount) && authenticated}
                     >
                         {authenticated ? isRunning ? <Spinner/> : <>{strategyTab}</> : 
                         <span className="flex flex-row gap-2 w-full justify-center items-center">

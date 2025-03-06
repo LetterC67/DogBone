@@ -165,3 +165,7 @@ input::-webkit-inner-spin-button {
 .prose * {
   color: var(--primary) !important;
 }
+
+#email-input::placeholder {
+	color: var(--disabled);
+}
