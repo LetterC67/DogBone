@@ -80,6 +80,18 @@
           "vault": "0xd14117baf6ec5d12be68cd06e763a4b82c9b6d1d",
           "token": "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47",
           "points": 8 
+        },
+        {
+          "name": "Pendle PT-stS",
+          "vault": "0x3aef1d372d0a7a7e482f465bc14a42d78f920392",
+          "token": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+          "points": 8
+        },
+        {
+          "name": "Pendle PT-wOS",
+          "vault": "0x4e82347bc41cfd5d62cef483c7f0a739a8158963",
+          "token": "0x9f0df7799f6fdad409300080cff680f5a23df4b1",
+          "points": 8
         }
       ]
     },
