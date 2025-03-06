@@ -28,8 +28,7 @@ import { viewIchiPosition } from './ichi/viewIchiPosition';
 import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap } from './ToolAPI';
 import { getTokenAddressBySymbol } from './utils/getTokenAddressBySymbol.ts';
 import { getTokenPriceByAddress, getTokenPriceBySymbol } from './utils/getTokenPrice.ts';
-import { generateIchiGauge } from './ichi/generateIchiGauge.ts';
-import { dak, dakmim } from './ichi/test.ts';
+import { dakmim } from './ichi/test.ts';
 import { getSonicPoints } from './utils/getSonicPoints.ts';
 import { getRingsPoints } from './utils/getRingsPoints.ts';
 import { depositPendle } from './pendle/depositPendle.ts';
@@ -38,6 +37,9 @@ import { viewPendlePosition } from './pendle/viewPendlePosition.ts';
 import { depositAave } from './aave/depositAave.ts';
 import { getAaveAPY } from './aave/getAaveAPY.ts';
 import { viewAavePosition } from './aave/viewAavePosition.ts';
+import { viewVicunaPosition } from './vicuna/viewVicunaPosition.ts';
+import { getVicunaAPY } from './vicuna/getVicunaAPY.ts';
+import { depositVicuna } from './vicuna/depositVicuna.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -456,6 +458,24 @@ export const AllTools = () => {
           onClick={() => viewAavePosition({vaultAddress: "0x29219dd400f2bf60e5a23d13be72b486d4038894", userAddress: wallet.address as Address})}
         >
           View Aave Position
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => depositVicuna({walletClient: wallet, vaultAddress: "0x29219dd400f2bf60e5a23d13be72b486d4038894", amount: "0.01"})}
+        >
+          Deposit Vicuna
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getVicunaAPY("0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae")}
+        >
+          Get Vicuna APY
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewVicunaPosition({vaultAddress: "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1", userAddress: wallet.address as Address})}
+        >
+          View Vicuna Position
         </button>
       </div>
     </div>
