@@ -36,6 +36,12 @@ import { getBone2APY } from './dogbone/dogbone_silo_wos_s_wos_looping/getBone2AP
 import { depositPendle } from './pendle/depositPendle';
 import { viewPendleAPY } from './pendle/viewPendleAPR';
 import { viewPendlePosition } from './pendle/viewPendlePosition';
+import { depositAave } from './aave/depositAave';
+import { getAaveAPY } from './aave/getAaveAPY';
+import { viewAavePosition } from './aave/viewAavePosition';
+import { depositVicuna } from './vicuna/depositVicuna';
+import { getVicunaAPY } from './vicuna/getVicunaAPY';
+import { viewVicunaPosition } from './vicuna/viewVicunaPosition';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -120,6 +126,20 @@ export const strategyFunctions = {
     deposit: depositPendle,
     viewAPR: viewPendleAPY,
     viewPosition: viewPendlePosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged
+  },
+  aave: {
+    deposit: depositAave,
+    viewAPR: getAaveAPY,
+    viewPosition: viewAavePosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged
+  },
+  vicuna: {
+    deposit: depositVicuna,
+    viewAPR: getVicunaAPY,
+    viewPosition: viewVicunaPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged
   }
