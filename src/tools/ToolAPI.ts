@@ -48,6 +48,28 @@ export async function depositVault(
   });
 }
 
+export async function withdrawVault(
+  walletClient: ConnectedWallet,
+  strategyName: string,
+  amount: string
+) {
+  const strategy = nameToTypeMapping[strategyName];
+  if (!strategy) {
+    throw new Error('Strategy not found');
+  }
+
+  const strategyFunction =
+    strategyFunctions[strategy as keyof typeof strategyFunctions];
+  const { vault } = nameToConfigMapping[strategyName];
+
+  return strategyFunction.withdraw({
+    walletClient,
+    vaultAddress: vault,
+    amount,
+  });
+}
+
+
 export async function getVaultAPR(strategyName: string): Promise<number> {
   const strategy = nameToTypeMapping[strategyName];
   if (!strategy) {

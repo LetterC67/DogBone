@@ -42,6 +42,11 @@ import { viewAavePosition } from './aave/viewAavePosition';
 import { depositVicuna } from './vicuna/depositVicuna';
 import { getVicunaAPY } from './vicuna/getVicunaAPY';
 import { viewVicunaPosition } from './vicuna/viewVicunaPosition';
+import { withdrawPendle } from './pendle/withdrawPendle';
+import { withdrawMachFi } from './machfi/withdrawMachFi';
+import { withdrawSilo } from './silo/withdrawSilo';
+import { withdrawAave } from './aave/withdrawAave';
+import { withdrawVicuna } from './vicuna/withdrawVicuna';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -64,84 +69,96 @@ export const strategyFunctions = {
     viewAPR: getBeefyIchiAPR,
     viewPosition: viewBeefyIchiLPPosition,
     funcSelector: getBeefyIchiFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   ichi: {
     deposit: depositIchi,
     viewAPR: getIchiAPR,
     viewPosition: viewIchiPosition,
     funcSelector: getIchiFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   LST: {
     deposit: depositLST,
     viewAPR: getLSTAPY,
     viewPosition: viewLSTPosition,
     funcSelector: getLSTFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   MachFi: {
     deposit: depositMachFi,
     viewAPR: getMachFiAPR,
     viewPosition: viewMachFiPosition,
     funcSelector: getMachFiFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawMachFi
   },
   rings: {
     deposit: depositRingsSC,
     viewAPR: viewRingsAPR,
     viewPosition: viewRingsPosition,
     funcSelector: getRingsFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   silo: {
     deposit: depositSilo,
     viewAPR: getSiloAPR,
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawSilo
   },
   yel: {
     deposit: DepositLToken,
     viewAPR: getLTokenAPY,
     viewPosition: viewLTokenPosition,
     funcSelector: getLTokenFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   Bone1: {
     deposit: depositDogBone_Bone1,
     viewAPR: getBone1APY,
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   Bone2: {
     deposit: depositDogBone_Bone2,
     viewAPR: getBone2APY,
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   pendle: {
     deposit: depositPendle,
     viewAPR: viewPendleAPY,
     viewPosition: viewPendlePosition,
     funcSelector: getSiloFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
   },
   aave: {
     deposit: depositAave,
     viewAPR: getAaveAPY,
     viewPosition: viewAavePosition,
     funcSelector: getSiloFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawAave
   },
   vicuna: {
     deposit: depositVicuna,
     viewAPR: getVicunaAPY,
     viewPosition: viewVicunaPosition,
     funcSelector: getSiloFuncSelector,
-    leverage: notLeveraged
+    leverage: notLeveraged,
+    withdraw: withdrawVicuna
   }
 };
 
