@@ -37,6 +37,7 @@ import { viewPendleAPY } from './pendle/viewPendleAPR.ts';
 import { viewPendlePosition } from './pendle/viewPendlePosition.ts';
 import { depositAave } from './aave/depositAave.ts';
 import { getAaveAPY } from './aave/getAaveAPY.ts';
+import { viewAavePosition } from './aave/viewAavePosition.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -449,6 +450,12 @@ export const AllTools = () => {
           onClick={() => getAaveAPY("0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38")}
         >
           Get Aave APY
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => viewAavePosition({vaultAddress: "0x29219dd400f2bf60e5a23d13be72b486d4038894", userAddress: wallet.address as Address})}
+        >
+          View Aave Position
         </button>
       </div>
     </div>
