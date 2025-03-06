@@ -44,6 +44,7 @@ import { withdrawAave } from './aave/withdrawAave.ts';
 import { withdrawVicuna } from './vicuna/withdrawVicuna.ts';
 import { withdrawSilo } from './silo/withdrawSilo.ts';
 import { withdrawMachFi } from './machfi/withdrawMachFi.ts';
+import { withdrawPendle } from './pendle/withdrawPendle.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -504,6 +505,12 @@ export const AllTools = () => {
           onClick={() => withdrawMachFi({walletClient: wallet, vaultAddress: "0xc84f54b2db8752f80dee5b5a48b64a2774d2b445", amount: "0.000999"})}
         >
           Withdraw MachFi
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => withdrawPendle({walletClient: wallet, vaultAddress: "0x6e4e95fab7db1f0524b4b0a05f0b9c96380b7dfa", amount: "0.05"})}
+        >
+          Withdraw Pendle
         </button>
       </div>
     </div>
