@@ -42,6 +42,7 @@ import { getVicunaAPY } from './vicuna/getVicunaAPY.ts';
 import { depositVicuna } from './vicuna/depositVicuna.ts';
 import { withdrawAave } from './aave/withdrawAave.ts';
 import { withdrawVicuna } from './vicuna/withdrawVicuna.ts';
+import { withdrawSilo } from './silo/withdrawSilo.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -490,6 +491,12 @@ export const AllTools = () => {
           onClick={() => withdrawVicuna({walletClient: wallet, vaultAddress: "0x29219dd400f2bf60e5a23d13be72b486d4038894", amount: "0.01"})}
         >
           Withdraw Vicuna
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => withdrawSilo({walletClient: wallet, vaultAddress: "0x322e1d5384aa4ED66AeCa770B95686271de61dc3", amount: "0.01"})}
+          >
+            Withdraw Silo
         </button>
       </div>
     </div>
