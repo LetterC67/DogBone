@@ -47,6 +47,8 @@ import { withdrawMachFi } from './machfi/withdrawMachFi';
 import { withdrawSilo } from './silo/withdrawSilo';
 import { withdrawAave } from './aave/withdrawAave';
 import { withdrawVicuna } from './vicuna/withdrawVicuna';
+import { getVicunaFuncSelector } from './vicuna/getVicunaFuncSelector';
+import { getAaveFuncSelector } from './aave/getAaveFuncSelector';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -148,7 +150,7 @@ export const strategyFunctions = {
     deposit: depositAave,
     viewAPR: getAaveAPY,
     viewPosition: viewAavePosition,
-    funcSelector: getSiloFuncSelector,
+    funcSelector: getAaveFuncSelector,
     leverage: notLeveraged,
     withdraw: withdrawAave
   },
@@ -156,7 +158,7 @@ export const strategyFunctions = {
     deposit: depositVicuna,
     viewAPR: getVicunaAPY,
     viewPosition: viewVicunaPosition,
-    funcSelector: getSiloFuncSelector,
+    funcSelector: getVicunaFuncSelector,
     leverage: notLeveraged,
     withdraw: withdrawVicuna
   }
