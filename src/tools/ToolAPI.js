@@ -1,0 +1,227 @@
+import { createPublicClient, custom, encodeAbiParameters, encodeFunctionData, parseUnits, } from 'viem';
+import { strategyFunctions, nameToTypeMapping, nameToConfigMapping, notLeveraged, } from './listStrategies';
+import { odosExecute } from './swap/odos';
+import { sonic } from 'viem/chains';
+import { approveERC20, checkNeedApproval, getERC20Balance, getERC20Decimals, } from './utils/erc20Utils';
+import ZapAbi from './zap.abi.json';
+import { NATIVE_TOKEN, SONIC_POINTS_APR, ZAP_CONTRACT } from './constants';
+import { bridge } from './bridge/bridge';
+import { getPendleRoute } from './pendle/depositPendle';
+const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
+export async function depositVault(walletClient, strategyName, amount) {
+    const strategy = nameToTypeMapping[strategyName];
+    if (!strategy) {
+        throw new Error('Strategy not found');
+    }
+    const strategyFunction = strategyFunctions[strategy];
+    const { vault } = nameToConfigMapping[strategyName];
+    return strategyFunction.deposit({
+        walletClient,
+        vaultAddress: vault,
+        amount,
+    });
+}
+export async function withdrawVault(walletClient, strategyName, amount) {
+    const strategy = nameToTypeMapping[strategyName];
+    if (!strategy) {
+        throw new Error('Strategy not found');
+    }
+    const strategyFunction = strategyFunctions[strategy];
+    const { vault } = nameToConfigMapping[strategyName];
+    return strategyFunction.withdraw({
+        walletClient,
+        vaultAddress: vault,
+        amount,
+    });
+}
+export async function getVaultAPR(strategyName) {
+    const strategy = nameToTypeMapping[strategyName];
+    if (!strategy) {
+        throw new Error('Strategy not found');
+    }
+    const strategyFunction = strategyFunctions[strategy];
+    const { vault } = nameToConfigMapping[strategyName];
+    return strategyFunction.viewAPR(vault);
+}
+export function getVaultPointsAPR(strategyName) {
+    const { points } = nameToConfigMapping[strategyName];
+    return points * SONIC_POINTS_APR;
+}
+export async function getVaultTotalAPR(strategyName) {
+    return (await getVaultAPR(strategyName)) + getVaultPointsAPR(strategyName);
+}
+export async function getVaultPosition(walletClient, strategyName) {
+    const strategy = nameToTypeMapping[strategyName];
+    if (!strategy) {
+        throw new Error('Strategy not found');
+    }
+    const strategyFunction = strategyFunctions[strategy];
+    const { vault } = nameToConfigMapping[strategyName];
+    return strategyFunction.viewPosition({
+        vaultAddress: vault,
+        userAddress: walletClient.address,
+    });
+}
+export async function zap(walletClient, fromToken, amount, toStrategy) {
+    const strategy = nameToTypeMapping[toStrategy];
+    if (!strategy) {
+        throw new Error('Strategy not found');
+    }
+    if (walletClient.chainId.slice(7, walletClient.chainId.length) !==
+        sonic.id.toString()) {
+        await walletClient.switchChain(sonic.id);
+    }
+    const strategyFunction = strategyFunctions[strategy];
+    const { vault, token } = nameToConfigMapping[toStrategy];
+    if (fromToken === token) {
+        throw new Error('Cannot zap to the same token, use depositVault instead');
+    }
+    const userAddr = walletClient.address;
+    const provider = await walletClient.getEthereumProvider();
+    const publicClient = createPublicClient({
+        chain: sonic,
+        transport: custom(provider),
+    });
+    const parsedAmountIn = parseUnits(amount, await getERC20Decimals({ publicClient, tokenAddress: fromToken }));
+    const userBalance = await getERC20Balance({
+        publicClient,
+        account: userAddr,
+        tokenAddress: fromToken,
+    });
+    if (userBalance < parsedAmountIn) {
+        throw new Error('Insufficient balance');
+    }
+    if (await checkNeedApproval({
+        publicClient,
+        account: userAddr,
+        tokenAddress: fromToken,
+        spender: ZAP_CONTRACT,
+        amount: parsedAmountIn,
+    })) {
+        try {
+            const approveTx = await approveERC20({
+                provider,
+                tokenAddress: fromToken,
+                spender: ZAP_CONTRACT,
+                amount: parsedAmountIn,
+            });
+            await publicClient.waitForTransactionReceipt({ hash: approveTx });
+        }
+        catch (error) {
+            throw new Error('Failed to approve transaction: ' + error);
+        }
+    }
+    let transaction;
+    if (strategy === 'pendle') {
+        transaction = await getPendleRoute(vault, fromToken, parsedAmountIn, userAddr);
+        transaction = { ...transaction, value: "0" };
+    }
+    else {
+        ({ transaction } = await odosExecute({
+            receiver: ZAP_CONTRACT,
+            chainId: sonic.id,
+            tokenIn: fromToken,
+            tokenOut: token,
+            amountIn: parsedAmountIn,
+        }));
+    }
+    console.log('Trấnction: ', transaction);
+    console.log('Transaction ODOS:', transaction);
+    const leverage = strategyFunction.leverage(toStrategy, amount);
+    console.log('Leverage:', leverage);
+    const args = [
+        {
+            fromToken: fromToken,
+            fromAmount: parsedAmountIn,
+            router: transaction.to,
+            data: transaction.data,
+            value: BigInt(transaction.value),
+        },
+        {
+            vault: vault,
+            token: token,
+            amount: BigInt(0),
+            receiver: userAddr,
+            funcSelector: await strategyFunction.funcSelector(vault),
+            ...leverage,
+        },
+    ];
+    console.log('Args:', args);
+    const transactionData = encodeFunctionData({
+        abi: zapAbi,
+        functionName: 'zap',
+        args: args,
+    });
+    const transactionRequest = {
+        to: ZAP_CONTRACT,
+        data: transactionData,
+        value: fromToken === NATIVE_TOKEN ? parsedAmountIn : BigInt(0),
+    };
+    console.log('Transaction Request:', transactionRequest);
+    try {
+        const transactionHash = await provider.request({
+            method: 'eth_sendTransaction',
+            params: [transactionRequest],
+        });
+        return transactionHash;
+    }
+    catch (error) {
+        throw new Error('Failed to zap: ' + error);
+    }
+}
+export async function bridgeAndZap(walletClient, fromChain, fromToken, amount, toStrategy) {
+    const strategy = nameToTypeMapping[toStrategy];
+    if (!strategy) {
+        throw new Error('Strategy not found');
+    }
+    const strategyFunction = strategyFunctions[strategy];
+    const { vault, token } = nameToConfigMapping[toStrategy];
+    const userAddr = walletClient.address;
+    const depositSelector = await strategyFunction.funcSelector(vault);
+    const externalCallData = getExternalCall(vault, token, userAddr, depositSelector);
+    return await bridge({
+        walletClient,
+        srcChainId: fromChain,
+        dstChainId: sonic.id,
+        srcChainTokenIn: fromToken,
+        srcAmountIn: amount,
+        dstChainTokenOut: token,
+        externalCall: externalCallData
+    });
+}
+export function getExternalCall(vault, token, userAddr, depositSelector) {
+    const callData = encodeFunctionData({
+        abi: zapAbi,
+        functionName: 'doStrategy',
+        args: [
+            {
+                vault: vault,
+                token: token,
+                amount: 0n,
+                receiver: userAddr,
+                funcSelector: depositSelector,
+                ...notLeveraged("", "")
+            },
+        ],
+    });
+    const payloadEncoded = encodeAbiParameters([
+        {
+            type: 'tuple',
+            components: [
+                { name: 'to', type: 'address' },
+                { name: 'txGas', type: 'uint256' },
+                { name: 'callData', type: 'bytes' },
+            ],
+        },
+    ], [
+        {
+            to: ZAP_CONTRACT,
+            txGas: 0n,
+            callData: callData,
+        },
+    ]);
+    return {
+        target: ZAP_CONTRACT,
+        targetPayload: payloadEncoded,
+    };
+}
