@@ -73,6 +73,7 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
         "assetType": "sonic",
         "protocolId": "native",
         "isRebasing": false,
+        "chainId": 146,
         "logoURI": "https://sonicscan.org/assets/sonic/images/svg/logos/token-light.svg?v=25.2.1.0"
     });
     const [strategy, setStrategy] = useState<any>(

@@ -81,6 +81,7 @@ function Deposit() {
         if (strategyTab == "Deposit") {
             try {
                 // await deposit();
+                console.log(strategyToken);
                 if (strategyToken.chainId == 146) {
                     if (strategyToken.address.toLowerCase() != strategy.token.address.toLowerCase()) {
                         await zap(wallets[0], strategyToken.address, strategyAmount , strategy.name);
