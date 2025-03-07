@@ -83,7 +83,23 @@ export const strategyFunctions = {
     leverage: notLeveraged,
     withdraw: withdrawPendle
   },
-  LST: {
+  beets: {
+    deposit: depositLST,
+    viewAPR: getLSTAPY,
+    viewPosition: viewLSTPosition,
+    funcSelector: getLSTFuncSelector,
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
+  },
+  origin: {
+    deposit: depositLST,
+    viewAPR: getLSTAPY,
+    viewPosition: viewLSTPosition,
+    funcSelector: getLSTFuncSelector,
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
+  },
+  ans: {
     deposit: depositLST,
     viewAPR: getLSTAPY,
     viewPosition: viewLSTPosition,
