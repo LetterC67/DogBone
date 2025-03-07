@@ -23,7 +23,16 @@ const AgentContext = createContext({
     currentAction: '',
     code: '',
     currentNavigation: '',
-    setCurrentNavigation: (t: any) => {}
+    setCurrentNavigation: (t: any) => {},
+    __DEPOSIT__: (inputToken: string, inputChain: number, amount: number, strategyName: string, message: string) => {},
+    __WITHDRAW__: (strategyName: string, amount: number, message: string) => {},
+    __SWAP__: (inputToken: string, outputToken: string, amount: number, message: string) => {},
+    __BRIDGE__: (inputToken: string, inputChain: number, outputToken: string, amount: number, message: string) => {},
+    __CANCEL__: () => {},
+    __MESSAGE__: (message: string) => {},
+    __SET_STRATEGIES__: (strategies: any) => {},
+    __GET_ADDRESS__: () => {},
+    __GET_BALANCE__: (token: string, chainId: number) => {}
 });
 
 async function getTokenByAddress(address: string, chainId: number) {
@@ -494,7 +503,16 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             currentAction,
             code,
             currentNavigation,
-            setCurrentNavigation
+            setCurrentNavigation,
+            __DEPOSIT__,
+            __WITHDRAW__,
+            __SWAP__,
+            __BRIDGE__,
+            __CANCEL__,
+            __MESSAGE__,
+            __SET_STRATEGIES__,
+            __GET_ADDRESS__,
+            __GET_BALANCE__
         }}>
             {children}
         </AgentContext.Provider>
