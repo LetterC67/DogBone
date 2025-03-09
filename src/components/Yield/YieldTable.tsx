@@ -85,7 +85,7 @@ function YieldTable() {
                         <tr >
                             <th className="text-left py-2 pl-6 pr-2 w-1/4">Token</th>
                             <th className="text-left w-1/3">Strategy / Provider</th>
-                            <th className="text-right">Nett APR</th>
+                            <th className="text-right">APY</th>
                             <th className="text-right px-6">Deposited</th>
                         </tr>
                     </thead>

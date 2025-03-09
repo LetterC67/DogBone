@@ -10,14 +10,14 @@ const useFetchBalance = (token: any, chain: any, token2: any, chain2: any) => {
     useEffect(() => {
         async function fetchBalance() {
             
-            console.log("fetching balance", wallets, token);
+            // console.log("fetching balance", wallets, token);
             
             if (wallets.length > 0) {
                 const balance = await getUserBalance(wallets[0], wallets[0].address, token.address, chain);
-                console.log("balance", balance, token, chain);
+                // console.log("balance", balance, token, chain);
                 setUserBalance(balance);
                 const balance2 = await getUserBalance(wallets[0], wallets[0].address, token2.address, chain2, chain);
-                console.log("balance", balance2, token2, chain2);
+                // console.log("balance", balance2, token2, chain2);
                 setUserBalance2(balance2);
             }
         }

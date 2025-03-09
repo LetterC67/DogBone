@@ -19,7 +19,6 @@ function ChatInput({maxHeight}: {maxHeight: number}) {
   }, [message]);
 
   const handleSendMessage = () => {
-    if (!authenticated) return;
     if (message.trim()) {
       sendMessage(message);
       setMessage('');

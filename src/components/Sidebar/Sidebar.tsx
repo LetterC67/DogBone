@@ -34,7 +34,7 @@ function Sidebar() {
                 <div className="flex-col gap-1">
                     <div className="flex flex-col justify-center items-center gap-3 mb-10">
                         <img src="https://iili.io/3FsujwX.md.png" className='w-2/3'></img>
-                        <div style={{fontFamily: "Playwrite IT Moderna"}} className="text-4xl">DogBone</div>
+                        <div style={{fontFamily: "More Sugar"}} className="text-4xl">DogBone</div>
                     </div>
                     <SidebarContent setActive={setActive} active={active} text="Home" to="/"/>
                     <SidebarContent setActive={setActive} active={active} text="Automation" to="/automation"/>

@@ -34,6 +34,10 @@ const AgentContext = createContext({
     __SET_STRATEGIES__: (strategies: any) => {},
     __GET_ADDRESS__: () => {},
     __GET_BALANCE__: (token: string, chainId: number) => {},
+    tokenBalance: {},
+    tokenPrice: {},
+    depositedAmount: {},
+    totalBalance: 0
 });
 
 async function getTokenByAddress(address: string, chainId: number) {
@@ -214,6 +218,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     resolve(amount);
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 }
             );
             setReject(() => 
@@ -224,6 +229,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Swap failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
     }
@@ -275,6 +281,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     resolve(amount);
                     setResolve(null);
                     setReject(null);
+                    setCurrentAction(null);
                 }
             );
             setReject(() => 
@@ -285,6 +292,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Bridge failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
     }
@@ -320,9 +328,10 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__("Withdrawn successfully!")
                     await new Promise(r => setTimeout(r, 2000));
-                    resolve(1);
+                    resolve(amount);
                     setResolve(null);
                     setReject(null);
+                    setCurrentAction(null);
                 }
             );
             setReject(() => 
@@ -333,6 +342,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Withdraw failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
     }
@@ -389,6 +399,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(1);
                     setResolve(null);
+                    setCurrentAction(null);
                     setReject(null);
                 }
             );
@@ -400,6 +411,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Deposit failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
 
@@ -430,11 +442,11 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         
         // console.log(reply);
 
-        // if (!isValidJavaScript(reply).valid) {
-        //     __MESSAGE__(reply);
-        //     setIsAnswering(false);
-        //     return;
-        // }
+        if (!isValidJavaScript(reply).valid) {
+            __MESSAGE__(reply);
+            setIsAnswering(false);
+            return;
+        }
 
         if (!authenticated && containsFunction(reply)) {
             __MESSAGE__("You need to login first.");
@@ -547,6 +559,10 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             __SET_STRATEGIES__,
             __GET_ADDRESS__,
             __GET_BALANCE__,
+            tokenBalance,
+            tokenPrice,
+            depositedAmount,
+            totalBalance,
         }}>
             {children}
         </AgentContext.Provider>

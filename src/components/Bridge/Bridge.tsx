@@ -301,13 +301,14 @@ const Bridge: React.FC = () => {
                 </div>
             </div>
 
+
             <button
                 onClick={authenticated ? handleBridge : login}
                 className={`mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer 
                     ${isBridging ? 'disabled:opacity-50' : 'opacity-100'}
                     `}
-                
-            >
+                    
+                    >
                 {authenticated ? isBridging ? <Spinner/> : 'Bridge' : 
                 <span className="flex flex-row gap-2 w-full justify-center items-center">
                     <FaWallet size={16}/>
@@ -337,6 +338,12 @@ const Bridge: React.FC = () => {
                 />
             )}
             </div>
+                <div className="mt-6 text-[var(--less-highlight)] text-lg flex flex-row gap-2 items-center hover:cursor-pointer" onClick={() => window.open('https://debridge.finance')}>
+                    Built using <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
+                        <img src="/deBridge.png" className='h-6'></img>
+                            deBridge
+                        </span>
+                </div>
         </div>
     );
 };

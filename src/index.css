@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+
+@font-face {
+	font-family: 'More Sugar';
+	src: url('/MoreSugar-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+  }
+
 :root {
 	--background	: #11070C;
 	--primary: #ECECEC;

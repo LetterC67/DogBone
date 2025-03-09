@@ -51,7 +51,6 @@ function Automation() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.key);
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -142,7 +141,7 @@ function Automation() {
                 Create a Task
                 {isAnswering && <Spinner />}
             </h2>
-            <input disabled={isAnswering} onKeyDown={handleKeyDown} type="text" value={message} onChange={(e) => setMessage(e.target.value)} className="w-full p-4 rounded-2xl bg-[var(--accent)] text-[var(--primary)] text-md font-semibold mb-6" placeholder="What do you want to automate?" />
+            <input disabled={isAnswering || !authenticated} onKeyDown={handleKeyDown} type="text" value={message} onChange={(e) => setMessage(e.target.value)} className="w-full p-4 rounded-2xl bg-[var(--accent)] text-[var(--primary)] text-md font-semibold mb-6" placeholder={authenticated ? `What do you want to automate?` : `Please login first!`} />
 
             <h2 className="text-lg font-semibold text-[var(--highlight)] mb-4">
                 Your Tasks

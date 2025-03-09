@@ -115,13 +115,13 @@ function ChatMessages() {
                         <img src="https://iili.io/3FsujwX.md.png" className='w-10'></img>
                         {displayGreeting()},
                         <span>
-                            {wallets.length > 0 && <>{` ${wallets[0].address.substring(0, 4)}...${wallets[0].address.substring(37,41)}`}</>}
+                            {wallets.length > 0 && <>{` ${wallets[0].address.substring(0, 4)}...${wallets[0].address.substring(38,42)}`}</>}
                             {(wallets.length == 0) && " Anon"}
                         </span>
                     </div>
                     {authenticated && 
                     <div className="justify-center flex flex-wrap flex-row gap-2 w-1/2">
-                        <QuickAction content="Swap 100 USDC for Sonic"></QuickAction>
+                        <QuickAction content="Swap 100 USDC.e for Sonic"></QuickAction>
                         <QuickAction content="How to move my assets from Binance CEX"></QuickAction>
                         <QuickAction content="How can I earn on DogBone?"></QuickAction>
                         <QuickAction content="Deposit my ETH on Ethereum into the most profitable vault"></QuickAction>
@@ -131,7 +131,7 @@ function ChatMessages() {
 
                     {!authenticated && 
                     <div className="justify-center flex flex-wrap flex-row gap-2 w-1/2">
-                        <QuickAction content="How can I earn money with my token?"></QuickAction>
+                        <QuickAction content="What is DogBone?"></QuickAction>
                         <QuickAction content="What is special about Sonic chain"></QuickAction>
                         <QuickAction content="Show me the best strategy for wS token"></QuickAction>
                         <QuickAction content="Write a haiku about DogBone"></QuickAction>
