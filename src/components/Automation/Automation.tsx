@@ -63,7 +63,7 @@ function Automation() {
     try {
       result = await triggerTask(Task.id);
     } catch {
-      toast.error(`Failed to ${Task.status === "Paused" ? "start" : "pause"} task ${Task.name}`,
+      toast.error(`Failed to ${(Task.status === "Paused" || Task.status === "") ? "start" : "pause"} task ${Task.name}`,
         {
             autoClose: 2000,
             hideProgressBar: false,
@@ -75,7 +75,7 @@ function Automation() {
     return;
     }
 
-    toast.success(`Task ${Task.name} has been ${Task.status === "Paused" ? "started" : "paused!"}`,
+    toast.success(`Task ${Task.name} has been ${(Task.status === "Paused" || Task.status === "") ? "started" : "paused!"}`,
         {
             autoClose: 2000,
             hideProgressBar: false,
