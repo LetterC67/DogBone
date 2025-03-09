@@ -82,7 +82,7 @@ export const DataProvider = ({ children }) => {
     async function fetchAutomatedTasks() {
         if (wallets.length === 0) return;
         const tasks = await getAutomatedTasks(wallets[0].address);
-        console.log("tasks ", tasks);
+        // console.log("tasks ", tasks);
         setAutomatedTasks(tasks);
     }
     useEffect(() => {

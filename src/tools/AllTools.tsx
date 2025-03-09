@@ -50,9 +50,6 @@ export const AllTools = () => {
   const { exportWallet } = usePrivy();
   const wallet = wallets[0];
 
-  console.log('Ready', ready);
-  console.log('Wallets', wallets);
-  console.log('wallet address', wallet?.address);
   return (
     <div>
       <h1 className="text-2xl font-bold">All Tools</h1>

@@ -25,16 +25,9 @@ function usePortfolio() {
     }
 
     useEffect(() => {
-        console.log(isEmpty(tokenPriceSonic), tokenBalanceSonic, strategyList.length, isEmpty(depositedSonic));
-
-        console.log(depositedSonic);
-
         if (!(!isEmpty(tokenPriceSonic) && tokenBalanceSonic && strategyList.length > 0 && !isEmpty(depositedSonic))) {
             return;
         }
-
-
-        console.log("deposited ", depositedSonic);
 
         let valid = true;
 
@@ -54,7 +47,6 @@ function usePortfolio() {
 
             
             const deposited = totalDeposited(token);
-            console.log(deposited, token.symbol, price, token.address);
             
             if ((balance != '0' || deposited) && price) {
                 if (!valid) return;

@@ -131,7 +131,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
     async function __SET_STRATEGIES__(strategies: any) {
         setAgentFilteredStrategies(strategies);
-        console.log(strategies);
+        // console.log(strategies);
         setCurrentNavigation('yield');
         setIsInStrategyTab(false);
         setShowOnlyDeposited(false);
@@ -418,7 +418,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
     async function sendMessage(message: string) {
         if (isAnswering) return;
-        console.log(message);
+        // console.log(message);
         setMessages((prev: any) => [...prev, {
             message,
             isUser: true
@@ -429,13 +429,13 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     
         const reply = await getReply(message, threadID);
         
-        console.log(reply);
+        // console.log(reply);
 
-        if (!isValidJavaScript(reply).valid) {
-            __MESSAGE__(reply);
-            setIsAnswering(false);
-            return;
-        }
+        // if (!isValidJavaScript(reply).valid) {
+        //     __MESSAGE__(reply);
+        //     setIsAnswering(false);
+        //     return;
+        // }
 
         if (!authenticated && containsFunction(reply)) {
             __MESSAGE__("You need to login first.");

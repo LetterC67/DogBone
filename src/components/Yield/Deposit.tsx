@@ -73,7 +73,7 @@ function Deposit() {
     //     setStrategyToken(tokens[0]);
     // }, [tokens]);
     async function execute() {
-        console.log(strategyTab, currentAction, strategyTab == currentAction);
+        // console.log(strategyTab, currentAction, strategyTab == currentAction);
         if (currentAction && currentAction != strategyTab) return;
 
         setIsRunning(true);
@@ -81,7 +81,7 @@ function Deposit() {
         if (strategyTab == "Deposit") {
             try {
                 // await deposit();
-                console.log(strategyToken);
+                // console.log(strategyToken);
                 if (strategyToken.chainId == 146) {
                     if (strategyToken.address.toLowerCase() != strategy.token.address.toLowerCase()) {
                         await zap(wallets[0], strategyToken.address, strategyAmount , strategy.name);
@@ -89,9 +89,9 @@ function Deposit() {
                         await depositVault(wallets[0], strategy.name, strategyAmount);
                     }
                 } else {
-                    console.log(strategyToken.chainId);
-                    console.log(strategyToken.address);
-                    console.log(strategy.name);
+                    // console.log(strategyToken.chainId);
+                    // console.log(strategyToken.address);
+                    // console.log(strategy.name);
                     await bridgeAndZap(wallets[0], strategyToken.chainId, strategyToken.address, strategyAmount, strategy.name);
                 }
 
