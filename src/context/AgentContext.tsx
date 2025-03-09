@@ -442,7 +442,19 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         
         // console.log(reply);
 
-        if (!isValidJavaScript(reply).valid) {
+        if (!isValidJavaScript(`
+                async function run() {
+                        try {
+                            await (async () => {
+                                ${reply}
+                            })();
+                        } catch(e) {
+                            console.log(e);
+                        }
+                    }
+                    run();
+
+            `).valid) {
             __MESSAGE__(reply);
             setIsAnswering(false);
             return;
