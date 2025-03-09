@@ -65,7 +65,7 @@ export default function Portfolio() {
 
   return (
     <div
-      className="portfolio-container w-full h-full flex flex-col rounded-2xl"
+      className="portfolio-container w-full h-full flex flex-col rounded-2xl overflow-y-auto"
       style={{
         background: 'var(--background)',
         color: 'var(--primary)',
@@ -73,7 +73,7 @@ export default function Portfolio() {
       }}
     >
       <Navigator />
-      <div className="container h-full" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div className="container max-w-4xl h-full" style={{ margin: '0 auto' }}>
 
         {/* Summary Cards */}
         <div
@@ -91,8 +91,8 @@ export default function Portfolio() {
         </div>
 
         {/* Token List as a Table */}
-        <div className="rounded-2xl h-4/5  bg-(--secondary)">
-                  <div className="w-full h-full token-list" style={{width:'99%', overflowX: 'auto', overflowY: 'auto'}}>
+        <div className="rounded-2xl bg-(--secondary)">
+                  <div className="w-full token-list">
                   {ready &&  <table
                         style={{
                         width: '100%',
@@ -128,7 +128,7 @@ export default function Portfolio() {
 
 
                       {!ready && 
-                        <div className="flex items-center justify-center h-full flex-col gap-10 text-2xl">
+                        <div className="flex items-center justify-center h-full flex-col gap-10 text-2xl py-20">
                           <div className="w-30 h-30 border-4 border-(--accent-3) border-t-(--highlight) rounded-full animate-spin"></div>
                           <BreathingText />
                         </div>

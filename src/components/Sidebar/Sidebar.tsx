@@ -37,6 +37,7 @@ function Sidebar() {
                         <div style={{fontFamily: "Playwrite IT Moderna"}} className="text-4xl">DogBone</div>
                     </div>
                     <SidebarContent setActive={setActive} active={active} text="Home" to="/"/>
+                    <SidebarContent setActive={setActive} active={active} text="Automation" to="/automation"/>
                     <SidebarContent setActive={setActive} active={active} text="Portfolio" to="/portfolio" />
                     <SidebarContent setActive={setActive} active={active} text="Yield" to="/yield" />
                     <SidebarContent setActive={setActive} active={active} text="Swap" to="/swap" />

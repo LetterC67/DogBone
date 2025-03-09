@@ -10,14 +10,10 @@ function MiniChat() {
     const [newMessage, setNewMessage] = useState<boolean>(true);
 
     // If no agent message exists, return empty content.
-    if (!agentMessages || agentMessages.length === 0) {
-        console.log('No agent messages');
-        return null;
-    }
-
+    
     // Get the latest agent message.
     // const latestAgentMessage = agentMessages[agentMessages.length - 1];
-
+    
     // Trigger animation each time the latest message changes.
     useEffect(() => {
         setVisible(false);
@@ -33,10 +29,14 @@ function MiniChat() {
         if(!newMessage) return;
         setVisible(true);
     }, [latestAgentMessage, newMessage]);
+    if (!agentMessages || agentMessages.length === 0) {
+        console.log('No agent messages');
+        return null;
+    }
 
     return (
         <>
-            <div className="flex flex-col items-center h-64  w-3/5 rounded-4xl border-3 border-(--divider) px-4 pt-2">
+            <div className=" !shadow-[0_-10px_20px_5px_rgba(0,0,0,0.6)] flex flex-col items-center h-64 min-w-5xl max-w-5xl rounded-4xl border-3 border-(--divider) px-4 pt-2">
                 <div className="w-full flex flex-col justify-between h-full pb-6 items-center h-40">
                     {/* Latest agent message with avatar and animation */}
                     {!isAnswering && <div className="w-full flex items-center  overflow-y-auto">

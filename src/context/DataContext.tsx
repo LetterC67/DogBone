@@ -14,9 +14,10 @@ import { getTokenBalance } from "../tools/utils/getTokenBalance";
 import { getSonicPoints } from "../tools/utils/getSonicPoints";
 import { getRingsPoints } from "../tools/utils/getRingsPoints";
 import { getPrice } from "../api/Odos";
+import { getAutomatedTasks } from "../api/agent";
 
 // Create a context
-const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0, threadID: "", depositedSonic: {}, tokenBalanceSonic: {}, refetchBalance: (token) => {}, refetchPosition: (strategy) => {} });
+const DataContext = createContext({ tokenLists: [], loading: true, aprList: {}, strategyList: [], tokenPriceSonic: {}, getTokenListByChainId: (chainId: string) => {}, sonicPoint: 0, ringsPoint: 0, threadID: "", depositedSonic: {}, tokenBalanceSonic: {}, refetchBalance: (token) => {}, refetchPosition: (strategy) => {} , automatedTasks: [], fetchAutomatedTasks: () => {}, setAutomatedTasks: (tasks: any[]) => {} });
 
 
 export const DataProvider = ({ children }) => {
@@ -27,6 +28,7 @@ export const DataProvider = ({ children }) => {
     const [tokenPriceSonic, setTokenPriceSonic] = useState<any>({});
     const [tokenBalanceSonic, setTokenBalanceSonic] = useState<any>({});
     const [depositedSonic, setDepositedSonic] = useState<any>({});
+    const [automatedTasks, setAutomatedTasks] = useState<any[]>([]);
     const {strategy, setStrategy, setFilteredStrategies, selectedTokens, setSelectedTokens, showOnlyDeposited, allTokens, setAllTokens, agentFilteredStrategies, setAgentFilteredStrategies} = useControl();
     const [sonicPoint, setSonicPoint] = useState(0);
     const [ringsPoint, setRingsPoint] = useState(0);
@@ -75,6 +77,17 @@ export const DataProvider = ({ children }) => {
         }
 
         _fetch();
+    }, [wallets.length]);
+
+    async function fetchAutomatedTasks() {
+        if (wallets.length === 0) return;
+        const tasks = await getAutomatedTasks(wallets[0].address);
+        console.log("tasks ", tasks);
+        setAutomatedTasks(tasks);
+    }
+    useEffect(() => {
+
+        fetchAutomatedTasks();
     }, [wallets.length]);
 
     useEffect(() => {
@@ -337,7 +350,7 @@ export const DataProvider = ({ children }) => {
     }, [tokenLists]);
 
     return (
-        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId, tokenBalanceSonic, sonicPoint, ringsPoint, threadID, depositedSonic, refetchBalance, refetchPosition}}>
+        <DataContext.Provider value={{ tokenLists, loading, aprList, strategyList, tokenPriceSonic, getTokenListByChainId, tokenBalanceSonic, sonicPoint, ringsPoint, threadID, depositedSonic, refetchBalance, refetchPosition, automatedTasks, fetchAutomatedTasks, setAutomatedTasks }}>
             {children}
         </DataContext.Provider>
     );

@@ -17,6 +17,7 @@
 	--focus: #A87A8B;
 	--kanit: 'Kanit', sans-serif;
 	--eb: "EB Garamond", serif;
+	--tw-shadow-color: rgba(255, 255, 255, 0.9);
 
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
@@ -168,4 +169,8 @@ input::-webkit-inner-spin-button {
 
 #email-input::placeholder {
 	color: var(--disabled);
+}
+
+.hahaha {
+	box-shadow:  -2px 30px 30px 0px rgba(255,0,0,0.63) !important;
 }

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect} from "react";
-import { getReply } from "../api/agent";
+import { getReply, createAutomatedTask, saveAutomatedTask } from "../api/agent";
 import { useControl } from "./ControlContext";
 import { getTokenAddressBySymbol } from "../tools/utils/getTokenAddressBySymbol";
 import TokenList from "../tools/tokenList.json"
@@ -23,6 +23,7 @@ const AgentContext = createContext({
     currentAction: '',
     code: '',
     currentNavigation: '',
+    sendAutomationMessage: (message: string) => {},
     setCurrentNavigation: (t: any) => {},
     __DEPOSIT__: (inputToken: string, inputChain: number, amount: number, strategyName: string, message: string) => {},
     __WITHDRAW__: (strategyName: string, amount: number, message: string) => {},
@@ -32,7 +33,7 @@ const AgentContext = createContext({
     __MESSAGE__: (message: string) => {},
     __SET_STRATEGIES__: (strategies: any) => {},
     __GET_ADDRESS__: () => {},
-    __GET_BALANCE__: (token: string, chainId: number) => {}
+    __GET_BALANCE__: (token: string, chainId: number) => {},
 });
 
 async function getTokenByAddress(address: string, chainId: number) {
@@ -91,7 +92,8 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
     const {
         strategyList,
-        threadID
+        threadID,
+        fetchAutomatedTasks
     } = useData();
 
     const { wallets } = useWallets();
@@ -404,6 +406,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
     }
 
+
     function isValidJavaScript(code) {
         try {
           new Function(code);
@@ -426,7 +429,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     
         const reply = await getReply(message, threadID);
         
-        console.log(isActionCode(reply), code);
+        console.log(reply);
 
         if (!isValidJavaScript(reply).valid) {
             __MESSAGE__(reply);
@@ -469,6 +472,37 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setIsAnswering(false);
     }
 
+    async function sendAutomationMessage(message: string) {
+        if (isAnswering) return;
+
+        setIsAnswering(true);
+
+        const reply = await createAutomatedTask(message);
+
+        if (reply.error) {
+            __MESSAGE__(reply.error);
+            setIsAnswering(false);
+            return;
+        }
+
+        if (!authenticated) {
+            setIsAnswering(false);
+            __MESSAGE__("You need to login first.");
+            return;
+        }
+        try {
+            await saveAutomatedTask(wallets[0].address, reply.name, reply.code, reply.pseudo_code, reply.interval, reply.type);
+        } catch {
+            setIsAnswering(false);
+            __MESSAGE__("An error occurred while creating the automation task.");
+            return;
+        }
+
+        setIsAnswering(false);
+        __MESSAGE__("Automation task created successfully.");
+        fetchAutomatedTasks();
+    }
+
     useEffect(() => {
         if (code) {
             console.log("Evaluating code");
@@ -504,6 +538,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             code,
             currentNavigation,
             setCurrentNavigation,
+            sendAutomationMessage,
             __DEPOSIT__,
             __WITHDRAW__,
             __SWAP__,
@@ -512,7 +547,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             __MESSAGE__,
             __SET_STRATEGIES__,
             __GET_ADDRESS__,
-            __GET_BALANCE__
+            __GET_BALANCE__,
         }}>
             {children}
         </AgentContext.Provider>

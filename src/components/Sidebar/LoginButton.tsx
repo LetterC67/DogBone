@@ -39,7 +39,7 @@ function LoginButton() {
             // </div>
 
             <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 border-2 text-[var(--less-highlight)] font-[var(--kanit)] px-4 py-2 rounded-lg shadow-md">
+                <div className="flex items-center gap-2 border-2 text-[var(--less-highlight)] font-[var(--kanit)] px-4 py-2 rounded-lg shadow-md shadow-[0px_4px_10px_-2px_rgba(0,0,0,0.2)]">
                     <FaWallet size={30} />
                     <span className="w-full items-center flex justify-center">
                         ${totalBalance.toFixed(2)}

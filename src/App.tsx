@@ -2,6 +2,7 @@ import './App.css'
 import Sidebar from './components/Sidebar/Sidebar'
 import Yield from './components/Yield/Yield'
 import Swap from "./components/Swap/Swap"
+import Automation from "./components/Automation/Automation"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Bridge from './components/Bridge/Bridge';
 import { AllTools } from './tools/AllTools';
@@ -21,7 +22,7 @@ function IntegrateMiniChat({element}: {element: JSX.Element}) {
 			<div className='flex-1 h-1'>
 				{element}
 			</div>
-			<div className='flex flex-col items-center w-full p-6'>
+			<div className='flex flex-col items-center w-full'>
 				<MiniChat></MiniChat>
 			</div>
 		</div>
@@ -57,6 +58,7 @@ function App() {
 								<Route path="/" element={<FullChat></FullChat>}>
 									
 								</Route>
+								<Route path="/automation" element={<IntegrateMiniChat element={<Automation/>}/>}/>
 								<Route path="/yield" element={<IntegrateMiniChat element={<Yield/>}/>}/>	
 								<Route path="/swap" element={<IntegrateMiniChat element={<Swap/>}/>} />
 								<Route path="/bridge"element={<IntegrateMiniChat element={<Bridge/>}/>}></Route>
