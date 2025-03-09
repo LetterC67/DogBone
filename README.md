@@ -26,7 +26,7 @@
 
 ## Overview
 
-**DogBone** is an all-in-one, AI-assisted DeFi gateway for the **Sonic** blockchain ecosystem. It is designed to drastically simplify user onboarding and interaction with DeFi (Decentralized Finance). By incorporating cutting-edge LLM (Large Language Model) technology and **account abstraction (ERC-4337)** principles, DogBone smooths out the complexities of yield farming, cross-chain interactions, and automated strategies.
+**DogBone** is an all-in-one, AI-assisted DeFi gateway for the Sonic blockchain ecosystem. It is designed to drastically simplify user onboarding and interaction with DeFi (Decentralized Finance). By incorporating **account abstraction**, cutting-edge **LLM (Large Language Model)** technology and **integrating deeply with Sonic Ecosystem's protocols**, DogBone smooths out the complexities of yield farming, cross-chain interactions, and automated strategies.
 
 **Mission**: Accelerate DeFi adoption on Sonic by delivering a user-focused experience, intelligent tooling, and a powerful automation layer that optimizes yield opportunities across multiple protocols.
 

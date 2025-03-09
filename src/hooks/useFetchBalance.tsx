@@ -9,11 +9,11 @@ const useFetchBalance = (token: any, chain: any) => {
     useEffect(() => {
         async function fetchBalance() {
             
-            console.log("fetching balance", wallets, token);
+            // console.log("fetching balance", wallets, token);
             
             if (wallets.length > 0) {
                 const balance = await getUserBalance(wallets[0], wallets[0].address, token.address, chain);
-                console.log("balance", balance);
+                // console.log("balance", balance);
                 setUserBalance(balance);
             }
         }

@@ -430,11 +430,11 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         
         // console.log(reply);
 
-        // if (!isValidJavaScript(reply).valid) {
-        //     __MESSAGE__(reply);
-        //     setIsAnswering(false);
-        //     return;
-        // }
+        if (!isValidJavaScript(reply).valid) {
+            __MESSAGE__(reply);
+            setIsAnswering(false);
+            return;
+        }
 
         if (!authenticated && containsFunction(reply)) {
             __MESSAGE__("You need to login first.");
