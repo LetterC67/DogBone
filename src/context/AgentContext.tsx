@@ -125,7 +125,6 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     async function __CANCEL__() {
         if (reject) {
             reject();
-            __MESSAGE__("Action cancelled.");
         }
     }
 
