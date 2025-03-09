@@ -34,6 +34,10 @@ const AgentContext = createContext({
     __SET_STRATEGIES__: (strategies: any) => {},
     __GET_ADDRESS__: () => {},
     __GET_BALANCE__: (token: string, chainId: number) => {},
+    tokenBalance: {},
+    tokenPrice: {},
+    depositedAmount: {},
+    totalBalance: 0
 });
 
 async function getTokenByAddress(address: string, chainId: number) {
@@ -547,6 +551,10 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             __SET_STRATEGIES__,
             __GET_ADDRESS__,
             __GET_BALANCE__,
+            tokenBalance,
+            tokenPrice,
+            depositedAmount,
+            totalBalance,
         }}>
             {children}
         </AgentContext.Provider>

@@ -131,7 +131,7 @@ function ChatMessages() {
 
                     {!authenticated && 
                     <div className="justify-center flex flex-wrap flex-row gap-2 w-1/2">
-                        <QuickAction content="How can I earn money with my token?"></QuickAction>
+                        <QuickAction content="What is DogBone?"></QuickAction>
                         <QuickAction content="What is special about Sonic chain"></QuickAction>
                         <QuickAction content="Show me the best strategy for wS token"></QuickAction>
                         <QuickAction content="Write a haiku about DogBone"></QuickAction>
