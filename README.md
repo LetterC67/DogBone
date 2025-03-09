@@ -1,5 +1,7 @@
 # DogBone – One-stop Sonic DeFAI
 
+![DogBone](DogBone.png)
+
 **Table of Contents**
 - [DogBone – One-stop Sonic DeFAI](#dogbone--one-stop-sonic-defai)
   - [Overview](#overview)
@@ -182,14 +184,14 @@ By merging an **AI-driven** backend and a **powerful on-chain zap** solution, Do
 ### **Q3 2025**
 - **Permissionless Custom Strategies**: Any user/developer can create and deploy new automated strategies.  
 - **Reduced Transaction Count**: Further combine steps into fewer on-chain calls.  
-- **Advanced Automations**: Market-sentiment triggers, advanced “if-this-then-that” logic.  
+- **Advanced Automations**: Market-sentiment triggers, finalize Automation framework.
 - **Ongoing Enhancements**: Continuously refine LLM performance and user experience.
 
 ---
 
 ## Contact
 
-- **Email**: [ai@dogbone.fi](mailto:ai@dogbone.fi)  
+- **Email**: [ai@dogbone.fi](mailto:dogboneai@gmail.com)  
 - **Twitter**: [@DogboneOnSonic](https://twitter.com/DogboneOnSonic) *(DogBone)*  
 
 We’d love to hear your feedback, discuss potential partnerships, and welcome any contributions to the DogBone ecosystem. Whether you’re a developer looking to integrate or a user wanting to level up your DeFi experience, we’re here to help!
