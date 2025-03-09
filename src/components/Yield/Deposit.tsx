@@ -84,9 +84,25 @@ function Deposit() {
         // console.log(strategyTab, currentAction, strategyTab == currentAction);
         if (currentAction && currentAction != strategyTab) return;
 
+        
         setIsRunning(true);
-
+        
         if (strategyTab == "Deposit") {
+            if (strategy.provider.name == "Bone1" || strategy.provider.name == "Bone2") {
+                if (strategy.token.symbol != strategyToken.symbol || strategyChain != 146) {
+                    toast.error("DogBone strategies currently support depositing strategy underlying token only!",
+                        {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            draggable: true,
+                            progress: undefined,
+                        }
+                    );
+                    setIsRunning(false);
+                    return;
+                }
+            }
             try {
                 // await deposit();
                 // console.log(strategyToken);
@@ -106,7 +122,7 @@ function Deposit() {
                 if (resolve) {
                     resolve();
                 }
-                toast.success(`Deposited ${strategyAmount} ${strategy.token.symbol} successfully`,
+                toast.success(`Deposited ${strategyAmount} ${strategyToken.symbol} successfully`,
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -116,6 +132,7 @@ function Deposit() {
                     }
                 );
                 refetchPosition(strategy);
+                console.log(strategyToken);
                 if (strategyToken.chainId == 146) {
                     refetchBalance(strategyToken);
                 }

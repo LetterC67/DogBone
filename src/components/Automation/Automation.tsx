@@ -84,6 +84,8 @@ function Automation() {
         }
     );
 
+    console.log(result);
+
     // Change the status of the task to result
     setAutomatedTasks((prevTasks: any[]) =>
       prevTasks.map((task) =>
