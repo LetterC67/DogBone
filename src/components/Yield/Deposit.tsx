@@ -132,6 +132,7 @@ function Deposit() {
                     }
                 );
                 refetchPosition(strategy);
+                console.log(strategyToken);
                 if (strategyToken.chainId == 146) {
                     refetchBalance(strategyToken);
                 }

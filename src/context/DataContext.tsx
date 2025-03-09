@@ -149,13 +149,23 @@ export const DataProvider = ({ children }) => {
     //     setAllTokens([...new Set(_tokens)]);
     // }, [strategyList]);
 
+    const removeDuplicates = (items) => {
+        const uniqueItems = items.filter(
+          (item, index, self) =>
+            index === self.findIndex((t) => JSON.stringify(t) === JSON.stringify(item))
+        );
+        return uniqueItems;
+      };
+
     useEffect(() => {
+        const _tokens = [];
         for (const strategy of strategyList) {
-            setAllTokens((prev) => [...prev, strategy.token]);
+            _tokens.push(strategy.token);
         }
 
+        // console.log("tokens ", _tokens);
         // Unique values
-        setAllTokens((prev) => [...new Set(prev)]);
+        setAllTokens(removeDuplicates(_tokens));
     }, [strategyList]);
 
     useEffect(() => {
@@ -197,10 +207,12 @@ export const DataProvider = ({ children }) => {
     
     // fetch position for a single strategy
     async function refetchPosition(strategy) {
+        console.log("refetch ", strategy);
         try {
             const position = await getVaultPosition(wallets[0], strategy.name);
             // set the position in the state
             setDepositedSonic((prev) => ({ ...prev, [strategy.name]: position }));
+            refetchBalance(strategy.token);
         } catch(error) {
             console.log("Error fetching vault position ", error);
             setDepositedSonic((prev) => ({ ...prev, [strategy.name]: "0" }));
@@ -211,8 +223,12 @@ export const DataProvider = ({ children }) => {
     async function refetchBalance(token) {
         if (!wallets.length) return null;
 
-        const balance = await getTokenBalance(146, token.address, wallets[0].address);
-        setTokenBalanceSonic((prev) => ({ ...prev, [token.address]: balance }));
+            const balance = await getTokenBalance(146, token.address, wallets[0].address);
+            setTokenBalanceSonic((prev) => ({ ...prev, [token.symbol]: balance }));
+        
+
+        const sonicBalance = await getTokenBalance(146, "0x0000000000000000000000000000000000000000", wallets[0].address);
+        setTokenBalanceSonic((prev) => ({ ...prev, ["S"]: sonicBalance }));
     }
 
     useEffect(() => {
