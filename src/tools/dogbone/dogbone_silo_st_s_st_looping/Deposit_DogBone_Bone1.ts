@@ -17,6 +17,7 @@ import {
 import ZapAbi from '../../zap.abi.json';
 import { getTokenPriceByAddresses } from '../../coingecko/getTokenPriceByAddresses';
 import { odosExecute } from '../../swap/odos';
+import { getTokenPriceByAddress } from '../../utils/getTokenPrice';
 
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 
@@ -50,6 +51,7 @@ export async function depositDogBone_Bone1({
   const userAddr = walletClient.address as Address;
   const provider = await walletClient.getEthereumProvider();
   const publicClient = createPublicClient({
+    chain: sonic,
     transport: custom(provider),
   });
 
@@ -58,10 +60,9 @@ export async function depositDogBone_Bone1({
     await getERC20Decimals({ publicClient, tokenAddress: TOKEN })
   );
 
-  const [TOKEN_PRICE, BORROW_TOKEN_PRICE] = await getTokenPriceByAddresses([
-    TOKEN,
-    BORROW_TOKEN,
-  ]);
+
+  const TOKEN_PRICE = Number(await getTokenPriceByAddress(TOKEN, sonic.id));
+  const BORROW_TOKEN_PRICE = Number(await getTokenPriceByAddress(BORROW_TOKEN, sonic.id));
 
   const flashAmount =
     (Number(amount) * (LEVERAGE - 1) * TOKEN_PRICE) / BORROW_TOKEN_PRICE;
