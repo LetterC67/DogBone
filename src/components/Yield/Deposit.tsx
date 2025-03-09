@@ -33,7 +33,7 @@ function Deposit() {
     const [isRunning, setIsRunning] = useState<boolean>(false);
     const [valueUSD, setValueUSD] = useState<number>(0);
     const { wallets } = useWallets();
-    const { tokenPriceSonic, getTokenListByChainId, depositedSonic, refetchPosition } = useData();
+    const { tokenPriceSonic, getTokenListByChainId, depositedSonic, refetchPosition, refetchBalance} = useData();
     const [tokens, setTokens] = useState<any[]>([]);
 
     const { userBalance } = useFetchBalance(strategyToken, strategyChain == 146 ? "sonic" : strategyChain == 137 ? "polygon" : strategyChain == 8453 ? "base" : strategyChain == 42161 ? "arb" : "eth");
@@ -108,6 +108,9 @@ function Deposit() {
                     }
                 );
                 refetchPosition(strategy);
+                if (strategyToken.chainId == 146) {
+                    refetchBalance(strategyToken);
+                }
             } catch(error) {
                 console.error(error);
                 if (reject) {
@@ -142,6 +145,7 @@ function Deposit() {
                     }
                 );
                 refetchPosition(strategy);
+                refetchBalance(strategy.token);
             } catch(error) {
                 console.error(error);
                 if (reject) {

@@ -115,7 +115,7 @@ function ChatMessages() {
                         <img src="https://iili.io/3FsujwX.md.png" className='w-10'></img>
                         {displayGreeting()},
                         <span>
-                            {wallets.length > 0 && <>{` ${wallets[0].address.substring(0, 4)}...${wallets[0].address.substring(37,41)}`}</>}
+                            {wallets.length > 0 && <>{` ${wallets[0].address.substring(0, 4)}...${wallets[0].address.substring(38,42)}`}</>}
                             {(wallets.length == 0) && " Anon"}
                         </span>
                     </div>
