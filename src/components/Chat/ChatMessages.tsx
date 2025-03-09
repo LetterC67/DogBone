@@ -121,7 +121,7 @@ function ChatMessages() {
                     </div>
                     {authenticated && 
                     <div className="justify-center flex flex-wrap flex-row gap-2 w-1/2">
-                        <QuickAction content="Swap 100 USDC for Sonic"></QuickAction>
+                        <QuickAction content="Swap 100 USDC.e for Sonic"></QuickAction>
                         <QuickAction content="How to move my assets from Binance CEX"></QuickAction>
                         <QuickAction content="How can I earn on DogBone?"></QuickAction>
                         <QuickAction content="Deposit my ETH on Ethereum into the most profitable vault"></QuickAction>

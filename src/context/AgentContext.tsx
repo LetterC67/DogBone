@@ -218,6 +218,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     resolve(amount);
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 }
             );
             setReject(() => 
@@ -228,6 +229,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Swap failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
     }
@@ -279,6 +281,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     resolve(amount);
                     setResolve(null);
                     setReject(null);
+                    setCurrentAction(null);
                 }
             );
             setReject(() => 
@@ -289,6 +292,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Bridge failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
     }
@@ -324,9 +328,10 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__("Withdrawn successfully!")
                     await new Promise(r => setTimeout(r, 2000));
-                    resolve(1);
+                    resolve(amount);
                     setResolve(null);
                     setReject(null);
+                    setCurrentAction(null);
                 }
             );
             setReject(() => 
@@ -337,6 +342,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Withdraw failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
     }
@@ -393,6 +399,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(1);
                     setResolve(null);
+                    setCurrentAction(null);
                     setReject(null);
                 }
             );
@@ -404,6 +411,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     reject("Deposit failed!");
                     setReject(null);
                     setResolve(null);
+                    setCurrentAction(null);
                 });
         });
 

@@ -159,7 +159,7 @@ function Deposit() {
                 if (reject) {
                     reject();
                 }
-                toast.error("This strategy is currently not available for withdrawal",
+                toast.error("Withdrawal for this strategy is coming soon!",
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
