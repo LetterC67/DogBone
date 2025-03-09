@@ -16,6 +16,16 @@ import { getTokenPriceBySymbol } from "../../tools/utils/getTokenPrice";
 function Deposit() {
     const { authenticated, login } = usePrivy();
 
+ 
+
+    const [activeModal, setActiveModal] = useState<boolean>(false);
+    const [isRunning, setIsRunning] = useState<boolean>(false);
+    const [valueUSD, setValueUSD] = useState<number>(0);
+    const { wallets } = useWallets();
+    const { tokenPriceSonic, getTokenListByChainId, depositedSonic, refetchPosition, refetchBalance} = useData();
+    const [tokens, setTokens] = useState<any[]>([]);
+
+    
     const {strategyTab,
         setStrategyTab,
         strategyAmount,
@@ -28,15 +38,13 @@ function Deposit() {
         strategyChain,
         setStrategyChain
     } = useControl();
-
-    const [activeModal, setActiveModal] = useState<boolean>(false);
-    const [isRunning, setIsRunning] = useState<boolean>(false);
-    const [valueUSD, setValueUSD] = useState<number>(0);
-    const { wallets } = useWallets();
-    const { tokenPriceSonic, getTokenListByChainId, depositedSonic, refetchPosition, refetchBalance} = useData();
-    const [tokens, setTokens] = useState<any[]>([]);
-
+    
     const { userBalance } = useFetchBalance(strategyToken, strategyChain == 146 ? "sonic" : strategyChain == 137 ? "polygon" : strategyChain == 8453 ? "base" : strategyChain == 42161 ? "arb" : "eth");
+    useEffect(() => {
+        if (!activeModal && strategyToken.chainId != strategyChain) {
+            setStrategyChain(strategyToken.chainId);
+        }
+    }, [strategyToken, strategyChain, activeModal]);
 
     const {
         currentAction,
@@ -321,6 +329,13 @@ function Deposit() {
                     )}
                 </div>
             </div>
+                {(strategyToken.chainId != 146 && strategyTab == "Deposit") && <div className="mt-6 text-[var(--less-highlight)] text-lg flex flex-row gap-2 items-center hover:cursor-pointer" onClick={() => window.open('https://debridge.finance')}>
+                    Powered by <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
+                        <img src="/deBridge.png" className='h-6'></img>
+                            deBridge
+                        </span>
+                </div>
+                }
         </div>
         </>
     )
