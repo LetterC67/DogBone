@@ -122,7 +122,7 @@ function Deposit() {
                 if (resolve) {
                     resolve();
                 }
-                toast.success(`Deposited ${strategyAmount} ${strategy.token.symbol} successfully`,
+                toast.success(`Deposited ${strategyAmount} ${strategyToken.symbol} successfully`,
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
