@@ -207,7 +207,6 @@ export const DataProvider = ({ children }) => {
     
     // fetch position for a single strategy
     async function refetchPosition(strategy) {
-        console.log("refetch ", strategy);
         try {
             const position = await getVaultPosition(wallets[0], strategy.name);
             // set the position in the state
@@ -238,19 +237,19 @@ export const DataProvider = ({ children }) => {
         async function fetchAllPositions() {
           try {
             const positionPromises = strategyList.map(async (strategy) => {
-                console.log(strategy.name);
+                // console.log(strategy.name);
                 try {
                     const position = await getVaultPosition(wallets[0], strategy.name);
                     return { name: strategy.name, position: position.toString() };
                 } catch(error) {
-                    console.log(strategy.name);
-                    console.log("Error fetching vault position ", error);
+                    // console.log(strategy.name);
+                    // console.log("Error fetching vault position ", error);
                     return { name: strategy.name, position: "0" };
                 }
             });
       
             const results = await Promise.all(positionPromises);
-            console.log("done fetching");
+            // console.log("done fetching");
       
             setDepositedSonic((prev) => {
               const updated = { ...prev };
@@ -259,8 +258,6 @@ export const DataProvider = ({ children }) => {
               }
               return updated;
             });
-
-            console.log(results);
           } catch (err) {
             console.error("Error fetching vault positions:", err);
           }
@@ -268,11 +265,6 @@ export const DataProvider = ({ children }) => {
       
         fetchAllPositions();
     }, [strategyList, wallets.length]);
-
-    useEffect(() => {
-        console.log("depositedSonic", depositedSonic);
-    }, [depositedSonic]);
-      
 
     useEffect(() => {
         async function fetchAllPrices() {
@@ -299,8 +291,6 @@ export const DataProvider = ({ children }) => {
               );
             setTokenPriceSonic(result);
 
-            console.log("price ", result);
-
         }
 
     
@@ -325,7 +315,6 @@ export const DataProvider = ({ children }) => {
             const balancePromises = sampleToTokens.map(async (token) => {
                 try {
                     const balance = await getTokenBalance(146, token.address, wallets[0].address);
-                    console.log("fetched");
                     return { symbol: token.symbol, balance };
                 } catch (err) {
                     console.error("Error fetching balance:", err);
@@ -353,11 +342,6 @@ export const DataProvider = ({ children }) => {
     
         fetchAllBalances();
     }, [wallets.length]);
-
-    useEffect(() => {
-        console.log("tokenBalanceSonic", tokenBalanceSonic);
-    }, [tokenBalanceSonic]);
-
 
     useEffect(() => {
         if (Object.keys(tokenLists).length === 4) {

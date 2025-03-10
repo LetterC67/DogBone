@@ -339,7 +339,7 @@ const Bridge: React.FC = () => {
             )}
             </div>
                 <div className="mt-6 text-[var(--less-highlight)] text-lg flex flex-row gap-2 items-center hover:cursor-pointer" onClick={() => window.open('https://debridge.finance')}>
-                    Built using <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
+                    Powered by <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
                         <img src="/deBridge.png" className='h-6'></img>
                             deBridge
                         </span>

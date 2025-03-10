@@ -160,7 +160,6 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     async function __MESSAGE__(message: string) { 
-        console.log(message);
         if (isAnswering) return;
         setMessages(
             (prev: any) => [...prev, {
@@ -485,7 +484,6 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                 __MESSAGE__("An error occurred while executing the action.");
             }
         } else {
-            console.log(code);
             if (code != '' || reject || resolve) {
                 __MESSAGE__("You cannot execute multiple actions at once. Please wait for the current action to finish or cancel it.");
             } else {
