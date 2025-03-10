@@ -436,9 +436,14 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setUserMessages((prev: any) => [...prev, message]);
         
         setIsAnswering(true);
-    
-        const reply = await getReply(message, threadID);
-        
+        let reply = '';
+        try {
+            reply = await getReply(message, threadID);
+        } catch {
+            __MESSAGE__("Your request is rate limited. Please try again later or contact us to get access code.");
+            setIsAnswering(false);
+            return;
+        }
         // console.log(reply);
 
         if (!isValidJavaScript(`
