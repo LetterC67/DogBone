@@ -56,7 +56,7 @@ function QuickAction({content}: {content:string}) {
     }
 
     return (
-        <div className="p-2 border-(--divider) border-2 rounded-2xl px-4 hover:bg-(--divider) transition duration-300 hover:cursor-pointer" onClick={handleClick}>
+        <div className="p-2 border-(--divider) border-2 rounded-2xl px-4 hover:bg-(--divider) transition duration-300 hover:cursor-pointer text-center" onClick={handleClick}>
             {content}
         </div>
     )
@@ -125,14 +125,14 @@ function ChatMessages() {
                         <QuickAction content="How to move my assets from Binance CEX"></QuickAction>
                         <QuickAction content="How can I earn on DogBone?"></QuickAction>
                         <QuickAction content="Deposit my ETH on Ethereum into the most profitable vault"></QuickAction>
-                        <QuickAction content="Deposit the amount of Sonic equivalent to the 686th Fibonacci Number modulo 23 into into the best Beefy vault"></QuickAction>
+                        <QuickAction content="Deposit the amount of Sonic equivalent to the 686th Fibonacci Number modulo 23 into the best Beefy vault"></QuickAction>
                     </div>
                     }
 
                     {!authenticated && 
                     <div className="justify-center flex flex-wrap flex-row gap-2 w-1/2">
                         <QuickAction content="What is DogBone?"></QuickAction>
-                        <QuickAction content="What is special about Sonic chain"></QuickAction>
+                        <QuickAction content="What is special about Sonic chain?"></QuickAction>
                         <QuickAction content="Show me the best strategy for wS token"></QuickAction>
                         <QuickAction content="Write a haiku about DogBone"></QuickAction>
                         <div className="p-2 border-(--divider) border-2 rounded-2xl px-4 hover:bg-(--divider) transition duration-300 hover:cursor-pointer" onClick={login}>
