@@ -271,6 +271,15 @@ const sampleToTokensData: { [address: string]: Token } = {
     "logoURI": "https://sonicscan.org/token/images/wrappedbtc_ofc_32.svg",
     "tags": [],
     "eip2612": false
+  },
+  "0xBb30e76d9Bb2CC9631F7fC5Eb8e87B5Aff32bFbd": {
+    "symbol": "scBTC",
+    "name": "Sonic BTC",
+    "decimals": 8,
+    "address": "0xBb30e76d9Bb2CC9631F7fC5Eb8e87B5Aff32bFbd",
+    "logoURI": "https://i.ibb.co/Vcfsg4jz/scBTC.png",
+    "tags": [],
+    "eip2612": false
   }
 };
 
