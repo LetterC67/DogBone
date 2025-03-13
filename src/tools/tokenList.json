@@ -19919,9 +19919,25 @@
       {
         "symbol": "wOS",
         "name": "Wrapped Origin Sonic",
-        "decimal": 18,
+        "decimals": 18,
         "address": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1",
         "logoURI": "https://sonicscan.org/token/images/wos_64.svg",
+        "chainId": 146
+      },
+      {
+        "symbol": "LBTC",
+        "name": "Lombard Staked Bitcoin",
+        "decimals": 8,
+        "address": "0xecAc9C5F704e954931349Da37F60E39f515c11c1",
+        "logoURI": "https://sonicscan.org/token/images/lbtc_64.png",
+        "chainId": 146
+      },
+      {
+        "symbol": "WBTC",
+        "name": "Wrapped Bitcoin",
+        "decimals": 8,
+        "address": "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",
+        "logoURI": "https://sonicscan.org/token/images/wrappedbtc_ofc_32.svg",
         "chainId": 146
       }
     ]
