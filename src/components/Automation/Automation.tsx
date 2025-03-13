@@ -6,23 +6,25 @@ import { FaDog } from "react-icons/fa";
 import { triggerTask, cancelTask } from "../../api/agent";
 import { toast } from 'react-toastify';
 import Spinner from "../Common/Spinner";
+import { useTranslation } from "react-i18next";
 
-function formatFrequency(minutes) {
-  if (minutes % (60 * 24 * 365) === 0) {
-      return `Every ${minutes / (60 * 24 * 365)} year(s)`;
-  } else if (minutes % (60 * 24 * 30) === 0) {
-      return `Every ${minutes / (60 * 24 * 30)} month(s)`;
-  } else if (minutes % (60 * 24 * 7) === 0) {
-      return `Every ${minutes / (60 * 24 * 7)} week(s)`;
-  } else if (minutes % (60 * 24) === 0) {
-      return `Every ${minutes / (60 * 24)} day(s)`;
-  } else if (minutes % 60 === 0) {
-      return `Every ${minutes / 60} hour(s)`;
-  } else {
-      return `Every ${minutes} minute(s)`;
-  }
-}
 function Automation() {
+  const { t } = useTranslation();
+  function formatFrequency(minutes) {
+    if (minutes % (60 * 24 * 365) === 0) {
+      return t('frequency.year', { count: minutes / (60 * 24 * 365) });
+    } else if (minutes % (60 * 24 * 30) === 0) {
+      return t('frequency.month', { count: minutes / (60 * 24 * 30) });
+    } else if (minutes % (60 * 24 * 7) === 0) {
+      return t('frequency.week', { count: minutes / (60 * 24 * 7) });
+    } else if (minutes % (60 * 24) === 0) {
+      return t('frequency.day', { count: minutes / (60 * 24) });
+    } else if (minutes % 60 === 0) {
+      return t('frequency.hour', { count: minutes / 60 });
+    } else {
+      return t('frequency.minute', { count: minutes });
+    }
+  }
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
@@ -59,35 +61,40 @@ function Automation() {
 
   async function startStopTask(Task) {
     let result = "";
+  
+    const action = (Task.status === "Paused" || Task.status === "") ? t('actions.start') : t('actions.pause');
+  
     try {
       result = await triggerTask(Task.id);
     } catch {
-      toast.error(`Failed to ${(Task.status === "Paused" || Task.status === "") ? "start" : "pause"} task ${Task.name}`,
+      toast.error(
+        t('task.failed', { action, name: Task.name }),
         {
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            draggable: true,
-            progress: undefined,
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
         }
-    );
-    return;
+      );
+      return;
     }
-
-    toast.success(`Task ${Task.name} has been ${(Task.status === "Paused" || Task.status === "") ? "started" : "paused!"}`,
-        {
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            draggable: true,
-            progress: undefined,
-        }
+  
+    toast.success(
+      t(result === "Paused" ? 'task.paused' : 'task.started', { name: Task.name }),
+      {
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      }
     );
-
+  
     console.log(result);
-
-    // Change the status of the task to result
-    setAutomatedTasks((prevTasks: any[]) =>
+  
+    // Update the task status
+    setAutomatedTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.id === Task.id ? { ...task, status: result } : task
       )
@@ -95,11 +102,11 @@ function Automation() {
   }
 
   async function _cancelTask(Task) {
-    let result
+    let result;
     try {
       result = await cancelTask(Task.id);
     } catch {
-      toast.error(`Failed to cancel task ${Task.name}`,
+      toast.error(`${t('failed_to_cancel_task')} ${Task.name}`,
         {
             autoClose: 2000,
             hideProgressBar: false,
@@ -111,7 +118,7 @@ function Automation() {
     return;
     }
 
-    toast.success(`Task ${Task.name} has been canceled`,
+    toast.success(`${Task.name} ${t('has_been_cancelled')}`,
         {
             autoClose: 2000,
             hideProgressBar: false,
@@ -135,32 +142,32 @@ function Automation() {
             <div className="max-w-4xl mx-auto">
             <h1 className="text-md font-semibold mb-6 text-[var(--highlight)] bg-[var(--secondary)] border border-[var(--divider)] rounded-2xl p-6 py-4 text-center">
                 <div>
-                ⚠️ The Automation feature is currently under development. You can still create tasks, but they will not be executed! 
+                  {t('warn')}
                 </div>
             </h1>
 
             <h2 className="text-lg font-semibold text-[var(--highlight)] mb-4 flex flex-row gap-2">
-                Create a Task
+                {t('create_a_task')}
                 {isAnswering && <Spinner />}
             </h2>
-            <input disabled={isAnswering || !authenticated} onKeyDown={handleKeyDown} type="text" value={message} onChange={(e) => setMessage(e.target.value)} className="w-full p-4 rounded-2xl bg-[var(--accent)] text-[var(--primary)] text-md font-semibold mb-6" placeholder={authenticated ? `What do you want to automate?` : `Please login first!`} />
+            <input disabled={isAnswering || !authenticated} onKeyDown={handleKeyDown} type="text" value={message} onChange={(e) => setMessage(e.target.value)} className="w-full p-4 rounded-2xl bg-[var(--accent)] text-[var(--primary)] text-md font-semibold mb-6" placeholder={authenticated ? t('automate_task') : t('please_login_first')} />
 
             <h2 className="text-lg font-semibold text-[var(--highlight)] mb-4">
-                Your Tasks
+                {t('your_tasks')}
             </h2>
 
             {(automatedTasks.length == 0) && <>
                 <div className="flex flex-col items-center justify-center gap-4 p-6">
                 <FaDog className="text-[var(--highlight)] text-9xl" />
                 <div className="text-lg font-semibold text-[var(--highlight)]">
-                    No tasks yet. Create one above!
+                    {t('no_tasks')}
                 </div>
                 </div>
             </>}
 
             {(automatedTasks.length > 0) && automatedTasks.map((task) => (
                 <div
-                key={task.name}
+                key={task.id}
                 className="bg-[var(--secondary)] border border-[var(--divider)] rounded-2xl p-6 py-4 mb-6 transition-transform hover:-translate-y-1"
                 >
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -172,7 +179,7 @@ function Automation() {
                         <span role="img" aria-label="clock">
                         {(task.status === "Paused" || task.status == "") ? "🔴" : "🟢"}
                         </span>
-                        {(task.status === "Paused" || task.status == "") ? "Task paused" : "Task active"}
+                        {(task.status === "Paused" || task.status == "") ? t("task_paused") : t("task_active")}
                     </span>
                     {/* Interval badge */}
                     <span className="inline-flex items-center gap-1 bg-[var(--accent-2)] text-[var(--primary)] text-md font-semibold px-3 py-1 rounded-full">
@@ -186,7 +193,7 @@ function Automation() {
                         <span role="img" aria-label="type">
                         {task.type === "Repeated" ? "♻️" : "⛔️"}
                         </span>
-                        {task.type}
+                        {t(task.type)}
                     </span>
                     </div>
                 </div>
@@ -194,7 +201,7 @@ function Automation() {
                 <div>
                   {task.status == "" && <div className="text-[var(--highlight)] text-sm mb-4">
                     
-                    <div>Make sure the execution flow below is correct before starting the task!</div>
+                    <div>{t('flow')}</div>
                   </div>}
                     
                 </div>
@@ -208,19 +215,19 @@ function Automation() {
                     onClick={() => openLogsModal(task)}
                     className="bg-[var(--accent-2)] text-[var(--primary)] px-4 py-2 rounded-2xl hover:opacity-80 hover:cursor-pointer transition font-semibold"
                     >
-                    Show Logs
+                      {t('show_logs')}
                     </button>
                     <button
                     onClick={() => startStopTask(task)}
                     className={`bg-[var(--accent${!(task.status === "Paused" || task.status == "") ? '' : '-2'})] ${!(task.status === "Paused" || task.status == "") ? 'text-[var(--highlight)]' : 'text-[var(--primary)]'} px-4 py-2 rounded-2xl hover:opacity-80 hover:cursor-pointer transition font-semibold`}
                     >
-                    {(task.status === "Paused" || task.status == "") ? "Start Task" : "Stop Task"}
+                    {(task.status === "Paused" || task.status == "") ? t('start_task') : t('stop_task')}
                     </button>
                     <button
                     onClick={() => _cancelTask(task)}
                     className="bg-[var(--accent)] text-[var(--highlight)] px-4 py-2 rounded-2xl hover:opacity-80 hover:cursor-pointer transition font-semibold"
                     >
-                    Cancel Task
+                      {t('cancel_task')}
                     </button>
                 </div>
                 </div>
@@ -245,10 +252,10 @@ function Automation() {
                     &times;
                 </button>
                 <h2 className="text-xl font-semibold text-[var(--highlight)] mb-4">
-                    {selectedTask.name} Logs
+                    {selectedTask.name} {t('logs')}
                 </h2>
                 <div className="bg-[var(--accent-3)] border border-[var(--divider)] p-4 rounded-md text-sm whitespace-pre-wrap text-[var(--primary)]">
-                    {selectedTask.logs.trim() || "No logs available"}
+                    {selectedTask.logs.trim() || t('no_logs_available')}
                 </div>
                 </div>
             </div>

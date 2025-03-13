@@ -18,6 +18,7 @@ import useFetchTwoBalance from "../../hooks/useFetchTwoBalance";
 import Navigator from "../Navigator";
 import { useAgent } from "../../context/AgentContext";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const Bridge: React.FC = () => {
     // // "From" side state: default to Ethereum tokens
@@ -56,6 +57,7 @@ const Bridge: React.FC = () => {
     const { authenticated, login } = usePrivy();
 
     const [isBridging, setIsBridging] = useState<boolean>(false);
+    const {t  } = useTranslation();
 
     const {
         currentAction,
@@ -100,7 +102,7 @@ const Bridge: React.FC = () => {
                 if(resolve)
                 resolve(result.amountOut);
                 
-                toast.success("Bridge successful",
+                toast.success(t('bridge_success'),
                     {
                         autoClose: 2000,
                         hideProgressBar: false,
@@ -115,7 +117,7 @@ const Bridge: React.FC = () => {
             console.error(err);
             if (reject)
             reject();
-            toast.error("Bridge failed",
+            toast.error(t('bridge_failed'),
                 {
                     autoClose: 2000,
                     hideProgressBar: false,
@@ -148,7 +150,7 @@ const Bridge: React.FC = () => {
                 if (quote?.errorCode) {
                     setFromError(null);
                     if (quote.errorCode === 12) {
-                        setFromError("Amount too low!");
+                        setFromError(t("amount_too_low!"));
                     }
                     setToAmountBridge("");
                     setToUsdValue(0);
@@ -199,14 +201,14 @@ const Bridge: React.FC = () => {
             style={{ backgroundColor: "var(--secondary)" }}
             >
             <h2 className="text-center text-2xl font-bold mb-4" style={{ color: "var(--primary)" }}>
-                Bridge to Sonic
+                {t("bridge_to_sonic")}
             </h2>
             <div className="space-y-4">
                 {/* From Section */}
                 <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--accent)" }}>
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-sm" style={{ color: "var(--higherlight)" }}>
-                        From {fromChainBridge && <>({availableChains.find((c) => c.id === fromChainBridge)?.name})</>}
+                        {t('from')} {fromChainBridge && <>({availableChains.find((c) => c.id === fromChainBridge)?.name})</>}
                         </span>
                         <button
                         onClick={() => setIsFromModalOpen(true)}
@@ -217,7 +219,7 @@ const Bridge: React.FC = () => {
                         )}
                         <span className="text-lg font-medium" style={{ color: "var(--primary)" }}>
                             {fromTokenBridge?.symbol}
-                            {fromTokenBridge == null ? 'Select a token' : ''}
+                            {fromTokenBridge == null ? t('select_a_token') : ''}
                         </span>
                         <svg
                             className="w-4 h-4 transition-colors duration-200"
@@ -249,7 +251,7 @@ const Bridge: React.FC = () => {
                             }
                         </div>
                         <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                            Balance: {fromBalance != null ? parseFloat(fromBalance).toFixed(4) : '-'}
+                            {t('balance')}: {fromBalance != null ? parseFloat(fromBalance).toFixed(4) : '-'}
                         </div>
                     </div>
                 </div>
@@ -258,7 +260,7 @@ const Bridge: React.FC = () => {
                 <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--accent)" }}>
                 <div className="flex justify-between items-center mb-2">
                     <span className="text-sm" style={{ color: "var(--higherlight)" }}>
-                    To (Sonic)
+                    {t('to')} (Sonic)
                     </span>
                     <button
                     onClick={() => setIsToModalOpen(true)}
@@ -269,7 +271,7 @@ const Bridge: React.FC = () => {
                     )}
                     <span className="text-lg font-medium" style={{ color: "var(--primary)" }}>
                         {toTokenBridge?.symbol}
-                        {toTokenBridge == null ? 'Select a token' : ''}
+                        {toTokenBridge == null ? t('select_a_token') : ''}
                     </span>
                     <svg
                         className="w-4 h-4 transition-colors duration-200"
@@ -295,7 +297,7 @@ const Bridge: React.FC = () => {
                             ~${toUsdValue.toFixed(2)}
                         </div>
                         <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                            Balance: {toBalance != null ? parseFloat(toBalance).toFixed(4) : '-'}
+                            {t('balance')}: {toBalance != null ? parseFloat(toBalance).toFixed(4) : '-'}
                         </div>
                     </div>
                 </div>
@@ -309,10 +311,10 @@ const Bridge: React.FC = () => {
                     `}
                     
                     >
-                {authenticated ? isBridging ? <Spinner/> : 'Bridge' : 
+                {authenticated ? isBridging ? <Spinner/> : t('bridge') : 
                 <span className="flex flex-row gap-2 w-full justify-center items-center">
                     <FaWallet size={16}/>
-                    <span>Please Log In</span>
+                    <span>{t('please_login')}</span>
                 </span>}
             </button>
 
@@ -324,7 +326,7 @@ const Bridge: React.FC = () => {
                 sampleTokens={tokenLists}
                 onSelect={handleFromTokenSelect}
                 onClose={() => setIsFromModalOpen(false)}
-                title="Select a token"
+                title={t('select_a_token')}
                 />
             )}
 
@@ -334,12 +336,12 @@ const Bridge: React.FC = () => {
                 tokens={sampleToTokens}
                 onSelect={handleToTokenSelect}
                 onClose={() => setIsToModalOpen(false)}
-                title="Select a token"
+                title={t('select_a_token')}
                 />
             )}
             </div>
                 <div className="mt-6 text-[var(--less-highlight)] text-lg flex flex-row gap-2 items-center hover:cursor-pointer" onClick={() => window.open('https://debridge.finance')}>
-                    Powered by <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
+                    {t("powered_by")} <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
                         <img src="/deBridge.png" className='h-6'></img>
                             deBridge
                         </span>

@@ -12,10 +12,11 @@ import { useAgent } from "../../context/AgentContext";
 import useFetchBalance  from "../../hooks/useFetchBalance";
 import { toast } from "react-toastify";
 import { getTokenPriceBySymbol } from "../../tools/utils/getTokenPrice";
+import { useTranslation } from "react-i18next";
 
 function Deposit() {
     const { authenticated, login } = usePrivy();
-
+    const { t } = useTranslation();
  
 
     const [activeModal, setActiveModal] = useState<boolean>(false);
@@ -90,7 +91,7 @@ function Deposit() {
         if (strategyTab == "Deposit") {
             if (strategy.provider.name == "Bone1" || strategy.provider.name == "Bone2") {
                 if (strategy.token.symbol != strategyToken.symbol || strategyChain != 146) {
-                    toast.error("DogBone strategies currently support depositing strategy underlying token only!",
+                    toast.error(t("dogbone_strategies"),
                         {
                             autoClose: 3000,
                             hideProgressBar: false,
@@ -122,7 +123,7 @@ function Deposit() {
                 if (resolve) {
                     resolve();
                 }
-                toast.success(`Deposited ${strategyAmount} ${strategyToken.symbol} successfully`,
+                toast.success(`${t('deposited')} ${strategyAmount} ${strategyToken.symbol} ${t('successfully')}`,
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -141,7 +142,7 @@ function Deposit() {
                 if (reject) {
                     reject();
                 }
-                toast.error("Failed to deposit",
+                toast.error(t("failed_to_deposit"),
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -160,7 +161,7 @@ function Deposit() {
                 if (resolve) {
                     resolve();
                 }
-                toast.success(`Withdrawn ${strategyAmount} ${strategy.token.symbol} successfully`,
+                toast.success(`${t('withdrawn')} ${strategyAmount} ${strategy.token.symbol} ${t('successfully')}`,
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -176,7 +177,7 @@ function Deposit() {
                 if (reject) {
                     reject();
                 }
-                toast.error("Withdrawal for this strategy is coming soon!",
+                toast.error(t("withdrawal_coming_soon"),
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -216,7 +217,7 @@ function Deposit() {
                         {/* From Section */}
                         <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--accent)' }}>
                         <div className="flex justify-between items-center">
-                            <span className="text-sm" style={{ color: 'var(--higherlight)' }}>{strategyTab} ({strategyChain == 1 ? "Ethereum" : strategyChain == 146 ? "Sonic" : strategyChain == 137 ? "Polygon" : strategyChain == 8453 ? "Base" : "Arbitrum"})</span>
+                            <span className="text-sm" style={{ color: 'var(--higherlight)' }}>{t(strategyTab.toLowerCase())} ({strategyChain == 1 ? "Ethereum" : strategyChain == 146 ? "Sonic" : strategyChain == 137 ? "Polygon" : strategyChain == 8453 ? "Base" : "Arbitrum"})</span>
                             {strategyTab == "Deposit" &&
                             <button
                             onClick={() => setActiveModal(true)}
@@ -265,13 +266,13 @@ function Deposit() {
                                 </div>
                                 {strategyTab == 'Deposit' && 
                                 <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                                    Balance: {userBalance ? parseFloat(userBalance).toFixed(4) : '-'}
+                                    {t('balance')}: {userBalance ? parseFloat(userBalance).toFixed(4) : '-'}
                                 </div>
                                 }
 
                                 {strategyTab == 'Withdraw' &&
                                 <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                                    Deposited: {depositedSonic[strategy.name] ? parseFloat(depositedSonic[strategy.name]).toFixed(4) : '-'}
+                                    {t('Deposited')}: {depositedSonic[strategy.name] ? parseFloat(depositedSonic[strategy.name]).toFixed(4) : '-'}
                                 </div>
                                 }
                             </div>           
@@ -282,7 +283,7 @@ function Deposit() {
                     <div className="flex flex-col gap-2 mt-6 p-1">
                         <div className="flex flex-row justify-between">
                             <div className="font-bold">
-                                Provider
+                                {t('provider')}
                             </div>
                             <div className="text-(--higherlight)">
                                 {strategy.provider.full_name}
@@ -291,7 +292,7 @@ function Deposit() {
 
                         <div className="flex flex-row justify-between">
                             <div className="font-bold">
-                                Underlying token
+                                {t('underlying_token')}
                             </div>
                             <div className="text-(--higherlight)">
                                 {strategy.token.symbol}
@@ -309,7 +310,7 @@ function Deposit() {
 
                         <div className="flex flex-row justify-between">
                             <div className="font-bold">
-                                Deposited
+                                {t('deposited')}
                             </div>
                             <div className="text-(--higherlight)">
                                 {depositedSonic[strategy.name] ? parseFloat(depositedSonic[strategy.name]).toFixed(4) : '-'}
@@ -324,10 +325,10 @@ function Deposit() {
                         `}
                         disabled={(isRunning || !strategyAmount) && authenticated}
                     >
-                        {authenticated ? isRunning ? <Spinner/> : <>{strategyTab}</> : 
+                        {authenticated ? isRunning ? <Spinner/> : <>{t(strategyTab.toLowerCase())}</> : 
                         <span className="flex flex-row gap-2 w-full justify-center items-center">
                             <FaWallet size={16}/>
-                            <span>Please Log In</span>
+                            <span>{t('please_login')}</span>
                         </span>}
                     </button>
                     
@@ -341,13 +342,13 @@ function Deposit() {
                         strategyChain={strategyChain}
                         setStrategyChain={setStrategyChain}
                         onClose={() => setActiveModal(null)}
-                        title="Select a token"
+                        title={t('select_a_token')}
                         />
                     )}
                 </div>
             </div>
                 {(strategyToken.chainId != 146 && strategyTab == "Deposit") && <div className="mt-6 text-[var(--less-highlight)] text-lg flex flex-row gap-2 items-center hover:cursor-pointer" onClick={() => window.open('https://debridge.finance')}>
-                    Powered by <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
+                    {t('powered_by')} <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 
                         <img src="/deBridge.png" className='h-6'></img>
                             deBridge
                         </span>

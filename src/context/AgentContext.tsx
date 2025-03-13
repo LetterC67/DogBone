@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useData } from "./DataContext";
 import { getTokenBalance } from "../tools/utils/getTokenBalance";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
+import { useTranslation } from "react-i18next";
 import usePortfolio from "../hooks/usePortfolio";
 
 const tokenList = JSON.parse(JSON.stringify(TokenList))
@@ -89,6 +90,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setStrategyChain,
         setStrategyTab
     } = useControl();
+    const {t } = useTranslation();
 
     const { authenticated } = usePrivy();
 
@@ -151,7 +153,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         if (token != null) {
             inp = await getTokenBySymbol(token, chainId);
             if (!inp) {
-                __MESSAGE__(`Cannot find token ${token}`);
+                __MESSAGE__(`${t('cannot_find_token')} ${token}`);
                 throw new Error(`Cannot find token ${token}`);
             }
         }
@@ -180,13 +182,13 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         if (inputToken != null) {
             inp = await getTokenBySymbol(inputToken, 146);
             if (!inp) {
-                __MESSAGE__(`Cannot find token ${inputToken}`);
+                __MESSAGE__(`${t('cannot_find_token')} ${inputToken}`);
                 throw new Error(`Cannot find token ${inputToken}`);
             }
             
             out = await getTokenBySymbol(outputToken, 146);
             if (!out) {
-                __MESSAGE__(`Cannot find token ${outputToken}`);
+                __MESSAGE__(`${t('cannot_find_token')} ${outputToken}`);
                 throw new Error(`Cannot find token ${outputToken}`);
             }
         }
@@ -203,7 +205,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setCurrentNavigation('swap');
         await __MESSAGE__ (message);
 
-        const toastId = toast.loading("Waiting user to swap...", {
+        const toastId = toast.loading(`${t('waiting_user_to_swap')}...`, {
             closeOnClick: false, // Prevent closing on click
             draggable: false, // Disable drag to dismiss
         });
@@ -212,7 +214,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setResolve(() => 
                 async (amount) => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Swapped successfully!")
+                    await __MESSAGE__(`${t('swap_success')}`)
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(amount);
                     setReject(null);
@@ -223,9 +225,9 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setReject(() => 
                 async () => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Swap failed!");
+                    await __MESSAGE__(t('swap_failed'));
                     await new Promise(r => setTimeout(r, 2000));
-                    reject("Swap failed!");
+                    reject(t('swap_failed'));
                     setReject(null);
                     setResolve(null);
                     setCurrentAction(null);
@@ -234,7 +236,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     async function __BRIDGE__(inputToken, inputChain, outputToken, amount, message) {
-        console.log(`Bridging ${amount} ${inputToken} to ${outputToken}`);
+        console.log(`${t('bridging')} ${amount} ${inputToken} ${t('to_low')} ${outputToken}`);
 
         let inp = null;
         let out = null;
@@ -242,13 +244,13 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         if (inputToken != null) {
             inp = await getTokenBySymbol(inputToken, inputChain);
             if (!inp) {
-                __MESSAGE__(`Cannot find token ${inputToken}`);
+                __MESSAGE__(`${t('cannot_find_token')} ${inputToken}`);
                 throw new Error(`Cannot find token ${inputToken}`);
             }
             
             out = await getTokenBySymbol(outputToken, 146);
             if (!out) {
-                __MESSAGE__(`Cannot find token ${outputToken}`);
+                __MESSAGE__(`${t('cannot_find_token')} ${outputToken}`);
                 throw new Error(`Cannot find token ${outputToken}`);
             }
         }
@@ -266,7 +268,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setCurrentNavigation('bridge');
         await __MESSAGE__ (message);
 
-        const toastId = toast.loading("Waiting user to bridge...", {
+        const toastId = toast.loading(`${t('waiting_user_to_bridge')}...`, {
             closeOnClick: false, // Prevent closing on click
             draggable: false, // Disable drag to dismiss
         });
@@ -275,7 +277,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setResolve(() => 
                 async (amount) => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Bridged successfully!")
+                    await __MESSAGE__(`${t('bridge_success')}`)
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(amount);
                     setResolve(null);
@@ -286,9 +288,9 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setReject(() => 
                 async () => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Bridge failed!");
+                    await __MESSAGE__(t('bridge_failed'));
                     await new Promise(r => setTimeout(r, 2000));
-                    reject("Bridge failed!");
+                    reject(t('bridge_failed'));
                     setReject(null);
                     setResolve(null);
                     setCurrentAction(null);
@@ -302,7 +304,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         const strategy = strategyList.find((strategy) => strategy.name === strategyName);
 
         if (!strategy) {
-            __MESSAGE__(`Cannot find strategy ${strategyName}`);
+            __MESSAGE__(`${t('cannot_find_strategy')} ${strategyName}`);
             throw new Error(`Cannot find strategy ${strategyName}`);
         }
 
@@ -316,7 +318,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
         await __MESSAGE__(message);
 
-        const toastId = toast.loading("Waiting user to withdraw...", {
+        const toastId = toast.loading(`${t('waiting_user_to_withdraw')}...`, {
             closeOnClick: false, // Prevent closing on click
             draggable: false, // Disable drag to dismiss
         });
@@ -325,7 +327,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setResolve(() => 
                 async () => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Withdrawn successfully!")
+                    await __MESSAGE__(t('withdrawn_successfully'))
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(amount);
                     setResolve(null);
@@ -336,9 +338,9 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setReject(() => 
                 async () => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Withdraw failed!");
+                    await __MESSAGE__(t('failed_to_withdraw'));
                     await new Promise(r => setTimeout(r, 2000));
-                    reject("Withdraw failed!");
+                    reject(t('failed_to_withdraw'));
                     setReject(null);
                     setResolve(null);
                     setCurrentAction(null);
@@ -354,7 +356,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         if (inputToken != null) {
             inp = await getTokenBySymbol(inputToken, inputChain);
             if (!inp) {
-                __MESSAGE__(`Cannot find token ${inputToken}`);
+                __MESSAGE__(`${t('cannot_find_token')} ${inputToken}`);
                 throw new Error(`Cannot find token ${inputToken}`);
             }
         }
@@ -365,7 +367,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         const strategy = strategyList.find((strategy) => strategy.name === strategyName);
 
         if (!strategy) {
-            __MESSAGE__(`Cannot find strategy ${strategyName}`);
+            __MESSAGE__(`${t('cannot_find_strategy')} ${strategyName}`);
             throw new Error(`Cannot find strategy ${strategyName}`);
         }
 
@@ -385,7 +387,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
         await __MESSAGE__(message);
 
-        const toastId = toast.loading("Waiting user to deposit...", {
+        const toastId = toast.loading(`${t('waiting_user_to_deposit')}...`, {
             closeOnClick: false, // Prevent closing on click
             draggable: false, // Disable drag to dismiss
         });
@@ -394,7 +396,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setResolve(() => 
                 async () => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Deposited successfully!")
+                    await __MESSAGE__(t('deposit_successfully'))
                     await new Promise(r => setTimeout(r, 2000));
                     resolve(1);
                     setResolve(null);
@@ -405,9 +407,9 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             setReject(() => 
                 async () => {
                     toast.dismiss(toastId);
-                    await __MESSAGE__("Deposit failed!");
+                    await __MESSAGE__(t('failed_to_deposit'));
                     await new Promise(r => setTimeout(r, 2000));
-                    reject("Deposit failed!");
+                    reject(t('failed_to_deposit'));
                     setReject(null);
                     setResolve(null);
                     setCurrentAction(null);
@@ -440,7 +442,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             reply = await getReply(message, threadID);
         } catch {
-            __MESSAGE__("Your request is rate limited. Please try again later or contact us to get access code.");
+            __MESSAGE__(t('rate_limit'));
             setIsAnswering(false);
             return;
         }
@@ -459,13 +461,26 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     run();
 
             `).valid) {
+                console.log(isValidJavaScript(`
+                    async function run() {
+                            try {
+                                await (async () => {
+                                    ${reply}
+                                })();
+                            } catch(e) {
+                                console.log(e);
+                            }
+                        }
+                        run();
+    
+                `).error)
             __MESSAGE__(reply);
             setIsAnswering(false);
             return;
         }
 
         if (!authenticated && containsFunction(reply)) {
-            __MESSAGE__("You need to login first.");
+            __MESSAGE__(t("login_first"));
             setIsAnswering(false);
             return;
         }
@@ -486,11 +501,11 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                     `
                 );
             } catch {
-                __MESSAGE__("An error occurred while executing the action.");
+                __MESSAGE__(t('error_occurred'));
             }
         } else {
             if (code != '' || reject || resolve) {
-                __MESSAGE__("You cannot execute multiple actions at once. Please wait for the current action to finish or cancel it.");
+                __MESSAGE__(t('cannot_execute_multiple'));
             } else {
                 setCode(reply);
             }
@@ -513,19 +528,19 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (!authenticated) {
             setIsAnswering(false);
-            __MESSAGE__("You need to login first.");
+            __MESSAGE__(t('login_first'));
             return;
         }
         try {
             await saveAutomatedTask(wallets[0].address, reply.name, reply.code, reply.pseudo_code, reply.interval, reply.type);
         } catch {
             setIsAnswering(false);
-            __MESSAGE__("An error occurred while creating the automation task.");
+            __MESSAGE__(t('error_occured_auto'));
             return;
         }
 
         setIsAnswering(false);
-        __MESSAGE__("Automation task created successfully.");
+        __MESSAGE__(t('auto_ok'));
         fetchAutomatedTasks();
     }
 

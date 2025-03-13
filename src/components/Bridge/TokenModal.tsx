@@ -1,6 +1,8 @@
 // src/TokenModal.tsx
 import React, { useState, useEffect } from 'react';
 import { Token } from './types';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 interface TokenModalProps {
 	tokens: Token[];
@@ -54,7 +56,7 @@ return (
 		<div className="mt-2">
 			<input
 			type="text"
-			placeholder="Search token..."
+			placeholder={t('search_token')}
 			className="w-full p-2 rounded-lg outline-none transition-colors duration-200"
 			style={{ backgroundColor: 'var(--accent-3)', color: 'var(--primary)' }}
 			value={searchQuery}
@@ -78,7 +80,7 @@ return (
 			</div>
 		))}
 		{filteredTokens.length === 0 && (
-			<div className="p-4 text-center" style={{ color: 'var(--primary)' }}>No tokens found.</div>
+			<div className="p-4 text-center" style={{ color: 'var(--primary)' }}>{t('no_token')}</div>
 		)}
 		</div>
 	</div>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Token, Chain } from "./types";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
+import { useTranslation } from "react-i18next";
 
 interface FromTokenModalProps {
 currentChain: string;
@@ -23,6 +24,7 @@ title = "Select source chain and token",
 	const [selectedChain, setSelectedChain] = useState(currentChain);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isVisible, setIsVisible] = useState(false);
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		setIsVisible(true);
@@ -104,7 +106,7 @@ return (
 		<div className="mt-4">
 			<input
 			type="text"
-			placeholder="Search token..."
+			placeholder={t("search_token")}
 			className="w-full p-2 rounded-lg outline-none transition-colors duration-200"
 			style={{ backgroundColor: "var(--accent-3)", color: "var(--primary)" }}
 			value={searchQuery}
@@ -149,7 +151,7 @@ return (
 			</List>
 			) : (
 			<div className="p-4 text-center" style={{ color: "var(--primary)" }}>
-				No tokens found.
+				{t("no_tokens_found")}
 			</div>
 			)}
 	</div>

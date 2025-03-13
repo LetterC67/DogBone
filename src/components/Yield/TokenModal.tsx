@@ -1,6 +1,7 @@
 // src/TokenModal.tsx
 import React, { useState, useEffect } from 'react';
 import { Token } from './types';
+import { useTranslation } from 'react-i18next';
 
 interface TokenModalProps {
   tokens: Token[];
@@ -30,6 +31,7 @@ const TokenModal: React.FC<TokenModalProps> = ({
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+    const {t } = useTranslation();
 
     // Trigger entry animation after mounting
     useEffect(() => {

@@ -1,8 +1,11 @@
+import { t } from "i18next";
 import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens}: {tokens: any[], selectedTokens: any[], setSelectedTokens: any}) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const { t } = useTranslation();
   
     // A ref to the dropdown container, so we can detect clicks outside
     const dropdownRef = useRef(null);
@@ -47,7 +50,7 @@ export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens
                         cursor-pointer bg-[var(--active)] text-[var(--higherlight)]"
             >
                 {selectedTokens.length === 0
-                    ? "Filter token(s)..."
+                    ? t('filter_tokens')
                     : selectedTokens.join(", ")}
             </div>
     
@@ -60,7 +63,7 @@ export default function TokenDropdown({tokens, selectedTokens, setSelectedTokens
                 {/* Search box */}
                 <input
                 type="text"
-                placeholder="Search..."
+                placeholder={`${t('search')}...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full p-2 text-[var(--primary)] 
