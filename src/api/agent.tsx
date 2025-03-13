@@ -12,7 +12,7 @@ async function getReply(message: string, threadId: string) {
     const data = await response.json();
     const code = data.response;
     
-    console.log(code);
+    // console.log(code);
     
     // If the code starts with ```javascript, filter it out and the last ```
     if (code.startsWith('```javascript')) {

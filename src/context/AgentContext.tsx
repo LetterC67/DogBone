@@ -160,7 +160,6 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     async function __MESSAGE__(message: string) { 
-        console.log(message);
         if (isAnswering) return;
         setMessages(
             (prev: any) => [...prev, {
@@ -437,12 +436,29 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setUserMessages((prev: any) => [...prev, message]);
         
         setIsAnswering(true);
-    
-        const reply = await getReply(message, threadID);
-        
+        let reply = '';
+        try {
+            reply = await getReply(message, threadID);
+        } catch {
+            __MESSAGE__("Your request is rate limited. Please try again later or contact us to get access code.");
+            setIsAnswering(false);
+            return;
+        }
         // console.log(reply);
 
-        if (!isValidJavaScript(reply).valid) {
+        if (!isValidJavaScript(`
+                async function run() {
+                        try {
+                            await (async () => {
+                                ${reply}
+                            })();
+                        } catch(e) {
+                            console.log(e);
+                        }
+                    }
+                    run();
+
+            `).valid) {
             __MESSAGE__(reply);
             setIsAnswering(false);
             return;
@@ -473,7 +489,6 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
                 __MESSAGE__("An error occurred while executing the action.");
             }
         } else {
-            console.log(code);
             if (code != '' || reject || resolve) {
                 __MESSAGE__("You cannot execute multiple actions at once. Please wait for the current action to finish or cancel it.");
             } else {
