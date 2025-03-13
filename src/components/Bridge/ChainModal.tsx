@@ -1,6 +1,7 @@
 // src/ChainModal.tsx
 import React, { useState, useEffect } from 'react';
 import { Chain } from './types';
+import { useTranslation } from 'react-i18next';
 
 interface ChainModalProps {
   chains: Chain[];

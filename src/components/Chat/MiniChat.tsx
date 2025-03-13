@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import ChatInputMini from './ChatInputMini';
 import { useAgent } from '../../context/AgentContext';
 import Markdown from 'react-markdown';
+import { useTranslation } from 'react-i18next';
 
 function MiniChat() {
     const { agentMessages, isAnswering } = useAgent();
     const [visible, setVisible] = useState(false);
     const [latestAgentMessage, setLatestAgentMessage] = useState<string>('');
     const [newMessage, setNewMessage] = useState<boolean>(true);
+    const {t } = useTranslation();
 
     // If no agent message exists, return empty content.
     
@@ -65,7 +67,7 @@ function MiniChat() {
                         className="w-6 h-6 mr-2"
                         />
                         <div className="p-2 rounded-lg">
-                        <span className="animate-pulse">Agent is thinking...</span>
+                        <span className="animate-pulse">{t('agent_is_thinking')}</span>
                         </div>
                     </div>
                     )}

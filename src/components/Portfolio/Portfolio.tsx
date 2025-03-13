@@ -5,10 +5,13 @@ import Navigator from '../Navigator';
 import { usePrivy } from '@privy-io/react-auth';
 import { useNavigate } from "react-router-dom";
 import { useControl } from '../../context/ControlContext';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 
 function BreathingText() {
   const [pulse, setPulse] = useState(false);
+  const {t } = useTranslation();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -24,7 +27,7 @@ function BreathingText() {
     <div
       className={`text-2xl font-semibold transition-colors duration-2000 ease-in-out ${textColor} p-4 rounded-lg`}
     >
-      Paws-itively loading your portfolio!
+      {t('loading_portfolio')}
     </div>
   );
 }
@@ -85,9 +88,9 @@ export default function Portfolio() {
             marginBottom: '2rem'
           }}
         >
-          <SummaryCard title="Total Balance" value={`$${totalBalance.toFixed(2)}`} />
-          <SummaryCard title="Sonic Points" value={parseFloat(sonicPoint).toFixed(2)} img={<img src="https://tokens.debridge.finance/Logo/100000014/0x0000000000000000000000000000000000000000/small/token-logo.svg" className='h-7 w-7'></img>}/>
-          <SummaryCard title="Rings Points" value={parseFloat(ringsPoint).toFixed(2)} img={<img src="https://i.ibb.co/TBqmpJDt/Logo-White.png" className='h-6 w-6'></img>} />
+          <SummaryCard title={t('total_balance')} value={`$${totalBalance.toFixed(2)}`} />
+          <SummaryCard title={t('sonic_points')} value={parseFloat(sonicPoint).toFixed(2)} img={<img src="https://tokens.debridge.finance/Logo/100000014/0x0000000000000000000000000000000000000000/small/token-logo.svg" className='h-7 w-7'></img>}/>
+          <SummaryCard title={t('rings_points')} value={parseFloat(ringsPoint).toFixed(2)} img={<img src="https://i.ibb.co/TBqmpJDt/Logo-White.png" className='h-6 w-6'></img>} />
         </div>
 
         {/* Token List as a Table */}
@@ -103,9 +106,9 @@ export default function Portfolio() {
                     >
                         <thead>
                         <tr style={{ borderBottom: '1px solid var(--divider)' }}>
-                            <th style={{ textAlign: 'left', padding: '1rem 1.5rem' }}>Token</th>
-                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Balance</th>
-                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>Price</th>
+                            <th style={{ textAlign: 'left', padding: '1rem 1.5rem' }}>{t('token')}</th>
+                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>{t('balance')}</th>
+                            <th style={{ textAlign: 'right', padding: '1rem 1.5rem' }}>{t('price')}</th>
               
                             <th style={{ textAlign: 'right', padding: '1rem 1.5rem'}} className=""></th>
                             <th style={{ textAlign: 'right', padding: '1rem 1.5rem'}} className="w-1/20"></th>
@@ -264,7 +267,7 @@ function TokenRow({
             setIsInStrategyTab(false);
             navigate(`/yield`);
           }}>
-            Earn
+            {t('earn')}
           </div>
         </td>
         <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
@@ -295,8 +298,8 @@ function TokenRow({
               borderBottom: '1px solid var(--divider)'
             }}
           >
-              <DetailRow key="Wallet Balance" label="Wallet Balance" value={parseFloat(asset.balance).toFixed(6)} />
-              <DetailRow key="Vault Deposit" label="Vault Deposit" value={parseFloat(asset.deposited).toFixed(6)} />
+              <DetailRow key="Wallet Balance" label={t('wallet_balance')} value={parseFloat(asset.balance).toFixed(6)} />
+              <DetailRow key="Vault Deposit" label={t('vault_deposit')} value={parseFloat(asset.deposited).toFixed(6)} />
           </td>
         </tr>
       )}

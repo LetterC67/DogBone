@@ -15,6 +15,8 @@ import FullChat from './components/Chat/FullChat';
 import MiniChat from './components/Chat/MiniChat';
 import { ToastContainer, Bounce } from 'react-toastify';
 import Portfolio from "./components/Portfolio/Portfolio";
+import { useTranslation } from 'react-i18next';
+import './i18n';
 
 function IntegrateMiniChat({element}: {element: JSX.Element}) {
 	return (
@@ -30,6 +32,14 @@ function IntegrateMiniChat({element}: {element: JSX.Element}) {
 }
 
 function App() {
+	const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
+//   changeLanguage('cn');
+
 	return (
 		<StrictMode>
 			<ControlProvider>

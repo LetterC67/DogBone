@@ -4,13 +4,15 @@ import LoginButton from "./LoginButton";
 // import SendTransaction from "./SendTransaction";
 import { useState, useEffect } from "react";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
-import { Link } from "react-router";
-
+import { useTranslation } from 'react-i18next';
 
 function Sidebar() {
     const [active, setActive] = useState("Home");
     const { wallets } = useWallets();
     const { ready } = usePrivy();
+    const { t, i18n } = useTranslation();
+    
+    
 
     useEffect(() => {
         if (!ready) {
@@ -36,14 +38,13 @@ function Sidebar() {
                         <img src="https://iili.io/3FsujwX.md.png" className='w-2/3'></img>
                         <div style={{fontFamily: "More Sugar"}} className="text-4xl">DogBone</div>
                     </div>
-                    <SidebarContent setActive={setActive} active={active} text="Home" to="/"/>
-                    <SidebarContent setActive={setActive} active={active} text="Automation" to="/automation"/>
-                    <SidebarContent setActive={setActive} active={active} text="Portfolio" to="/portfolio" />
-                    <SidebarContent setActive={setActive} active={active} text="Yield" to="/yield" />
-                    <SidebarContent setActive={setActive} active={active} text="Swap" to="/swap" />
-                    <SidebarContent setActive={setActive} active={active} text="Bridge" to="/bridge" />
+                    <SidebarContent setActive={setActive} active={active} text={t('home')} to="/"/>
+                    <SidebarContent setActive={setActive} active={active} text={t('automation')} to="/automation"/>
+                    <SidebarContent setActive={setActive} active={active} text={t('portfolio')} to="/portfolio" />
+                    <SidebarContent setActive={setActive} active={active} text={t('yield')} to="/yield" />
+                    <SidebarContent setActive={setActive} active={active} text={t('swap')} to="/swap" />
+                    <SidebarContent setActive={setActive} active={active} text={t('bridge')} to="/bridge" />
                 </div>
-
                 <div>
                     {/* <SendTransaction/> */}
                     <LoginButton/>

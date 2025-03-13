@@ -1,19 +1,21 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAgent } from '../context/AgentContext';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 function Navigator() {
     const {currentNavigation, setCurrentNavigation} = useAgent();
     const navigate = useNavigate();
     const location = useLocation();
+    const {t} = useTranslation();
 
     useEffect(() => {
         if ((currentNavigation == 'swap' && location.pathname != '/swap') || 
             (currentNavigation == 'bridge' && location.pathname != '/bridge') ||
             (currentNavigation == 'yield' && location.pathname != '/yield') 
         ) {
-            toast.info('Navigate to ' + currentNavigation + ' page in 3 seconds', {
+            toast.info(t('navigate_to') + ' ' + t(currentNavigation) + ' ' + t('in_3_seconds'), {
                 position: "top-center",
                 autoClose: 3000,
                 hideProgressBar: false,

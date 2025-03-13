@@ -1,6 +1,8 @@
-// src/TokenModal.tsx
+ // src/TokenModal.tsx
 import React, { useState, useEffect } from 'react';
 import { Token } from './types';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 interface TokenModalProps {
   tokens: Token[];
@@ -89,7 +91,7 @@ const TokenModal: React.FC<TokenModalProps> = ({
             <div className="mt-2">
                 <input
                 type="text"
-                placeholder="Search token..."
+                placeholder={t('search_token')}
                 className="w-full p-2 rounded-lg outline-none transition-colors duration-200"
                 style={{
                     backgroundColor: 'var(--accent-2)',
