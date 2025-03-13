@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaLightbulb } from "react-icons/fa";
 import { HiLightBulb } from "react-icons/hi";
-
+import { useTranslation } from 'react-i18next';
 
 const tips = [
   "You can earn 6x points by just holding scUSD, stkscUSD",
@@ -23,6 +23,7 @@ const TipSection = () => {
   const randomIndex = Math.floor(Math.random() * tips.length);
   const [currentTipIndex, setCurrentTipIndex] = useState(randomIndex);
   const [fade, setFade] = useState('opacity-100');
+  const {t } = useTranslation();
 
   useEffect(() => {
     const currentTip = tips[currentTipIndex];
@@ -44,7 +45,7 @@ const TipSection = () => {
   return (
     <div className="relative flex items-center justify-center">
       <p className={`transition-opacity duration-500 ${fade} text-center text-lg`}>
-        {tips[currentTipIndex]}
+        {t(tips[currentTipIndex])}
       </p>
     </div>
   );

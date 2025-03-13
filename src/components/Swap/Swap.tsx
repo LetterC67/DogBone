@@ -17,6 +17,7 @@ import { useAgent } from '../../context/AgentContext';
 import Navigator from '../Navigator';
 import { toast } from 'react-toastify';
 import { useData } from '../../context/DataContext';
+import { useTranslation } from 'react-i18next';
 
 // Convert the TokenList object into an array of tokens
 const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
@@ -60,6 +61,7 @@ const Swap: React.FC = () => {
     const { userBalance: toBalance } = useFetchBalance(toTokenSwap);
 
     const { refetchBalance } = useData();
+    const { t } = useTranslation();
 
     const {
         messages,
@@ -135,7 +137,7 @@ const Swap: React.FC = () => {
             if (resolve) {
                 resolve(result.amountOut);
             }
-            toast.success("Swap successful",
+            toast.success(t('swap_success'),
                 {
                     autoClose: 2000,
                     hideProgressBar: false,
@@ -152,7 +154,7 @@ const Swap: React.FC = () => {
             if (reject) {
                 reject();
             }
-            toast.error("Swap failed",
+            toast.error(t('swap_failed'),
                 {
                     autoClose: 2000,
                     hideProgressBar: false,
@@ -174,13 +176,13 @@ const Swap: React.FC = () => {
             style={{ backgroundColor: 'var(--secondary)' }}
             >
             <h2 className="text-center text-2xl font-bold mb-4" style={{ color: 'var(--primary)' }}>
-                Token Swap
+                {t('token_swap')}
             </h2>
             <div className="space-y-4">
                 {/* From Section */}
                 <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--accent)' }}>
                 <div className="flex justify-between items-center">
-                    <span className="text-sm" style={{ color: 'var(--higherlight)' }}>From</span>
+                    <span className="text-sm" style={{ color: 'var(--higherlight)' }}>{t('from')}</span>
                     <button
                     onClick={() => setActiveModal('from')}
                     className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
@@ -190,7 +192,7 @@ const Swap: React.FC = () => {
                     )}
                     <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
                         {fromTokenSwap?.symbol}
-                        {fromTokenSwap == null && 'Select a token'}
+                        {fromTokenSwap == null && t('select_a_token')}
                     </span>
                     <svg
                         className="w-4 h-4 transition-colors duration-200"
@@ -216,7 +218,7 @@ const Swap: React.FC = () => {
                             ~${fromUsdValue.toFixed(2)}
                         </div>
                         <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                            Balance: {fromBalance != null ? parseFloat(fromBalance).toFixed(6) : '-'}
+                            {t('balance')}: {fromBalance != null ? parseFloat(fromBalance).toFixed(6) : '-'}
                         </div>
                     </div>                </div>
 
@@ -233,7 +235,7 @@ const Swap: React.FC = () => {
                 {/* To Section */}
                 <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--accent)' }}>
                 <div className="flex justify-between items-center">
-                    <span className="text-sm" style={{ color: 'var(--higherlight)' }}>To</span>
+                    <span className="text-sm" style={{ color: 'var(--higherlight)' }}>{t('to')}</span>
                     <button
                     onClick={() => setActiveModal('to')}
                     className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
@@ -243,7 +245,7 @@ const Swap: React.FC = () => {
                     )}
                     <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
                         {toTokenSwap?.symbol}
-                        {toTokenSwap == null && 'Select a token'}
+                        {toTokenSwap == null && t('select_a_token')}
                     </span>
                     <svg
                         className="w-4 h-4 transition-colors duration-200"
@@ -268,7 +270,7 @@ const Swap: React.FC = () => {
                             ~${toUsdValue.toFixed(2)}
                         </div>
                         <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
-                            Balance: {toBalance != null ? parseFloat(toBalance).toFixed(6) : '-'}
+                            {t('balance')}: {toBalance != null ? parseFloat(toBalance).toFixed(6) : '-'}
                         </div>
                     </div>
                 </div>
@@ -280,10 +282,10 @@ const Swap: React.FC = () => {
                 ${isSwapping ? 'disabled:opacity-50' : 'opacity-100'}
                 `}
             >
-                {authenticated ? isSwapping ? <Spinner/> : 'Swap' : 
+                {authenticated ? isSwapping ? <Spinner/> : t('swap') :  
                 <span className="flex flex-row gap-2 w-full justify-center items-center">
                     <FaWallet size={16}/>
-                    <span>Please Log In</span>
+                    <span>{t('please_login')}</span>
                 </span>}
             </button>
 
@@ -300,7 +302,7 @@ const Swap: React.FC = () => {
                     setActiveModal(null);
                 }}
                 onClose={() => setActiveModal(null)}
-                title="Select a token"
+                title={t('select_a_token')}
                 />
             )}
             </div>

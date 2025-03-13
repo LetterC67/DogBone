@@ -3,6 +3,7 @@ import { useAgent } from "../../context/AgentContext";
 import { useRef, useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import TipsBox from "../Common/TipSection";
+import { useTranslation } from 'react-i18next';
 
 interface ChatMessageItemProps {
   message: any;
@@ -50,14 +51,15 @@ function ChatMessageItem({ message, attachRef }: ChatMessageItemProps) {
 
 function QuickAction({content}: {content:string}) {
     const { sendMessage } = useAgent();
+    const {t} = useTranslation();
 
     function handleClick() {
-        sendMessage(content);
+        sendMessage(t(content));
     }
 
     return (
         <div className="p-2 border-(--divider) border-2 rounded-2xl px-4 hover:bg-(--divider) transition duration-300 hover:cursor-pointer text-center" onClick={handleClick}>
-            {content}
+            {t(content)}
         </div>
     )
 }
@@ -69,6 +71,7 @@ function ChatMessages() {
     const lastUserMessageRef = useRef<HTMLDivElement>(null);
     const { authenticated, ready, login} = usePrivy();
     const { wallets } = useWallets();
+    const {t } = useTranslation();
 
     useEffect(() => {
         if (containerRef.current) {
@@ -93,11 +96,11 @@ function ChatMessages() {
         let greeting;
   
         if (hour < 12) {
-          greeting = "Good Morning";
+          greeting = t('good_morning');
         } else if (hour < 18) {
-          greeting = "Good Afternoon";
+          greeting = t('good_afternoon');
         } else {
-          greeting = "Good Evening";
+          greeting = t('good_evening');
         }
   
         return greeting;
@@ -175,7 +178,7 @@ function ChatMessages() {
                         </div>
                         <div className="p-2 inline-block rounded-4xl">
                             <span className="animate-pulse">
-                                Agent is thinking...
+                                {t('agent_is_thinking')}
                             </span>
                         </div>
                     </div>

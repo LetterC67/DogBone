@@ -3,6 +3,8 @@ import { sampleToTokens } from "../components/Bridge/sampleToTokens";
 import { sampleFromTokens } from "../components/Bridge/sampleFromTokens";
 import TokenList from "../components/Swap/TokenList"
 import { strategyFunctions } from "../tools/listStrategies";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const tokens: Token[] = Object.entries(TokenList).map(([address, tokenData]) => ({
     address,
@@ -58,6 +60,8 @@ const ControlContext = createContext({
     setAllTokens: (tokens: any[]) => {},
     agentFilteredStrategies: [],
     setAgentFilteredStrategies: (strategies: any[]) => {},
+    lang: {lang: 'en', name: 'English'},
+    setLang: (lang: {lang: string, name: string}) => {}
 })
 
 export const ControlProvider = ({ children }: { children: React.ReactNode }) => {
@@ -115,6 +119,21 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
 
     const [agentFilteredStrategies, setAgentFilteredStrategies] = useState<any[]>([]);
 
+    const [lang, setLang] = useState(() => {
+        const storedLang = localStorage.getItem('language');
+        console.log("stored ", storedLang);
+        return storedLang ? JSON.parse(storedLang) : { lang: 'en', name: 'English' };
+    });
+    
+    const { t, i18n } = useTranslation();
+    
+    useEffect(() => {
+        console.log("new lang ", lang);
+        i18n.changeLanguage(lang.lang); // Use only the language code
+        localStorage.setItem('language', JSON.stringify(lang)); // Store language preference as a string
+    }, [lang]);
+    
+
     return (
         <ControlContext.Provider value={{
             strategyTab,
@@ -156,7 +175,9 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
             allTokens,
             setAllTokens,
             agentFilteredStrategies,
-            setAgentFilteredStrategies
+            setAgentFilteredStrategies,
+            lang,
+            setLang
         }}>
             {children}
         </ControlContext.Provider>
