@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ChatInputMini from './ChatInputMini';
 import { useAgent } from '../../context/AgentContext';
 import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useTranslation } from 'react-i18next';
 
 function MiniChat() {
@@ -48,11 +49,11 @@ function MiniChat() {
                             className="w-6 h-6 mr-2"
                         />
                         <div
-                            className={`p-2 rounded-lg break-word transition-all duration-500 h-full ${
+                            className={`prose prose-sm prose-p:text-white-500 p-2 rounded-lg break-word transition-all duration-500 h-full w-full max-w-full ${
                             visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 '
                             }`}
                         >
-                                <Markdown>
+                                <Markdown remarkPlugins={[remarkGfm]}>
                             {latestAgentMessage}
                             </Markdown>
                         </div>

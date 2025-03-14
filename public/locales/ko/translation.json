@@ -134,5 +134,6 @@
     "actions": {
         "start": "시작",
         "pause": "일시정지"
-    }
+    },
+    "do_you_know": "알고 계셨나요?"
 }

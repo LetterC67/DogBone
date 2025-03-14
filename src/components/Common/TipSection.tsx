@@ -52,6 +52,7 @@ const TipSection = () => {
 };
 
 const TipsBox = () => {
+  const {t} = useTranslation();
   return (
     <div className="flex flex-col justify-center items-center mt-10 opacity-80">
       <div
@@ -65,7 +66,7 @@ const TipsBox = () => {
           <HiLightBulb />
           </div>
 
-          <span>Do you know?</span>
+          <span>{t('do_you_know')}</span>
         </h3>
         <TipSection />
       </div>
