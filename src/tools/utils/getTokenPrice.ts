@@ -1,8 +1,9 @@
-import { Address, createPublicClient, http, parseUnits, PublicClient } from "viem";
+import { Address, createPublicClient, http, parseUnits, PublicClient, formatUnits } from "viem";
 import TokenList from "../tokenList.json";
 import { mainnet, arbitrum, polygon, bsc, base, sonic, optimism } from "viem/chains";
 import { getOdosSwapQuote } from "../swap/odos";
 import { getERC20Decimals } from "./erc20Utils";
+import { getPricePendle } from "../pendle/depositPendle";
 
 interface TokenConfig {
     name: string;
@@ -24,6 +25,8 @@ const WSTK_SCETH = "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47" as Address;
 const SCUSD = "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE" as Address;
 const SCETH = "0x3bcE5CB273F0F148010BbEa2470e7b5df84C7812" as Address;
 const OPTIMISM_USDCE = "0x7F5c764cBc14f9669B88837ca1490cCa17c31607" as Address;
+const PT_WSTKSCUSD = "0xbe27993204ec64238f71a527b4c4d5f4949034c3" as Address;
+const PT_STS = "0x420df605d062f8611efb3f203bf258159b8fffde" as Address;
 
 
 // Create a mapping between chain id and its stablecoin
@@ -63,13 +66,7 @@ export async function getTokenPriceBySymbol(tokenSymbol: string) {
 }
 
 export async function getTokenPriceByAddress(token: Address, chainId: number) {
-    console.log("?????????????????????");
-    console.log(token);
-    console.log(stablecoinMapping[chainId]);
     if (token === stablecoinMapping[chainId]) {
-        console.log("?????????????????????");
-        console.log(token);
-        console.log(stablecoinMapping[chainId]);
         return String(1);
     }
 
@@ -83,6 +80,12 @@ export async function getTokenPriceByAddress(token: Address, chainId: number) {
         });
 
         return String(getQuote.outValues[0]);
+    }
+    else if (token == PT_STS || token == PT_WSTKSCUSD) {
+        let PT_VAULT: Address = '0x3aef1d372d0a7a7e482f465bc14a42d78f920392';
+        if (token == PT_WSTKSCUSD) PT_VAULT = "0x6e4e95fab7db1f0524b4b0a05f0b9c96380b7dfa";
+        else PT_VAULT = '0x3aef1d372d0a7a7e482f465bc14a42d78f920392';
+        return formatUnits(await getPricePendle(PT_VAULT, parseUnits('1', token === PT_STS ? 18 : 6)), 6);
     }
 
     if (token == WSTK_SCUSD) {

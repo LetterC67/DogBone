@@ -160,5 +160,17 @@
         "vault": "0x0A94e18bdbCcD048198806d7FF28A1B1D2590724",
         "token": "0xBb30e76d9Bb2CC9631F7fC5Eb8e87B5Aff32bFbd",
         "borrowable": true
+    },
+    {
+        "marketId": 37,
+        "vault": "0x854475b78880767e246163031b5bE44f14426c26",
+        "token": "0xBe27993204Ec64238F71A527B4c4D5F4949034C3",
+        "borrowable": false
+    },
+    {
+        "marketId": 40,
+        "vault": "0x058766008d237faF3B05eeEebABc73C64d677bAE",
+        "token": "0x420df605D062F8611EFb3F203BF258159b8FfFdE",
+        "borrowable": false
     }
 ]

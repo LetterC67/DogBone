@@ -1,0 +1,31 @@
+[
+    {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_silo",
+            "type": "address"
+          }
+        ],
+        "name": "getShareTokens",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "protectedShareToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "collateralShareToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "debtShareToken",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      }
+]
