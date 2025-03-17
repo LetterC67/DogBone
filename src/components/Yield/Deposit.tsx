@@ -15,7 +15,8 @@ import { getTokenPriceBySymbol } from "../../tools/utils/getTokenPrice";
 import { useTranslation } from "react-i18next";
 import { getBone1LeverageAPY } from "../../tools/dogbone/dogbone_silo_st_s_st_looping/getBone1APY";
 import { getBone2LeverageAPY } from "../../tools/dogbone/dogbone_silo_wos_s_wos_looping/getBone2APY";
-
+import { getBone3LeverageAPY } from "../../tools/dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/getBone3APY";
+import { getBone4LeverageAPY } from "../../tools/dogbone/dogbone4/getBone4APY";
 function Deposit() {
     const { authenticated, login } = usePrivy();
     const { t } = useTranslation();
@@ -98,6 +99,16 @@ function Deposit() {
                 setPointsAPR(strategy.point_apr / strategy.maxLeverage * leverage);
             } else if (strategy.provider.name == "Bone2") {
                 getBone2LeverageAPY({depositAPR: strategy.depositAPR, borrowAPR: strategy.borrowAPR, leverage: leverage}).then((apy) => {
+                    setStrategyAPR(apy);
+                });
+                setPointsAPR(strategy.point_apr / strategy.maxLeverage * leverage);
+            } else if (strategy.provider.name == "Bone3") {
+                getBone3LeverageAPY({depositAPR: strategy.depositAPR, borrowAPR: strategy.borrowAPR, leverage: leverage}).then((apy) => {
+                    setStrategyAPR(apy);
+                });
+                setPointsAPR(strategy.point_apr / strategy.maxLeverage * leverage);
+            } else if (strategy.provider.name == "Bone4") {
+                getBone4LeverageAPY({depositAPR: strategy.depositAPR, borrowAPR: strategy.borrowAPR, leverage: leverage}).then((apy) => {
                     setStrategyAPR(apy);
                 });
                 setPointsAPR(strategy.point_apr / strategy.maxLeverage * leverage);
