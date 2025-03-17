@@ -17,6 +17,7 @@ import { getBone1LeverageAPY } from "../../tools/dogbone/dogbone_silo_st_s_st_lo
 import { getBone2LeverageAPY } from "../../tools/dogbone/dogbone_silo_wos_s_wos_looping/getBone2APY";
 import { getBone3LeverageAPY } from "../../tools/dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/getBone3APY";
 import { getBone4LeverageAPY } from "../../tools/dogbone/dogbone4/getBone4APY";
+import tokenList from "../../tools/tokenList.json";
 function Deposit() {
     const { authenticated, login } = usePrivy();
     const { t } = useTranslation();
@@ -89,7 +90,8 @@ function Deposit() {
         setStrategyAPR(strategy.apr);
         setPointsAPR(strategy.point_apr);
         if (strategy.provider.name.startsWith("Bone")) {
-            setStrategyToken(strategy.token);
+            setStrategyToken(tokenList.tokens.find((token) => token.symbol == strategy.token.symbol && token.chainId == 146));
+            setStrategyChain(146);
         }
     }, [strategy]);
 
