@@ -135,5 +135,6 @@
         "start": "starten",
         "pause": "pausieren"
     },
-    "do_you_know": "Wusstest du schon?"
+    "do_you_know": "Wusstest du schon?",
+    "leverage": "Hebelwirkung"
 }

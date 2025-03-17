@@ -135,5 +135,7 @@
         "start": "iniciar",
         "pause": "pausar"
     },
-    "do_you_know": "¿Sabías que?"
+    "do_you_know": "¿Sabías que?",
+    "leverage": "Apalancamiento"
+
 }

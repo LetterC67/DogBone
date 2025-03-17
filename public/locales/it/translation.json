@@ -135,5 +135,6 @@
         "start": "avvia",
         "pause": "metti in pausa"
     },
-    "do_you_know": "Lo sapevi?"
+    "do_you_know": "Lo sapevi?",
+    "leverage": "Leva"
 }
