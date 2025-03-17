@@ -291,12 +291,27 @@ export const DataProvider = ({ children }) => {
                   return [symbol, price];
                 })
               );
-
-            for (const token of sonicTokens) {
+              const notFound = sonicTokens.filter((token) => !result[token.symbol]);
+              const promises = notFound.map(async (token) => {
                 if (!result[token.symbol]) {
-                    result[token.symbol] = await getTokenPriceByAddress(token.address, 146);
+                    let price = null;
+                    try {
+                        price = await getTokenPriceByAddress(token.address.toLowerCase(), 146);
+                    } catch {
+                        console.log("Price not found for ", token.symbol);
+                        return { symbol: token.symbol, price: 0 };
+                    }
+                    return { symbol: token.symbol, price };
                 }
-            }
+              });
+              
+                const results = await Promise.all(promises);
+                for (const { symbol, price } of results) {
+                    if (price) {
+                        result[symbol] = price;
+                    }
+                }
+
             setTokenPriceSonic(result);
 
         }
