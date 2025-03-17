@@ -312,7 +312,7 @@ export const DataProvider = ({ children }) => {
         async function fetchAllBalances() {
           try {
             // Map each token to a Promise that retrieves its balance
-            const balancePromises = sampleToTokens.map(async (token) => {
+            const balancePromises = tokenList.tokens.filter((token) => token.chainId === 146).map(async (token) => {
                 try {
                     const balance = await getTokenBalance(146, token.address, wallets[0].address);
                     return { symbol: token.symbol, balance };
