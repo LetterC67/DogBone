@@ -50,6 +50,10 @@ import { withdrawVicuna } from './vicuna/withdrawVicuna';
 import { getVicunaFuncSelector } from './vicuna/getVicunaFuncSelector';
 import { getAaveFuncSelector } from './aave/getAaveFuncSelector';
 import { getPendleFuncSelector } from './pendle/getPendleFuncSelector';
+import { depositDogBone_Bone3 } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/Deposit_DogBone3';
+import { getBone3APY } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/getBone3APY';
+import { depositDogBone_Bone4 } from './dogbone/dogbone4/Deposit_DogBone4';
+import { getBone4APY } from './dogbone/dogbone4/getBone4APY';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -150,6 +154,22 @@ export const strategyFunctions = {
   Bone2: {
     deposit: depositDogBone_Bone2,
     viewAPR: getBone2APY,
+    viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
+  },
+  Bone3: {
+    deposit: depositDogBone_Bone3,
+    viewAPR: getBone3APY,
+    viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
+  },
+  Bone4: {
+    deposit: depositDogBone_Bone4,
+    viewAPR: getBone4APY,
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,

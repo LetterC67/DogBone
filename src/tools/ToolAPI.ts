@@ -193,7 +193,7 @@ export async function zap(
       parsedAmountIn,
       userAddr
     )
-    transaction = {...transaction, value: "0"}
+    transaction = {...transaction, value: fromToken === NATIVE_TOKEN ? parsedAmountIn : 0n}
   } else {
     ({ transaction } = await odosExecute({
       receiver: ZAP_CONTRACT,

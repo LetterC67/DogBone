@@ -46,6 +46,10 @@ import { withdrawSilo } from './silo/withdrawSilo.ts';
 import { withdrawMachFi } from './machfi/withdrawMachFi.ts';
 import { withdrawPendle } from './pendle/withdrawPendle.ts';
 import { depositDogBone_Bone1 } from './dogbone/dogbone_silo_st_s_st_looping/Deposit_DogBone_Bone1.ts';
+import { depositDogBone_Bone3 } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/Deposit_DogBone3.ts';
+import { depositDogBone_Bone4 } from './dogbone/dogbone4/Deposit_DogBone4.ts';
+import { getBone3APY } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/getBone3APY.ts';
+import { getBone4APY } from './dogbone/dogbone4/getBone4APY.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -525,6 +529,30 @@ export const AllTools = () => {
           onClick={() => depositDogBone_Bone1({walletClient: wallet, amount: "0.1", leverage: 5})}
         >
           Leverage x5 Bone 1
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => depositDogBone_Bone3({walletClient: wallet, amount: "0.2", leverage: 5})}
+        >
+          Leverage x5 Bone 3
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => depositDogBone_Bone4({walletClient: wallet, amount: "0.2", leverage: 5})}
+        >
+          Leverage x5 Bone 4
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getBone3APY()}
+        >
+          APY Bone3
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getBone4APY()}
+        >
+          APY Bone4
         </button>
       </div>
     </div>
