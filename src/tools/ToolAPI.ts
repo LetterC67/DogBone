@@ -31,7 +31,8 @@ const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 export async function depositVault(
   walletClient: ConnectedWallet,
   strategyName: string,
-  amount: string
+  amount: string,
+  leverage: number
 ) {
   const strategy = nameToTypeMapping[strategyName];
   if (!strategy) {
@@ -46,6 +47,7 @@ export async function depositVault(
     walletClient,
     vaultAddress: vault,
     amount,
+    leverage
   });
 }
 

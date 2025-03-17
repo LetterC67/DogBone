@@ -34,11 +34,13 @@ interface DepositDogBone {
   walletClient: ConnectedWallet;
   vault?: Address;
   amount: string;
+  leverage: number;
 }
 
 export async function depositDogBone_Bone1({
   walletClient,
   amount,
+  leverage
 }: DepositDogBone) {
   console.log(walletClient);
   if (
@@ -65,7 +67,7 @@ export async function depositDogBone_Bone1({
   const BORROW_TOKEN_PRICE = Number(await getTokenPriceByAddress(BORROW_TOKEN, sonic.id));
 
   const flashAmount =
-    (Number(amount) * (LEVERAGE - 1) * TOKEN_PRICE) / BORROW_TOKEN_PRICE;
+    (Number(amount) * (leverage - 1) * TOKEN_PRICE) / BORROW_TOKEN_PRICE;
 
   const parsedFlashAmount = parseUnits(
     flashAmount.toString(),

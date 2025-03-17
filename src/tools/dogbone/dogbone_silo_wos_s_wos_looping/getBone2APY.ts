@@ -37,3 +37,15 @@ export async function getBone2APY() {
 
     return Number(formatUnits((depositAPR + wOSAPR) * LEVERAGE - borrowAPR * (LEVERAGE - BigInt(1)), 16));
 }
+
+export async function getBone2LeverageAPY({
+  depositAPR,
+  borrowAPR,
+  leverage
+}: {
+  depositAPR: bigint;
+  borrowAPR: bigint;
+  leverage: number;
+}) {
+  return Number(formatUnits(depositAPR, 16)) * leverage - Number(formatUnits(borrowAPR, 16)) * (leverage - 1);
+}

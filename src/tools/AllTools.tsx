@@ -45,6 +45,7 @@ import { withdrawVicuna } from './vicuna/withdrawVicuna.ts';
 import { withdrawSilo } from './silo/withdrawSilo.ts';
 import { withdrawMachFi } from './machfi/withdrawMachFi.ts';
 import { withdrawPendle } from './pendle/withdrawPendle.ts';
+import { depositDogBone_Bone1 } from './dogbone/dogbone_silo_st_s_st_looping/Deposit_DogBone_Bone1.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -518,6 +519,12 @@ export const AllTools = () => {
           )}
         >
           Withdraw general
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => depositDogBone_Bone1({walletClient: wallet, amount: "0.1", leverage: 5})}
+        >
+          Leverage x5 Bone 1
         </button>
       </div>
     </div>

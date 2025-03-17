@@ -21,8 +21,6 @@ import { getTokenPriceByAddress } from '../../utils/getTokenPrice';
 
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 
-console.log('Zap abi is: ', zapAbi);
-
 const LEVERAGE: number = 9;
 const SILO_VAULT: Address = '0x1d7E3726aFEc5088e11438258193A199F9D5Ba93';
 // const SILO_CONFIG: Address = "0x78C246f67c8A6cE03a1d894d4Cf68004Bd55Deea";
@@ -34,11 +32,13 @@ interface DepositDogBone {
   walletClient: ConnectedWallet;
   vault?: Address;
   amount: string;
+  leverage?: number;
 }
 
 export async function depositDogBone_Bone2({
   walletClient,
   amount,
+  leverage
 }: DepositDogBone) {
   console.log(walletClient);
   if (
@@ -64,7 +64,7 @@ export async function depositDogBone_Bone2({
   const BORROW_TOKEN_PRICE = Number(await getTokenPriceByAddress(BORROW_TOKEN, sonic.id));
 
   const flashAmount =
-    (Number(amount) * (LEVERAGE - 1) * TOKEN_PRICE) / BORROW_TOKEN_PRICE;
+    (Number(amount) * (leverage - 1) * TOKEN_PRICE) / BORROW_TOKEN_PRICE;
 
   const parsedFlashAmount = parseUnits(
     flashAmount.toString(),
