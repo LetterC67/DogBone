@@ -13,6 +13,8 @@ import useFetchBalance  from "../../hooks/useFetchBalance";
 import { toast } from "react-toastify";
 import { getTokenPriceBySymbol } from "../../tools/utils/getTokenPrice";
 import { useTranslation } from "react-i18next";
+import { getBone1LeverageAPY } from "../../tools/dogbone/dogbone_silo_st_s_st_looping/getBone1APY";
+import { getBone2LeverageAPY } from "../../tools/dogbone/dogbone_silo_wos_s_wos_looping/getBone2APY";
 
 function Deposit() {
     const { authenticated, login } = usePrivy();
@@ -25,7 +27,8 @@ function Deposit() {
     const { wallets } = useWallets();
     const { tokenPriceSonic, getTokenListByChainId, depositedSonic, refetchPosition, refetchBalance} = useData();
     const [tokens, setTokens] = useState<any[]>([]);
-
+    const [strategyAPR, setStrategyAPR] = useState<number>(0);
+    const [pointsAPR, setPointsAPR] = useState<number>(0);
     
     const {strategyTab,
         setStrategyTab,
@@ -37,7 +40,9 @@ function Deposit() {
         setStrategy,
         setIsInStrategyTab,
         strategyChain,
-        setStrategyChain
+        setStrategyChain,
+        leverage,
+        setLeverage
     } = useControl();
     
     const { userBalance } = useFetchBalance(strategyToken, strategyChain == 146 ? "sonic" : strategyChain == 137 ? "polygon" : strategyChain == 8453 ? "base" : strategyChain == 42161 ? "arb" : "eth");
@@ -76,20 +81,48 @@ function Deposit() {
         };
     }, [strategyToken, strategyAmount]);
     
+    useEffect(() => {
+        if (strategy.defaultLeverage > 0) {
+            setLeverage(strategy.defaultLeverage);
+        }
+        setStrategyAPR(strategy.apr);
+        setPointsAPR(strategy.point_apr);
+    }, [strategy]);
+
+    useEffect(() => {
+        if (strategy.provider.name.startsWith("Bone")) {
+            if (strategy.provider.name == "Bone1") {
+                getBone1LeverageAPY({depositAPR: strategy.depositAPR, borrowAPR: strategy.borrowAPR, leverage: leverage}).then((apy) => {
+                    setStrategyAPR(apy);
+                });
+                setPointsAPR(strategy.point_apr / strategy.maxLeverage * leverage);
+            } else if (strategy.provider.name == "Bone2") {
+                getBone2LeverageAPY({depositAPR: strategy.depositAPR, borrowAPR: strategy.borrowAPR, leverage: leverage}).then((apy) => {
+                    setStrategyAPR(apy);
+                });
+                setPointsAPR(strategy.point_apr / strategy.maxLeverage * leverage);
+            }
+        }
+    }, [leverage]);
+
     // useEffect(() => {
     //     console.log(tokens);
     //     if(tokens)
     //     setStrategyToken(tokens[0]);
     // }, [tokens]);
+
+
     async function execute() {
         // console.log(strategyTab, currentAction, strategyTab == currentAction);
         if (currentAction && currentAction != strategyTab) return;
 
         
         setIsRunning(true);
+        console.log(wallets[0]);
+        console.log(wallets[0].address);
         
         if (strategyTab == "Deposit") {
-            if (strategy.provider.name == "Bone1" || strategy.provider.name == "Bone2") {
+            if (strategy.provider.name.startsWith("Bone")) {
                 if (strategy.token.symbol != strategyToken.symbol || strategyChain != 146) {
                     toast.error(t("dogbone_strategies"),
                         {
@@ -111,7 +144,7 @@ function Deposit() {
                     if (strategyToken.address.toLowerCase() != strategy.token.address.toLowerCase()) {
                         await zap(wallets[0], strategyToken.address, strategyAmount , strategy.name);
                     } else {
-                        await depositVault(wallets[0], strategy.name, strategyAmount);
+                        await depositVault(wallets[0], strategy.name, strategyAmount, leverage);
                     }
                 } else {
                     // console.log(strategyToken.chainId);
@@ -195,9 +228,9 @@ function Deposit() {
     return (
         <>
         <div className="w-full h-full flex flex-col items-center justify-center">
-            <div className="w-full max-w-md pl-16">
-                <StrategyNavbar />  
-            </div>
+        <div className="w-full max-w-md pl-16">
+            <StrategyNavbar />  
+        </div>
             <div className="flex flex-row">
                 <div className="mt-4">
                     <div className={`p-2 bg-(--accent) text-(--disabled) rounded-tl-lg rounded-bl-lg hover:text-(--primary) transition duration-300 ease-in-out hover:cursor-pointer font-bold pb-1 text-lg pb-2`} onClick={() => setIsInStrategyTab(false)}>
@@ -278,7 +311,60 @@ function Deposit() {
                             </div>           
                         </div>
 
-                    </div>
+                        {/* Leverage Slider */}
+                        {(strategy.defaultLeverage > 0&& strategyTab != "Withdraw") && <div className="mt-6">
+                            <label
+                                htmlFor="leverage"
+                                className="block text-sm font-medium"
+                                style={{ color: 'var(--primary)' }}
+                            >
+                                {t('leverage')}: <span id="leverage-value">{leverage}</span>
+                            </label>
+                            {/* The container holds our custom track and the range input */}
+                            <div className="relative w-full h-2 rounded-lg mt-2" style={{ backgroundColor: 'var(--accent)' }}>
+                                {/* Fill: left side color */}
+                                <div
+                                className="absolute top-0 left-0 h-full rounded-lg"
+                                style={{
+                                    backgroundColor: 'var(--highlight)',
+                                    width: `${((leverage - 1) / (strategy.maxLeverage - 1)) * 100}%`,
+                                }}
+                                />
+                                <input
+                                type="range"
+                                id="leverage"
+                                name="leverage"
+                                min="1"
+                                max={strategy.maxLeverage}
+                                value={leverage}
+                                onChange={(e) => setLeverage(e.target.value)}
+                                className="absolute top-0 left-0 w-full h-2 appearance-none cursor-pointer"
+                                style={{ backgroundColor: 'transparent', outline: 'none' }}
+                                />
+                            </div>
+                            {/* Custom CSS for the slider thumb */}
+                            <style jsx>{`
+                                input[type='range']::-webkit-slider-thumb {
+                                -webkit-appearance: none;
+                                width: 20px;
+                                height: 20px;
+                                background: #D2ADB8;
+                                border: 2px solid var(--divider);
+                                border-radius: 50%;
+                                cursor: pointer;
+                                margin-top: -9px; /* Adjust to center the thumb on the track */
+                                }
+                                input[type='range']::-moz-range-thumb {
+                                width: 20px;
+                                height: 20px;
+                                background: #D2ADB8;
+                                border: 2px solid #000;
+                                border-radius: 50%;
+                                cursor: pointer;
+                                }
+                            `}</style>
+                        </div>
+                        }
 
                     <div className="flex flex-col gap-2 mt-6 p-1">
                         <div className="flex flex-row justify-between">
@@ -304,7 +390,7 @@ function Deposit() {
                                 APR
                             </div>
                             <div className="text-(--higherlight)">
-                                {strategy.apr.toFixed(2)}% + {strategy.point_apr.toFixed(2)}%
+                                {strategyAPR.toFixed(2)}% + {pointsAPR.toFixed(2)}%
                             </div>
                         </div>
 
@@ -354,6 +440,7 @@ function Deposit() {
                         </span>
                 </div>
                 }
+        </div>
         </div>
         </>
     )

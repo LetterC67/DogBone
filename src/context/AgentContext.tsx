@@ -89,7 +89,8 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setAgentFilteredStrategies,
         setStrategyChain,
         setStrategyTab,
-        lang
+        lang,
+        setLeverage,
     } = useControl();
     const {t } = useTranslation();
 
@@ -349,7 +350,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         });
     }
 
-    async function __DEPOSIT__(inputToken, inputChain, amount, strategyName, message) {
+    async function __DEPOSIT__(inputToken, inputChain, amount, strategyName, leverage, message) {
         console.log(`Depositing ${amount} ${inputToken} to ${strategyName}`);
 
         let inp = null;
@@ -372,9 +373,14 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
             throw new Error(`Cannot find strategy ${strategyName}`);
         }
 
+        if (leverage < strategy.defaultLeverage || leverage > strategy.maxLeverage) {
+            __MESSAGE__(`${t('leverage_out_of_range')} ${strategy.defaultLeverage} - ${strategy.maxLeverage}`);
+            throw new Error(`${t('leverage_out_of_range')} ${strategy.defaultLeverage} - ${strategy.maxLeverage}`);
+        }
+
         // console.log(strategyToken);
 
-
+        setLeverage(leverage);
         setStrategyTab("Deposit");
         setStrategyAmount(amount.toString());
         setStrategyToken(inp);

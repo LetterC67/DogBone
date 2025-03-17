@@ -10,7 +10,7 @@
     "total_balance": "Total Balance",
     "sonic_points": "Sonic Points",
     "rings_points": "Rings Points",
-    "token": "token",
+    "token": "Token",
     "balance": "Balance",
     "price": "Price",
     "earn": "Earn",
@@ -135,5 +135,6 @@
         "start": "start",
         "pause": "pause"
     },
-    "do_you_know": "Did you know?"
+    "do_you_know": "Did you know?",
+    "leverage": "Leverage"
 }
