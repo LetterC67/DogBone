@@ -32,7 +32,7 @@ export async function getBone4APY() {
     return ptAPY * LEVERAGE - Number(formatUnits(borrowAPR, 16)) * (LEVERAGE - 1);
 }
 
-export async function getBone3LeverageAPY({
+export async function getBone4LeverageAPY({
   depositAPR,
   borrowAPR,
   leverage
