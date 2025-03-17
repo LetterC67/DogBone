@@ -135,5 +135,6 @@
         "start": "démarrer",
         "pause": "mettre en pause"
     },
-    "do_you_know": "Le saviez-vous ?"
+    "do_you_know": "Le saviez-vous ?",
+    "leverage": "Effet de levier"
 }
