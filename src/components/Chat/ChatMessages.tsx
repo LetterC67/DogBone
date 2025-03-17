@@ -5,6 +5,7 @@ import Markdown from "react-markdown";
 import TipsBox from "../Common/TipSection";
 import { useTranslation } from 'react-i18next';
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from "rehype-raw";
 
 
 interface ChatMessageItemProps {
@@ -44,7 +45,7 @@ function ChatMessageItem({ message, attachRef }: ChatMessageItemProps) {
             ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
         >
             <div className="text-[--primary] prose prose-lg prose-p:text-white-500">
-            <Markdown remarkPlugins={[remarkGfm]}>{message.message}</Markdown>
+            <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>{message.message}</Markdown>
             </div>
         </div>
         </div>

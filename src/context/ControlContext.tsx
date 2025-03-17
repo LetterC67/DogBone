@@ -61,7 +61,9 @@ const ControlContext = createContext({
     agentFilteredStrategies: [],
     setAgentFilteredStrategies: (strategies: any[]) => {},
     lang: {lang: 'en', name: 'English'},
-    setLang: (lang: {lang: string, name: string}) => {}
+    setLang: (lang: {lang: string, name: string}) => {},
+    leverage: 1,
+    setLeverage: (leverage: Number) => {}
 })
 
 export const ControlProvider = ({ children }: { children: React.ReactNode }) => {
@@ -118,6 +120,8 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
     const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
 
     const [agentFilteredStrategies, setAgentFilteredStrategies] = useState<any[]>([]);
+
+    const [leverage, setLeverage] = useState<number>(1);
 
     const [lang, setLang] = useState(() => {
         const storedLang = localStorage.getItem('language');
@@ -177,7 +181,9 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
             agentFilteredStrategies,
             setAgentFilteredStrategies,
             lang,
-            setLang
+            setLang,
+            leverage,
+            setLeverage
         }}>
             {children}
         </ControlContext.Provider>
