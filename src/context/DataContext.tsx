@@ -34,6 +34,8 @@ export const DataProvider = ({ children }) => {
     const [ringsPoint, setRingsPoint] = useState(0);
     const [threadID, setThreadID] = useState("");
     const { wallets } = useWallets();
+
+    const sonicTokens = tokenList.tokens.filter((token) => token.chainId === 146);
     
     function getTokenListByChainId(chainId: number) {
         return tokenList.tokens.filter((token) => token.chainId === chainId);
@@ -289,6 +291,12 @@ export const DataProvider = ({ children }) => {
                   return [symbol, price];
                 })
               );
+
+            for (const token of sonicTokens) {
+                if (!result[token.symbol]) {
+                    result[token.symbol] = await getTokenPriceByAddress(token.address, 146);
+                }
+            }
             setTokenPriceSonic(result);
 
         }
