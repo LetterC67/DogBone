@@ -26,6 +26,7 @@
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.3",
     "react-window": "^1.8.11",
+    "remark-gfm": "^4.0.1",
     "use-sync-external-store": "^1.4.0",
     "wagmi": "^2.14.11"
   },

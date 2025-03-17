@@ -1,12 +1,12 @@
 const AGENT_URL = import.meta.env.VITE_APP_AGENT_URL;
 
-async function getReply(message: string, threadId: string) {
+async function getReply(message: string, threadId: string, language: string) {
     const response = await fetch(`${AGENT_URL}/thread/${threadId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: message })
+        body: JSON.stringify({ message: message, language: language })
     });
 
     const data = await response.json();
@@ -22,13 +22,13 @@ async function getReply(message: string, threadId: string) {
     return code;
 }
 
-async function createAutomatedTask(message: string) {
+async function createAutomatedTask(message: string, language: string) {
     const response = await fetch(`${AGENT_URL}/automation`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: message })
+        body: JSON.stringify({ message: message, language: language })
     });
     const data = await response.json();
     return data;    

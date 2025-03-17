@@ -134,5 +134,6 @@
     "actions": {
         "start": "starten",
         "pause": "pausieren"
-    }
+    },
+    "do_you_know": "Wusstest du schon?"
 }

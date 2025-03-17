@@ -88,7 +88,8 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setShowOnlyDeposited,
         setAgentFilteredStrategies,
         setStrategyChain,
-        setStrategyTab
+        setStrategyTab,
+        lang
     } = useControl();
     const {t } = useTranslation();
 
@@ -440,7 +441,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setIsAnswering(true);
         let reply = '';
         try {
-            reply = await getReply(message, threadID);
+            reply = await getReply(message, threadID, lang.lang);
         } catch {
             __MESSAGE__(t('rate_limit'));
             setIsAnswering(false);
@@ -518,7 +519,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
         setIsAnswering(true);
 
-        const reply = await createAutomatedTask(message);
+        const reply = await createAutomatedTask(message, lang.lang);
 
         if (reply.error) {
             __MESSAGE__(reply.error);
