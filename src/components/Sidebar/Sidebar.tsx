@@ -6,7 +6,7 @@ import { useState, useEffect, use } from "react";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
 import { useTranslation } from 'react-i18next';
 import { OnrampWebSDK } from '@onramp.money/onramp-web-sdk';
-
+import { Link } from "react-router-dom";
 
 function Sidebar() {
     const [active, setActive] = useState("Home");
@@ -75,11 +75,13 @@ function Sidebar() {
                     <SidebarContent setActive={setActive} active={active} text={t('yield')} to="/yield" />
                     <SidebarContent setActive={setActive} active={active} text={t('swap')} to="/swap" />
                     <SidebarContent setActive={setActive} active={active} text={t('bridge')} to="/bridge" />
+                    <div className={`p-2 rounded-md hover:text-(--focus) transition duration-300 ease-in-out hover:cursor-pointer`}>
+                        <Link to="https://docs.dogbone.fi" target={"_blank"} rel="noopener noreferrer">
+                            Docs
+                        </Link>
+                    </div>
                 </div>
-                <div>
-                    {/* <SendTransaction/> */}
-                    <LoginButton/>
-                </div>
+                <LoginButton/>
             </aside>
         </>
     )

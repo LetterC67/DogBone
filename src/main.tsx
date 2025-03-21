@@ -10,7 +10,7 @@ createRoot(document.getElementById('root')!).render(
 		<PrivyProvider
 		appId="cm6xon0se016t1ko0g21g92qa"
 		config={{
-			loginMethods: ['email', 'wallet'],
+			loginMethods: ['email'],
 			appearance: {
 				theme: 'dark',
 				accentColor: '#472F3D',
