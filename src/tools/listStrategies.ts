@@ -56,6 +56,8 @@ import { depositDogBone_Bone4 } from './dogbone/dogbone4/Deposit_DogBone4';
 import { getBone4APY } from './dogbone/dogbone4/getBone4APY';
 import { depositDogBone_Bone5 } from './dogbone/dogbone5/Deposit_DogBone5';
 import { getBone5APY } from './dogbone/dogbone5/getBone5APY';
+import { depositDogBone_Bone6 } from './dogbone/dogbone6/Deposit_DogBone6';
+import { getBone6APY } from './dogbone/dogbone6/getBone6APY';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -180,6 +182,14 @@ export const strategyFunctions = {
   Bone5: {
     deposit: depositDogBone_Bone5,
     viewAPR: getBone5APY,
+    viewPosition: viewSiloPosition,
+    funcSelector: getSiloFuncSelector,
+    leverage: notLeveraged,
+    withdraw: withdrawPendle
+  },
+  Bone6: {
+    deposit: depositDogBone_Bone6,
+    viewAPR: getBone6APY,
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
