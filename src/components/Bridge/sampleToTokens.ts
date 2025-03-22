@@ -325,6 +325,42 @@ const sampleToTokensData: { [address: string]: Token } = {
     "logoURI": "https://v2.silo.finance/_next/static/media/PT_wOS.da609328.svg",
     "tags": [],
     "eip2612": false
+  },
+  "0x0C4E186Eae8aCAA7F7de1315D5AD174BE39Ec987": {
+    "symbol": "anS",
+    "name": "Angles Staked Sonic",
+    "decimals": 18,
+    "address": "0x0C4E186Eae8aCAA7F7de1315D5AD174BE39Ec987",
+    "logoURI": "https://sonicscan.org/token/images/ans_64.svg",
+    "tags": [],
+    "eip2612": false
+  },
+  "0xfA85Fe5A8F5560e9039C04f2b0a90dE1415aBD70": {
+    "symbol": "wanS",
+    "name": "Wrapped anS",
+    "decimals": 18,
+    "address": "0xfA85Fe5A8F5560e9039C04f2b0a90dE1415aBD70",
+    "logoURI": "https://sonicscan.org/token/images/wans_64.svg",
+    "tags": [],
+    "eip2612": false
+  },
+  "0x15C2B34593E47253eD3fd1115887c5C2D73D5722": {
+    "symbol": "PT-SolvBTC.BBN-26JUN2025",
+    "name": "PT SolvBTC Babylon 26JUN2025",
+    "decimals": 18,
+    "address": "0x15C2B34593E47253eD3fd1115887c5C2D73D5722",
+    "logoURI": "https://storage.googleapis.com/prod-pendle-bucket-a/images/uploads/f5de2555-ae5b-4f97-b7cf-8a4f05fe6122.svg",
+    "tags": [],
+    "eip2612": false
+  },
+  "0x789cA09b0B4bcc83062d817C43206f96bd464015": {
+    "symbol": "PT-wanS-28AUG2025",
+    "name": "PT Wrapped anS 28AUG2025",
+    "decimals": 18,
+    "address": "0x789cA09b0B4bcc83062d817C43206f96bd464015",
+    "logoURI": "https://storage.googleapis.com/prod-pendle-bucket-a/images/uploads/420cb100-6e3e-40f7-a44b-ca42a7785446.svg",
+    "tags": [],
+    "eip2612": false
   }
 };
 
