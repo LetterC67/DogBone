@@ -54,6 +54,7 @@ import { V1Get, V1GetQuote } from './swap/kyber/Kyber.ts';
 import { DOGBONE_VAULT } from './constants.ts';
 import { getMachFiWithdrawAmount } from './machfi/machFiHelper.ts';
 import { getSiloWithdrawAmount } from './silo/siloHelper.ts';
+import { getAaveWithdrawAmount } from './aave/aaveHelper.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -617,6 +618,17 @@ export const AllTools = () => {
           })}
         >
           Silo withdraw amount
+        </button>
+
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getAaveWithdrawAmount({
+            vaultAddress: "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+            percent: 5000n,
+            userAddr: "0x93e3959d97D738a65500Acf9dD882B8622a78F9A"
+          })}
+        >
+          Aave withdraw amount
         </button>
       </div>
     </div>

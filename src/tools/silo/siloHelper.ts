@@ -1,13 +1,14 @@
 import { Address, createPublicClient, http } from "viem";
 import { sonic } from "viem/chains";
 import SiloAbi from './abi/Silo.abi.json';
+import { GetWithdrawAmountParams } from "../ToolAPI";
 
 const siloAbi = JSON.parse(JSON.stringify(SiloAbi));
 
 export async function getSiloWithdrawAmount({
     shares,
     vaultAddress
-}: {shares: bigint, vaultAddress: Address}) {
+}: GetWithdrawAmountParams) {
     const publicClient = createPublicClient({
         chain: sonic,
         transport: http()

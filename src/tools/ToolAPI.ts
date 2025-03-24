@@ -73,6 +73,13 @@ export async function withdrawVault(
   });
 }
 
+export interface GetWithdrawAmountParams {
+  shares?: bigint;
+  vaultAddress: Address;
+  percent?: bigint;
+  userAddr?: Address;
+}
+
 export async function zapOut(
   walletClient: ConnectedWallet,
   strategyName: string,

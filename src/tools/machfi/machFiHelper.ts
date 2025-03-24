@@ -2,13 +2,14 @@ import { Address, createPublicClient, http } from "viem";
 import { sonic } from "viem/chains";
 import MachFiNativeAbi from './machFiNative.abi.json';
 import { ZAP_CONTRACT } from "../constants";
+import { GetWithdrawAmountParams } from "../ToolAPI";
 
 const machFiNativeAbi = JSON.parse(JSON.stringify(MachFiNativeAbi));
 
 export async function getMachFiWithdrawAmount({
     shares,
     vaultAddress
-}: {shares: bigint, vaultAddress: Address}) {
+}: GetWithdrawAmountParams) {
     const publicClient = createPublicClient({
         chain: sonic,
         transport: http()
