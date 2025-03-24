@@ -25,7 +25,7 @@ import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
 import { viewIchiPosition } from './ichi/viewIchiPosition';
-import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap, withdrawVault } from './ToolAPI';
+import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap, withdrawVault, zapOut } from './ToolAPI';
 import { getTokenAddressBySymbol } from './utils/getTokenAddressBySymbol.ts';
 import { getTokenPriceByAddress, getTokenPriceBySymbol } from './utils/getTokenPrice.ts';
 import { dakmim } from './ichi/test.ts';
@@ -52,6 +52,8 @@ import { getBone3APY } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/
 import { getBone4APY } from './dogbone/dogbone4/getBone4APY.ts';
 import { V1Get, V1GetQuote } from './swap/kyber/Kyber.ts';
 import { DOGBONE_VAULT } from './constants.ts';
+import { getMachFiWithdrawAmount } from './machfi/machFiHelper.ts';
+import { getSiloWithdrawAmount } from './silo/siloHelper.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -585,6 +587,36 @@ export const AllTools = () => {
         >
           Kyber Get Quote
 
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => zapOut(
+            wallet,
+            "Pendle PT-wstkscUSD",
+            100n,
+            "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+            10
+          )}
+        >
+          Zap Out
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getMachFiWithdrawAmount({
+            shares: 125747645129n,
+            vaultAddress: "0xC84F54B2dB8752f80DEE5b5A48b64a2774d2B445"
+          })}  
+        >
+          MachFi withdraw amount
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getSiloWithdrawAmount({
+            shares: 2430602651968n,
+            vaultAddress: "0x4E216C15697C1392fE59e1014B009505E05810Df"
+          })}
+        >
+          Silo withdraw amount
         </button>
       </div>
     </div>

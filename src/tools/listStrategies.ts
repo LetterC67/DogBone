@@ -21,13 +21,13 @@ import { DepositLToken } from './yel/depositLToken';
 import { getLTokenAPY } from './yel/getLTokenAPY';
 import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsAPR } from './rings/viewRingsAPR';
-import { getBeefyIchiFuncSelector } from './beefy/getBeefyIchiFuncSelector';
-import { getIchiFuncSelector } from './ichi/getIchiFuncSelector';
+import { getBeefyIchiFuncSelector, getBeefyIchiWithdrawFuncSelector } from './beefy/getBeefyIchiFuncSelector';
+import { getIchiFuncSelector, getIchiWithdrawFuncSelector } from './ichi/getIchiFuncSelector';
 import { getLSTFuncSelector } from './lst/getLSTFuncSelector';
-import { getMachFiFuncSelector } from './machfi/getMachFiFuncSelector';
+import { getMachFiFuncSelector, getMachFiWithdrawFuncSelector } from './machfi/getMachFiFuncSelector';
 import { getRingsFuncSelector } from './rings/getRingsFuncSelector';
-import { getSiloFuncSelector } from './silo/getSiloFuncSelector';
-import { getLTokenFuncSelector } from './yel/getLTokenFuncSelector';
+import { getSiloFuncSelector, getSiloWithdrawFuncSelector } from './silo/getSiloFuncSelector';
+import { getLTokenFuncSelector, getLTokenWithdrawFuncSelector } from './yel/getLTokenFuncSelector';
 import { depositDogBone_Bone1 } from './dogbone/dogbone_silo_st_s_st_looping/Deposit_DogBone_Bone1';
 import { NATIVE_TOKEN } from './constants';
 import { depositDogBone_Bone2 } from './dogbone/dogbone_silo_wos_s_wos_looping/deposit_DogBone_Bone2';
@@ -47,8 +47,8 @@ import { withdrawMachFi } from './machfi/withdrawMachFi';
 import { withdrawSilo } from './silo/withdrawSilo';
 import { withdrawAave } from './aave/withdrawAave';
 import { withdrawVicuna } from './vicuna/withdrawVicuna';
-import { getVicunaFuncSelector } from './vicuna/getVicunaFuncSelector';
-import { getAaveFuncSelector } from './aave/getAaveFuncSelector';
+import { getVicunaFuncSelector, getVicunaWithdrawFuncSelector } from './vicuna/getVicunaFuncSelector';
+import { getAaveFuncSelector, getAaveWithdrawFuncSelector } from './aave/getAaveFuncSelector';
 import { getPendleFuncSelector } from './pendle/getPendleFuncSelector';
 import { depositDogBone_Bone3 } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/Deposit_DogBone3';
 import { getBone3APY } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/getBone3APY';
@@ -58,6 +58,7 @@ import { depositDogBone_Bone5 } from './dogbone/dogbone5/Deposit_DogBone5';
 import { getBone5APY } from './dogbone/dogbone5/getBone5APY';
 import { depositDogBone_Bone6 } from './dogbone/dogbone6/Deposit_DogBone6';
 import { getBone6APY } from './dogbone/dogbone6/getBone6APY';
+import { getDogBoneWithdrawFuncSelector } from './dogbone/getDogBoneFuncSelector';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -74,6 +75,10 @@ export const notLeveraged = (strategy: string, amount: string) => {
   };
 }
 
+export async function noneWithdrawFuncSelector(vaultAddress: Address) {
+  return '';
+}
+
 export const strategyFunctions = {
   beefy: {
     deposit: depositIchiLPBeefy,
@@ -81,7 +86,8 @@ export const strategyFunctions = {
     viewPosition: viewBeefyIchiLPPosition,
     funcSelector: getBeefyIchiFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getBeefyIchiWithdrawFuncSelector
   },
   ichi: {
     deposit: depositIchi,
@@ -89,7 +95,8 @@ export const strategyFunctions = {
     viewPosition: viewIchiPosition,
     funcSelector: getIchiFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getIchiWithdrawFuncSelector
   },
   beets: {
     deposit: depositLST,
@@ -97,7 +104,8 @@ export const strategyFunctions = {
     viewPosition: viewLSTPosition,
     funcSelector: getLSTFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: noneWithdrawFuncSelector
   },
   origin: {
     deposit: depositLST,
@@ -105,7 +113,8 @@ export const strategyFunctions = {
     viewPosition: viewLSTPosition,
     funcSelector: getLSTFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: noneWithdrawFuncSelector
   },
   ans: {
     deposit: depositLST,
@@ -113,7 +122,8 @@ export const strategyFunctions = {
     viewPosition: viewLSTPosition,
     funcSelector: getLSTFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: noneWithdrawFuncSelector
   },
   MachFi: {
     deposit: depositMachFi,
@@ -121,7 +131,8 @@ export const strategyFunctions = {
     viewPosition: viewMachFiPosition,
     funcSelector: getMachFiFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawMachFi
+    withdraw: withdrawMachFi,
+    withdrawFuncSelector: getMachFiWithdrawFuncSelector,
   },
   rings: {
     deposit: depositRingsSC,
@@ -129,7 +140,8 @@ export const strategyFunctions = {
     viewPosition: viewRingsPosition,
     funcSelector: getRingsFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: noneWithdrawFuncSelector
   },
   silo: {
     deposit: depositSilo,
@@ -137,7 +149,8 @@ export const strategyFunctions = {
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawSilo
+    withdraw: withdrawSilo,
+    withdrawFuncSelector: getSiloWithdrawFuncSelector
   },
   yel: {
     deposit: DepositLToken,
@@ -145,7 +158,8 @@ export const strategyFunctions = {
     viewPosition: viewLTokenPosition,
     funcSelector: getLTokenFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getLTokenWithdrawFuncSelector
   },
   Bone1: {
     deposit: depositDogBone_Bone1,
@@ -153,7 +167,8 @@ export const strategyFunctions = {
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getDogBoneWithdrawFuncSelector
   },
   Bone2: {
     deposit: depositDogBone_Bone2,
@@ -161,7 +176,8 @@ export const strategyFunctions = {
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getDogBoneWithdrawFuncSelector
   },
   Bone3: {
     deposit: depositDogBone_Bone3,
@@ -169,7 +185,8 @@ export const strategyFunctions = {
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getDogBoneWithdrawFuncSelector
   },
   Bone4: {
     deposit: depositDogBone_Bone4,
@@ -177,7 +194,8 @@ export const strategyFunctions = {
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getDogBoneWithdrawFuncSelector
   },
   Bone5: {
     deposit: depositDogBone_Bone5,
@@ -185,7 +203,8 @@ export const strategyFunctions = {
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getDogBoneWithdrawFuncSelector
   },
   Bone6: {
     deposit: depositDogBone_Bone6,
@@ -193,7 +212,8 @@ export const strategyFunctions = {
     viewPosition: viewSiloPosition,
     funcSelector: getSiloFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: getDogBoneWithdrawFuncSelector
   },
   pendle: {
     deposit: depositPendle,
@@ -201,7 +221,8 @@ export const strategyFunctions = {
     viewPosition: viewPendlePosition,
     funcSelector: getPendleFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawPendle
+    withdraw: withdrawPendle,
+    withdrawFuncSelector: noneWithdrawFuncSelector
   },
   aave: {
     deposit: depositAave,
@@ -209,7 +230,8 @@ export const strategyFunctions = {
     viewPosition: viewAavePosition,
     funcSelector: getAaveFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawAave
+    withdraw: withdrawAave,
+    withdrawFuncSelector: getAaveWithdrawFuncSelector
   },
   vicuna: {
     deposit: depositVicuna,
@@ -217,7 +239,8 @@ export const strategyFunctions = {
     viewPosition: viewVicunaPosition,
     funcSelector: getVicunaFuncSelector,
     leverage: notLeveraged,
-    withdraw: withdrawVicuna
+    withdraw: withdrawVicuna,
+    withdrawFuncSelector: getVicunaWithdrawFuncSelector
   }
 };
 
@@ -234,17 +257,18 @@ strategies.forEach((strat) => {
 // Also add name to strategy config mapping
 export const nameToConfigMapping: Record<
   string,
-  { vault: Address; token: Address, points: number }
+  { vault: Address; token: Address, points: number, lpTokens: Address[] }
 > = {};
 
 strategies.forEach((strat) => {
   strat.lists.forEach(
-    (item: { name: string; vault: string; token: string; points: number }) => {
+    (item: { name: string; vault: string; token: string; points: number, lpTokens: Address[] }) => {
       if (item.name) {
         nameToConfigMapping[item.name] = {
           vault: item.vault as Address,
           token: item.token as Address,
-          points: item.points
+          points: item.points,
+          lpTokens: item.lpTokens
         };
       }
     }

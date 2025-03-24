@@ -5,6 +5,7 @@ import {
   encodeAbiParameters,
   encodeFunctionData,
   parseUnits,
+  PublicClient,
 } from 'viem';
 import {
   strategyFunctions,
@@ -71,6 +72,54 @@ export async function withdrawVault(
     amount,
   });
 }
+
+export async function zapOut(
+  walletClient: ConnectedWallet,
+  strategyName: string,
+  percent: bigint,
+  tokenOut: Address,
+  slippage: number
+) {
+
+  const userAddr = walletClient.address as Address;
+  const provider = await walletClient.getEthereumProvider();
+  const publicClient = createPublicClient({
+    chain: sonic,
+    transport: custom(provider),
+  });
+  
+
+  const strategy = nameToTypeMapping[strategyName];
+  if (!strategy) {
+    throw new Error('Strategy not found');
+  }
+
+  const strategyFunction =
+    strategyFunctions[strategy as keyof typeof strategyFunctions];
+  const { vault, lpTokens } = nameToConfigMapping[strategyName];
+
+  const funcSelector = await strategyFunction.withdrawFuncSelector(vault);
+  console.log('FuncSelector:', funcSelector);
+
+  const lpBalance = await getERC20Balance({
+    publicClient,
+    account: userAddr,
+    tokenAddress: lpTokens[0],
+  });
+
+  console.log("LP Balance: ", lpBalance);
+
+  const lpWithdraw = BigInt((lpBalance * percent) / 10000n);
+
+
+  if (funcSelector !== '') {
+    
+  }
+}
+
+
+
+
 
 
 export async function getVaultAPR(strategyName: string): Promise<number> {

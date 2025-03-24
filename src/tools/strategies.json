@@ -73,42 +73,63 @@
           "name": "Pendle PT-wstkscUSD",
           "vault": "0x6e4e95fab7db1f0524b4b0a05f0b9c96380b7dfa",
           "token": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+          "lpTokens": [
+            "0xbe27993204ec64238f71a527b4c4d5f4949034c3"
+          ],
           "points": 0
         },
         {
           "name": "Pendle PT-wstkscETH",
           "vault": "0xd14117baf6ec5d12be68cd06e763a4b82c9b6d1d",
           "token": "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47",
+          "lpTokens": [
+            "0xa2161e75edf50d70544e6588788a5732a3105c00"
+          ],
           "points": 0
         },
         {
           "name": "Pendle PT-stS",
           "vault": "0x3aef1d372d0a7a7e482f465bc14a42d78f920392",
           "token": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+          "lpTokens": [
+            "0x420df605d062f8611efb3f203bf258159b8fffde"
+          ],
           "points": 0
         },
         {
           "name": "Pendle PT-wOS",
           "vault": "0x4e82347bc41cfd5d62cef483c7f0a739a8158963",
           "token": "0x9f0df7799f6fdad409300080cff680f5a23df4b1",
+          "lpTokens": [
+            "0x46eb02b9f47634c4fab3110cc7adc1c6311dfac1"
+          ],
           "points": 0
         },
         {
           "name": "Pendle PT-aUSDC",
           "vault": "0x3f5ea53d1160177445b1898afbb16da111182418",
           "token": "0x578ee1ca3a8e1b54554da1bf7c583506c4cd11c6",
+          "lpTokens": [
+            "0x930441aa7ab17654df5663781ca0c02cc17e6643"
+          ],
           "points": 0
         },
         {
           "name": "Pendle PT-wanS",
           "vault": "0x9700c4c218237550ead3a78022d43215a717e5e7",
           "token": "0xfa85fe5a8f5560e9039c04f2b0a90de1415abd70",
+          "lpTokens": [
+            "0x789ca09b0b4bcc83062d817c43206f96bd464015"
+          ],
           "points": 0
         },
         {
           "name": "Pendle PT-SolvBTC.BBN",
           "vault": "0x4a54c1eb9125a5e3de8cc44f618db45055952674",
           "token": "0xcc0966d8418d412c599a6421b760a847eb169a8c",
+          "lpTokens": [
+            "0x15c2b34593e47253ed3fd1115887c5c2d73d5722"
+          ],
           "points": 0
         }
       ]
