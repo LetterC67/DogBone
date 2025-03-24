@@ -50,6 +50,8 @@ import { depositDogBone_Bone3 } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD
 import { depositDogBone_Bone4 } from './dogbone/dogbone4/Deposit_DogBone4.ts';
 import { getBone3APY } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/getBone3APY.ts';
 import { getBone4APY } from './dogbone/dogbone4/getBone4APY.ts';
+import { V1Get, V1GetQuote } from './swap/kyber/Kyber.ts';
+import { DOGBONE_VAULT } from './constants.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -553,6 +555,36 @@ export const AllTools = () => {
           onClick={() => getBone4APY()}
         >
           APY Bone4
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => V1Get({
+            tokenIn: "0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38",
+            tokenOut: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894",
+            amountIn: 1000000000000000000n,
+            feeAmount: 5,
+            chargeFeeBy: "currency_out",
+            feeReceiver: DOGBONE_VAULT
+          })}
+        >
+          Kyberswap Get
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => V1GetQuote({
+            getData: {tokenIn: "0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38",
+            tokenOut: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894",
+            amountIn: 1000000000000000000n,
+            feeAmount: 5,
+            chargeFeeBy: "currency_out",
+            feeReceiver: DOGBONE_VAULT},
+            sender: "0xb271eF8081A73a3B635bF8D547af873ee26624d9",
+            recipient: "0xb271eF8081A73a3B635bF8D547af873ee26624d9",
+            slippage: 10
+          })}
+        >
+          Kyber Get Quote
+
         </button>
       </div>
     </div>

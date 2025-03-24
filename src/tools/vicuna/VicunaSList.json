@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Vicuna wS",
+        "vault": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+        "identifier": "0x9e07EF144325DAe02ff92910aDd1FE91581D4798",
+        "token": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38"
+    },
+    {
+        "name": "Vicuna wOS",
+        "vault": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1",
+        "identifier": "0x0000000000000000000000000000000000000000",
+        "token": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1"
+    },
+    {
+        "name": "Vicuna stS",
+        "vault": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+        "identifier": "0xFB56Cd34244985222068ae1C384ecE4215528D04",
+        "token": "0xe5da20f15420ad15de0fa650600afc998bbe3955"
+    }
+]
