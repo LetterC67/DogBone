@@ -25,7 +25,7 @@ import { viewLTokenPosition } from './yel/viewLTokenPosition';
 import { viewRingsPosition } from './rings/viewRingsPosition';
 import { getIchiAPR } from './ichi/getIchiAPR';
 import { viewIchiPosition } from './ichi/viewIchiPosition';
-import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap, withdrawVault, zapOut } from './ToolAPI';
+import { getVaultAPR, getVaultPosition, depositVault, zap, bridgeAndZap, withdrawVault, zapOut, getQuoteZapOut } from './ToolAPI';
 import { getTokenAddressBySymbol } from './utils/getTokenAddressBySymbol.ts';
 import { getTokenPriceByAddress, getTokenPriceBySymbol } from './utils/getTokenPrice.ts';
 import { dakmim } from './ichi/test.ts';
@@ -603,6 +603,19 @@ export const AllTools = () => {
           )}
         >
           Zap Out
+        </button>
+
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getQuoteZapOut(
+            wallet,
+            "Beets Staked Sonic",
+            8000n,
+            NATIVE_TOKEN,
+            10
+          )}
+        >
+          Get Quote Zap Out
         </button>
         <button
           className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'

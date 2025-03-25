@@ -327,6 +327,102 @@ export async function zapOut(
   }
 }
 
+export async function getQuoteZapOut(
+  walletClient: ConnectedWallet,
+  strategyName: string,
+  percent: bigint,
+  tokenOut: Address,
+  slippage: number
+) {
+  if (
+    walletClient.chainId.slice(7, walletClient.chainId.length) !==
+    sonic.id.toString()
+  ) {
+    await walletClient.switchChain(sonic.id);
+  }
+
+  const userAddr = walletClient.address as Address;
+  const provider = await walletClient.getEthereumProvider();
+  const publicClient = createPublicClient({
+    chain: sonic,
+    transport: custom(provider),
+  });
+  
+
+  const strategy = nameToTypeMapping[strategyName];
+  if (!strategy) {
+    throw new Error('Strategy not found');
+  }
+
+  const strategyFunction =
+    strategyFunctions[strategy as keyof typeof strategyFunctions];
+  const { vault, lpTokens, token } = nameToConfigMapping[strategyName];
+
+  const lpBalance = await getERC20Balance({
+    publicClient,
+    account: userAddr,
+    tokenAddress: lpTokens[0],
+  });
+
+  const lpWithdraw = BigInt((lpBalance * percent) / 10000n);
+
+
+  const amountsToSwap = await strategyFunction.swapWithdrawAmount({
+    shares: lpWithdraw,
+    vaultAddress: vault,
+    percent: percent,
+    userAddr: userAddr,
+    lpTokens: lpTokens
+  });
+
+  const FEE_ZAP = 5; // 0.05
+  const quotes = [];
+  const scaleFlag = strategyFunction.scaleFlag;
+  let totalAmountOut: bigint = BigInt(0);
+  for (let i = 0; i < amountsToSwap.length; i++) {
+    if (amountsToSwap[i].tokenIn.toLowerCase() === tokenOut.toLowerCase()) {
+      totalAmountOut += amountsToSwap[i].amountIn as any as bigint;
+      continue;
+    }
+
+    if (strategy === "pendle") {
+      const quote = await getWithdrawPendleSwapData({
+        vaultAddress: vault,
+        amount: amountsToSwap[i].amountIn as any as bigint,
+        tokenOut: tokenOut,
+        receiver: ZAP_OUT_CONTRACT,
+        slippage: slippage / 10000
+      })
+      quotes.push(quote);
+      continue;
+    }
+    const getData: V1GetData = {
+      tokenIn: amountsToSwap[i].tokenIn,
+      amountIn: amountsToSwap[i].amountIn as any as bigint,
+      tokenOut: tokenOut,
+      feeAmount: FEE_ZAP,
+      chargeFeeBy: "currency_out",
+      feeReceiver: DOGBONE_VAULT
+    };
+
+    const kyberData: KyberData = {
+      getData: getData,
+      slippage: slippage,
+      sender: ZAP_OUT_CONTRACT,
+      recipient: ZAP_OUT_CONTRACT
+    };
+    
+    const quote = await V1GetQuote(kyberData);
+    quotes.push(quote);
+  }
+
+  for (let i = 0; i < quotes.length; i++) {
+    totalAmountOut += BigInt(quotes[i].data.amountOut);
+  }
+
+  console.log("TOTAL AMOUNT OUT: ", totalAmountOut);
+  return totalAmountOut;
+}
 
 
 
