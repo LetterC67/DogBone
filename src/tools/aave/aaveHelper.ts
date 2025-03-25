@@ -15,6 +15,20 @@ interface AaveVaultConfig {
     token: Address;
 }
 
+export async function getAaveSwapAmountAfterWithdraw({
+    vaultAddress,
+    percent,
+    userAddr
+}: GetWithdrawAmountParams) {
+    const amount = await getAaveWithdrawAmount({
+        vaultAddress,
+        percent,
+        userAddr
+    });
+    const amounts = [amount];
+    return amounts;
+}
+
 
 export async function getAaveWithdrawAmount({
     vaultAddress,
