@@ -124,7 +124,7 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
     const [agentFilteredStrategies, setAgentFilteredStrategies] = useState<any[]>([]);
 
     const [leverage, setLeverage] = useState<number>(1);
-    const [slippage, setSlippage] = useState<number>(1);
+    const [slippage, setSlippage] = useState<number>(0.3);
 
 
     const [lang, setLang] = useState(() => {
