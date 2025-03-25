@@ -100,6 +100,22 @@ function Deposit() {
     }, [strategyToken, strategyAmount]);
     
     useEffect(() => {
+        if (strategyTab != "Withdraw") {
+            return;
+        }
+
+        if (!strategyAmount || !depositedSonic[strategy.name]) {
+            return;
+        }
+
+        let p = strategyAmount / depositedSonic[strategy.name] * 100;
+        if (Math.abs(p - withdrawPercentage) > 0.01) {
+            setWithdrawPercentage(p);
+        }
+
+    }, [strategyTab, strategyAmount, withdrawPercentage]);
+
+    useEffect(() => {
         if (strategy.defaultLeverage > 0) {
             setLeverage(strategy.defaultLeverage);
         }
