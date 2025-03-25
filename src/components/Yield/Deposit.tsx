@@ -278,7 +278,7 @@ function Deposit() {
                 if (resolve) {
                     resolve(output.returnedAmount);
                 }
-                toast.success(`${t('withdrawn')} ${strategyAmount} ${strategyToken.symbol} ${t('successfully')}`,
+                toast.success(`${t('withdrawn')} ${strategyAmount} ${strategy.token.symbol} → ${parseFloat(output.returnedAmount).toFixed(6)} ${strategyToken.symbol} ${t('successfully')}`,
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
