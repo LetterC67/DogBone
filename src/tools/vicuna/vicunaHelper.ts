@@ -15,6 +15,20 @@ interface AaveVaultConfig {
     token: Address;
 }
 
+export async function getVicunaSwapAmountAfterWithdraw({
+    vaultAddress,
+    percent,
+    userAddr
+}: GetWithdrawAmountParams) {
+    const amount = await getVicunaWithdrawAmount({
+        vaultAddress,
+        percent,
+        userAddr
+    });
+    const amounts = [amount];
+    return amounts;
+}
+
 
 export async function getVicunaWithdrawAmount({
     vaultAddress,

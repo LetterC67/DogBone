@@ -6,6 +6,18 @@ import { GetWithdrawAmountParams } from "../ToolAPI";
 
 const machFiNativeAbi = JSON.parse(JSON.stringify(MachFiNativeAbi));
 
+export async function getMachFiSwapAmountAfterWithdraw({
+    vaultAddress,
+    shares
+}: GetWithdrawAmountParams) {
+    const amount = await getMachFiWithdrawAmount({
+        shares,
+        vaultAddress
+    });
+    const amounts = [amount];
+    return amounts;
+}
+
 export async function getMachFiWithdrawAmount({
     shares,
     vaultAddress

@@ -5,6 +5,18 @@ import { GetWithdrawAmountParams } from "../ToolAPI";
 
 const siloAbi = JSON.parse(JSON.stringify(SiloAbi));
 
+export async function getSiloSwapAmountAfterWithdraw({
+    vaultAddress,
+    shares
+}: GetWithdrawAmountParams) {
+    const amount = await getSiloWithdrawAmount({
+        shares,
+        vaultAddress
+    });
+    const amounts = [amount];
+    return amounts;
+}   
+
 export async function getSiloWithdrawAmount({
     shares,
     vaultAddress
