@@ -4,7 +4,9 @@ import {
   custom,
   encodeAbiParameters,
   encodeFunctionData,
+  formatUnits,
   parseAbiParameters,
+  parseEventLogs,
   parseUnits,
   PublicClient,
 } from 'viem';
@@ -321,7 +323,77 @@ export async function zapOut(
       params: [transactionRequest]
     });
 
-    return transactionHash;
+    await publicClient.waitForTransactionReceipt({ hash: transactionHash });
+
+    const receipt = await publicClient.getTransactionReceipt({
+      hash: transactionHash,
+    });
+
+    const DexAbi = {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "srcToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "dstToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "dstReceiver",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "spentAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "returnAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Swapped",
+      "type": "event"
+    };
+    
+
+    const decodedLogs = parseEventLogs({
+      abi: [DexAbi],
+      logs: receipt.logs,
+    });
+
+
+    let returnedAmount = 0n;
+    decodedLogs.forEach((log) => {
+        returnedAmount += BigInt(log.args.returnAmount);
+    });
+
+    const decimal = await getERC20Decimals({ publicClient, tokenAddress: tokenOut });
+    const parsedReturnedAmount = formatUnits(returnedAmount, decimal);
+
+    console.log('Returned Amount:', parsedReturnedAmount);
+    
+    return {
+      "transactionHash": transactionHash,
+      "returnedAmount": parsedReturnedAmount
+    };
   } catch (error) {
     throw new Error('Failed to zap out: ' + error);
   }
@@ -420,8 +492,9 @@ export async function getQuoteZapOut(
     totalAmountOut += BigInt(quotes[i].data.amountOut);
   }
 
-  console.log("TOTAL AMOUNT OUT: ", totalAmountOut);
-  return totalAmountOut;
+  const decimal = await getERC20Decimals({ publicClient, tokenAddress: tokenOut });
+  console.log("TOTAL AMOUNT OUT: ", formatUnits(totalAmountOut, decimal));
+  return formatUnits(totalAmountOut, decimal);
 }
 
 

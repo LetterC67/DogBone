@@ -596,8 +596,8 @@ export const AllTools = () => {
           className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
           onClick={() => zapOut(
             wallet,
-            "Pendle PT-aUSDC",
-            8000n,
+            "Pendle PT-stS",
+            5000n,
             NATIVE_TOKEN,
             10
           )}
@@ -609,8 +609,8 @@ export const AllTools = () => {
           className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
           onClick={() => getQuoteZapOut(
             wallet,
-            "Beets Staked Sonic",
-            8000n,
+            "Pendle PT-stS",
+            5000n,
             NATIVE_TOKEN,
             10
           )}
