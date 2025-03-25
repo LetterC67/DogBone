@@ -539,12 +539,18 @@
           "name": "Rings stkscUSD Vault",
           "vault": "0x5e39021Ae7D3f6267dc7995BB5Dd15669060DAe0",
           "token": "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE",
+          "lpTokens": [
+            "0x4D85bA8c3918359c78Ed09581E5bc7578ba932ba"
+          ],
           "points": 12
         },
         {
           "name": "Rings stkscWETH Vault",
           "vault": "0x49AcEbF8f0f79e1Ecb0fd47D684DAdec81cc6562",
           "token": "0x3bcE5CB273F0F148010BbEa2470e7b5df84C7812",
+          "lpTokens": [
+            "0x455d5f11Fea33A8fa9D3e285930b478B6bF85265"
+          ],
           "points": 8
         }
       ]
