@@ -136,5 +136,10 @@
         "pause": "tạm dừng"
     },
     "do_you_know": "Bạn có biết không?",
-    "leverage": "Đòn bẩy"
+    "leverage": "Đòn bẩy",
+    "settings": "Cài đặt",
+    "slippageTolerance": "Tính chịu lệch giá",
+    "highSlippageWarning": "Cảnh báo lệch giá cao",
+    "to_receive": "Để nhận",
+    "slippage_out_of_range": "Tính chịu lệch giá phải nằm trong khoảng từ 0 đến 10"
 }

@@ -136,5 +136,10 @@
         "pause": "一時停止"
     },
     "do_you_know": "ご存知ですか？",
-    "leverage": "レバレッジ"
+    "leverage": "レバレッジ",
+    "settings": "設定",
+    "slippageTolerance": "スリッページ許容度",
+    "highSlippageWarning": "高スリッページ警告",
+    "to_receive": "受け取るために",
+    "slippage_out_of_range": "スリッページ許容度は0から10の間である必要があります"
 }

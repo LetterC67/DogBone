@@ -3,7 +3,7 @@ import TokenModal from "./TokenModal";
 import { useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import StrategyNavbar from "./StrategyNavbar";
-import { depositVault, zap, bridgeAndZap, withdrawVault } from "../../tools/ToolAPI";
+import { depositVault, zap, bridgeAndZap, withdrawVault, getQuoteZapOut, zapOut } from "../../tools/ToolAPI";
 import {ethers} from "ethers";
 import { FaArrowLeft, FaWallet } from "react-icons/fa";
 import Spinner from '../../components/Common/Spinner';
@@ -20,6 +20,10 @@ import { getBone4LeverageAPY } from "../../tools/dogbone/dogbone4/getBone4APY";
 import { getBone5LeverageAPY } from "../../tools/dogbone/dogbone5/getBone5APY";
 import { getBone6LeverageAPY } from "../../tools/dogbone/dogbone6/getBone6APY";
 import tokenList from "../../tools/tokenList.json";
+import { FaArrowDown } from "react-icons/fa";
+import { IoMdSettings } from "react-icons/io";
+import Settings from "./Settings";
+ 
 function Deposit() {
     const { authenticated, login } = usePrivy();
     const { t } = useTranslation();
@@ -33,6 +37,10 @@ function Deposit() {
     const [tokens, setTokens] = useState<any[]>([]);
     const [strategyAPR, setStrategyAPR] = useState<number>(0);
     const [pointsAPR, setPointsAPR] = useState<number>(0);
+    const [withdrawPercentage, setWithdrawPercentage] = useState<number>(0);
+    const [zapoutAmount, setZapoutAmount] = useState<number>(null);
+    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [activeSettings, setActiveSettings] = useState<boolean>(false);
     
     const {strategyTab,
         setStrategyTab,
@@ -46,7 +54,9 @@ function Deposit() {
         strategyChain,
         setStrategyChain,
         leverage,
-        setLeverage
+        setLeverage,
+        slippage,
+        setSlippage,
     } = useControl();
     
     const { userBalance } = useFetchBalance(strategyToken, strategyChain == 146 ? "sonic" : strategyChain == 137 ? "polygon" : strategyChain == 8453 ? "base" : strategyChain == 42161 ? "arb" : "eth");
@@ -69,6 +79,10 @@ function Deposit() {
     }, [strategyChain]);
 
     useEffect(() => {
+        if (strategyTab != "Deposit") {
+            return;
+        }
+
         let valid = true;
 
         if (strategyToken && strategyAmount) {
@@ -140,14 +154,55 @@ function Deposit() {
     // }, [tokens]);
 
 
+    useEffect(() => {
+        let change = false;
+
+        async function fetch() {
+            if (strategyTab == "Deposit" || wallets.length == 0)
+                return;
+
+            if (strategyAmount == null || strategyAmount == 0) {
+                setZapoutAmount(0);
+                return;
+            }
+        
+            setIsFetching(true);
+
+            // Sleep for 1 second one liner
+            const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+            await sleep(1000);
+
+            // convert number to bigint
+            const strategyPercentage = ethers.parseUnits((strategyAmount / depositedSonic[strategy.name] * 10000).toFixed(0).toString(), 0);
+
+            if (change) {
+                return;
+            }
+
+            const amountOut = await getQuoteZapOut(wallets[0], strategy.name, strategyPercentage, strategyToken.address, slippage * 100);
+
+            // parse amountOut to number
+
+            if (!change) {
+                setZapoutAmount(parseFloat(amountOut).toFixed(6));
+            }
+
+            setIsFetching(false);
+        }
+
+        fetch();
+
+        return () => {
+            change = true;
+        };
+    }, [strategyToken, strategyAmount, strategyTab, strategy]);
+
     async function execute() {
         // console.log(strategyTab, currentAction, strategyTab == currentAction);
         if (currentAction && currentAction != strategyTab) return;
 
         
         setIsRunning(true);
-        console.log(wallets[0]);
-        console.log(wallets[0].address);
         
         if (strategyTab == "Deposit") {
             if (strategy.provider.name.startsWith("Bone")) {
@@ -217,12 +272,13 @@ function Deposit() {
             setIsRunning(false);
         } else if (strategyTab == "Withdraw") {
             try {
-                await withdrawVault(wallets[0], strategy.name, strategyAmount);
+                const strategyPercentage = ethers.parseUnits((strategyAmount / depositedSonic[strategy.name] * 10000).toFixed(0).toString(), 0);
+                const output = await zapOut(wallets[0], strategy.name, strategyPercentage, strategyToken.address, slippage * 100);
 
                 if (resolve) {
-                    resolve();
+                    resolve(output.returnedAmount);
                 }
-                toast.success(`${t('withdrawn')} ${strategyAmount} ${strategy.token.symbol} ${t('successfully')}`,
+                toast.success(`${t('withdrawn')} ${strategyAmount} ${strategyToken.symbol} ${t('successfully')}`,
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -253,17 +309,27 @@ function Deposit() {
         }
     }
 
+    function roundDown(x: number) {
+        return Math.floor(x * 1000000) / 1000000;
+    }
+
     return (
         <>
-        <div className="w-full h-full flex flex-col items-center justify-center">
-            <div className="w-full max-w-md pl-16">
+        <div className="w-full h-full flex flex-col items-center justify-center overflow-y-auto mb-6">
+            <div className="w-full max-w-md pl-16 mt-8">
                 <StrategyNavbar />  
             </div>
                 <div className="flex flex-row">
-                    <div className="mt-4">
+                    <div className="mt-4 flex flex-col gap-1">
                         <div className={`p-2 bg-(--accent) text-(--disabled) rounded-tl-lg rounded-bl-lg hover:text-(--primary) transition duration-300 ease-in-out hover:cursor-pointer font-bold pb-1 text-lg pb-2`} onClick={() => setIsInStrategyTab(false)}>
                             <div>
                                 <FaArrowLeft />
+                            </div>
+                        </div>
+
+                        <div className={`p-2 bg-(--accent) text-(--disabled) rounded-tl-lg rounded-bl-lg hover:text-(--primary) transition duration-300 ease-in-out hover:cursor-pointer font-bold pb-1 text-lg pb-2`} onClick={() => setActiveSettings(true)}>
+                            <div>
+                            <IoMdSettings />
                             </div>
                         </div>
                     </div>
@@ -282,7 +348,7 @@ function Deposit() {
                                 {(strategyTab == "Deposit" && !strategy.provider.name.startsWith("Bone"))&&
                                 <button
                                 onClick={() => setActiveModal(true)}
-                                className="flex items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
+                                className="flex justify-between items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
                                 >
                                     {strategyToken?.logoURI && (
                                         <img src={strategyToken.logoURI} alt={strategyToken.symbol} className="rounded-full w-6 h-6" />
@@ -319,7 +385,21 @@ function Deposit() {
                                 className="w-full bg-transparent text-2xl font-bold outline-none"
                                 style={{ color: 'var(--primary)' }}
                                 value={strategyAmount}
-                                onChange={(e) => setStrategyAmount(e.target.value)}
+                                onChange={(e) => {
+                                    setStrategyAmount(e.target.value);
+                                    try {
+                                        const t = Math.max(Math.min(parseFloat(e.target.value) / parseFloat(depositedSonic[strategy.name]) * 100, 100), 0);
+                                        console.log(t);
+                                        if (t != t) {
+                                            setWithdrawPercentage(0);
+                                        } else {
+                                            setWithdrawPercentage(t);
+                                        }
+                                    } catch (error) {
+                                        console.log(error);
+                                        setWithdrawPercentage(0);
+                                    }
+                                }}
                             />
                                 <div className="w-full flex flex-row justify-between items-center content-center">
                                     <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
@@ -338,6 +418,113 @@ function Deposit() {
                                     }
                                 </div>           
                             </div>
+
+                            {(strategyTab == "Withdraw") && 
+                            <>
+                                <div className="relative w-full h-2 rounded-lg mt-2" style={{ backgroundColor: 'var(--accent)' }}>
+                                    {/* Fill: left side color */}
+                                    <div
+                                    className="absolute top-0 left-0 h-full rounded-lg"
+                                    style={{
+                                        backgroundColor: 'var(--highlight)',
+                                        width: `${((withdrawPercentage  ) / 100) * 100}%`,
+                                    }}
+                                    />
+                                    <input
+                                    type="range"
+                                    id="percentage"
+                                    name="percentage"
+                                    min="0"
+                                    max="100"
+                                    value={withdrawPercentage}
+                                    onChange={(e) => {
+                                        setWithdrawPercentage(e.target.value);
+                                        setStrategyAmount(roundDown(parseFloat(depositedSonic[strategy.name]) * parseFloat(e.target.value) / 100));
+                                    }}
+                                    className="absolute top-0 left-0 w-full h-2 appearance-none cursor-pointer"
+                                    style={{ backgroundColor: 'transparent', outline: 'none' }}
+                                    />
+                                </div>
+                                <style jsx>{`
+                                    input[type='range']::-webkit-slider-thumb {
+                                    -webkit-appearance: none;
+                                    width: 20px;
+                                    height: 20px;
+                                    background: #D2ADB8;
+                                    border: 2px solid var(--divider);
+                                    border-radius: 50%;
+                                    cursor: pointer;
+                                    margin-top: -9px; /* Adjust to center the thumb on the track */
+                                    }
+                                    input[type='range']::-moz-range-thumb {
+                                    width: 20px;
+                                    height: 20px;
+                                    background: #D2ADB8;
+                                    border: 2px solid #000;
+                                    border-radius: 50%;
+                                    cursor: pointer;
+                                    }
+                                `}
+                                </style>
+
+                                <div className="flex justify-center">
+                                    <button
+                                        className="p-2 rounded-full shadow-lg transition duration-300 hover:bg-(--focus) bg-(--accent) focus:outline-none"
+                                    >
+                                        <FaArrowDown  size={20}/>
+                                    </button>
+                                </div>
+
+                                <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--accent)' }}>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm" style={{ color: 'var(--higherlight)' }}>{t('to_receive')} </span>
+                                <button
+                                onClick={() => setActiveModal(true)}
+                                className="flex justify-between items-center space-x-2 transition-colors duration-200 hover:bg-[var(--accent-2)] focus:outline-none p-1 rounded-lg"
+                                >
+                                    {strategyToken?.logoURI && (
+                                        <img src={strategyToken.logoURI} alt={strategyToken.symbol} className="rounded-full w-6 h-6" />
+                                    )}
+                                    <span className="text-lg font-medium" style={{ color: 'var(--primary)' }}>
+                                        {strategyToken?.symbol}
+                                    </span>
+                                    <svg
+                                        className="w-4 h-4 transition-colors duration-200"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        style={{ color: 'var(--primary)' }}
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <input
+                                type="number"
+                                placeholder="0.0"
+                                className={`w-full bg-transparent text-2xl font-bold outline-none ${isFetching ? 'text-(--disabled)' : 'text-(--primary)'} transition duration-300 ease-in-out`}
+                                value={zapoutAmount}
+                                disabled={true}
+                            />
+                                <div className="w-full flex flex-row justify-between items-center content-center">
+                                    <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
+                                        ~${valueUSD.toFixed(2)}
+                                    </div>
+                                    {strategyTab == 'Deposit' && 
+                                    <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
+                                        {t('balance')}: {userBalance ? parseFloat(userBalance).toFixed(4) : '-'}
+                                    </div>
+                                    }
+
+                                    {strategyTab == 'Withdraw' &&
+                                    <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
+                                        {t('balance')}: {userBalance ? parseFloat(userBalance).toFixed(4) : '-'}
+                                    </div>
+                                    }
+                                </div>           
+                            </div>
+                            </> 
+                            }
 
                             {/* Leverage Slider */}
                             {(strategy.defaultLeverage > 0&& strategyTab != "Withdraw") && <div className="mt-6">
@@ -430,11 +617,21 @@ function Deposit() {
                                     {depositedSonic[strategy.name] ? parseFloat(depositedSonic[strategy.name]).toFixed(4) : '-'}
                                 </div>
                             </div>
+
+                            {strategy.token.name != strategyToken.name && <div className="flex flex-row justify-between">
+                                <div className="font-bold">
+                                    Service Fee
+                                </div>
+                                <div className="text-(--higherlight)">
+                                    0.05%
+                                </div>
+                            </div>
+                            }
                         </div>
                         
                         <button
                             onClick={authenticated ? execute : login}
-                            className={`mt-6 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer 
+                            className={`mt-2 w-full py-3 rounded-lg font-bold transition-colors duration-200 bg-(--accent-2) hover:bg-(--focus) focus:outline-none hover:cursor-pointer 
                             ${isRunning ? 'disabled:opacity-50' : 'opacity-100'}
                             `}
                             disabled={(isRunning || !strategyAmount) && authenticated}
@@ -446,6 +643,9 @@ function Deposit() {
                             </span>}
                         </button>
                         
+                    </div>
+                </div>
+
                         {activeModal && (
                             <TokenModal
                             tokens={tokens}
@@ -457,11 +657,16 @@ function Deposit() {
                             setStrategyChain={setStrategyChain}
                             onClose={() => setActiveModal(null)}
                             title={t('select_a_token')}
+                            tab={strategyTab}
                             />
                         )}
-                    </div>
-                </div>
 
+                        {activeSettings && (
+                            <Settings onClose={() => {
+                                setActiveSettings(false);
+                                console.log("Settings Closed");
+                            }}/>
+                        )}
             </div>
                 {(strategyToken.chainId != 146 && strategyTab == "Deposit") && <div className="mt-6 text-[var(--less-highlight)] text-lg flex flex-row gap-2 items-center hover:cursor-pointer" onClick={() => window.open('https://debridge.finance')}>
                     {t('powered_by')} <span className='bg-[var(--accent-2)] rounded-lg py-2 px-2 text-white flex flex-row gap-1 font-semibold'> 

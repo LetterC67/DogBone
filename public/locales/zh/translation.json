@@ -136,5 +136,10 @@
         "pause": "暂停"
     },
     "do_you_know": "你知道吗？",
-    "leverage": "杠杆"
+    "leverage": "杠杆",
+    "settings": "设置",
+    "slippageTolerance": "滑点容忍度",
+    "highSlippageWarning": "高滑点警告",
+    "to_receive": "接收",
+    "slippage_out_of_range": "滑点容忍度必须在 0 到 10 之间"
 }

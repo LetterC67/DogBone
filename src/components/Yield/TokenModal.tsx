@@ -10,9 +10,10 @@ interface TokenModalProps {
   onSelect: (token: Token) => void;
   onClose: () => void;
   title?: string;
+  tab: string;
 }
 
-const availableChains = [
+const availableChainsAll = [
     { id: "sonic", name: "Sonic", icon: "https://tokens.debridge.finance/Logo/100000014/0x0000000000000000000000000000000000000000/small/token-logo.svg", chainId: 146 },
     { id: "eth", name: "Ethereum", icon: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014", chainId: 1 },
     { id: "base", name: "Base", icon: "https://raw.githubusercontent.com/base/brand-kit/a3b352afcc0839a0a355ccc2ae3279442fa56343/logo/symbol/Base_Symbol_Blue.svg", chainId: 8453 },
@@ -21,6 +22,7 @@ const availableChains = [
   ];
   
 
+
 const TokenModal: React.FC<TokenModalProps> = ({
   tokens,
   onSelect,
@@ -28,10 +30,20 @@ const TokenModal: React.FC<TokenModalProps> = ({
   strategyChain,
     setStrategyChain,
   title = 'Select a token',
+  tab,
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+    const [availableChains, setAvailableChains] = useState(availableChainsAll);
     const {t } = useTranslation();
+
+    useEffect(() => {
+        if (tab === "Withdraw") {
+            setAvailableChains(availableChainsAll.filter((chain) => chain.id === "sonic"));
+        } else {
+            setAvailableChains(availableChainsAll);
+        }
+    }, [tab]);
 
     // Trigger entry animation after mounting
     useEffect(() => {

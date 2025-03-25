@@ -136,5 +136,10 @@
         "pause": "일시정지"
     },
     "do_you_know": "알고 계셨나요?",
-    "leverage": "레버리지"
+    "leverage": "레버리지",
+    "settings": "설정",
+    "slippageTolerance": "슬리피지 허용치",
+    "highSlippageWarning": "높은 슬리피지 경고",
+    "to_receive": "받기 위해",
+    "slippage_out_of_range": "슬리피지 허용치는 0에서 10 사이여야 합니다"
 }

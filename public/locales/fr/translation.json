@@ -136,5 +136,10 @@
         "pause": "mettre en pause"
     },
     "do_you_know": "Le saviez-vous ?",
-    "leverage": "Effet de levier"
+    "leverage": "Effet de levier",
+    "settings": "Paramètres",
+    "slippageTolerance": "Tolérance au glissement",
+    "highSlippageWarning": "Avertissement de glissement élevé",
+    "to_receive": "Pour recevoir",
+    "slippage_out_of_range": "La tolérance au glissement doit être comprise entre 0 et 10"
 }

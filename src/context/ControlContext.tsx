@@ -63,7 +63,9 @@ const ControlContext = createContext({
     lang: {lang: 'en', name: 'English'},
     setLang: (lang: {lang: string, name: string}) => {},
     leverage: 1,
-    setLeverage: (leverage: Number) => {}
+    setLeverage: (leverage: Number) => {},
+    slippage: 1,
+    setSlippage: (slippage: Number) => {}
 })
 
 export const ControlProvider = ({ children }: { children: React.ReactNode }) => {
@@ -122,6 +124,8 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
     const [agentFilteredStrategies, setAgentFilteredStrategies] = useState<any[]>([]);
 
     const [leverage, setLeverage] = useState<number>(1);
+    const [slippage, setSlippage] = useState<number>(1);
+
 
     const [lang, setLang] = useState(() => {
         const storedLang = localStorage.getItem('language');
@@ -183,7 +187,9 @@ export const ControlProvider = ({ children }: { children: React.ReactNode }) => 
             lang,
             setLang,
             leverage,
-            setLeverage
+            setLeverage,
+            slippage,
+            setSlippage
         }}>
             {children}
         </ControlContext.Provider>
