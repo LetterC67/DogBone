@@ -1,8 +1,9 @@
-import { Address, createPublicClient, formatUnits, http } from 'viem';
+import { GetWithdrawAmountParams } from '../ToolAPI';
 import LTokenList from './LTokenList.json';
 import LTokenAbi from './LToken.abi.json';
+import { Address, createPublicClient, http } from 'viem';
 import { sonic } from 'viem/chains';
-import { getERC20Balance, getERC20Decimals } from '../utils/erc20Utils';
+import { getERC20Balance } from '../utils/erc20Utils';
 
 interface LTokenConfig {
   name: string;
@@ -10,20 +11,16 @@ interface LTokenConfig {
   token: Address;
 }
 
-interface ViewLTokenPositionArgs {
-  vaultAddress: Address;
-  userAddress: Address;
-}
-
 const lTokenList = JSON.parse(JSON.stringify(LTokenList));
 const lTokenAbi = JSON.parse(JSON.stringify(LTokenAbi));
 const FIXED_POINT_Q96 = BigInt('79228162514264337593543950336');
 const DEN = BigInt(10000);
 
-export async function viewLTokenPosition({
+export async function getYelSwapAmountAfterWithdraw({
   vaultAddress,
-  userAddress,
-}: ViewLTokenPositionArgs) {
+  shares,
+  userAddr,
+}: GetWithdrawAmountParams) {
   const lConfig = lTokenList.find(
     (l: LTokenConfig) => l.vault === vaultAddress
   );
@@ -45,11 +42,6 @@ export async function viewLTokenPosition({
     contracts: [
       {
         ...lTokenContract,
-        functionName: 'balanceOf',
-        args: [userAddress],
-      },
-      {
-        ...lTokenContract,
         functionName: 'totalSupply',
         args: [],
       },
@@ -61,32 +53,20 @@ export async function viewLTokenPosition({
     ],
   });
 
-  const userShareBalance = results[0].result as bigint;
-  const vaultSupply = results[1].result as bigint;
-  const debondFee = results[2].result as bigint;
-
+  const vaultSupply = results[0].result as bigint;
+  const debondFee = results[1].result as bigint;
   const vaultBalance = (await getERC20Balance({
     publicClient,
     account: vaultAddress,
     tokenAddress: lConfig.token,
   })) as bigint;
 
-  const amountAfter = userShareBalance >= ((vaultSupply * BigInt(98)) / BigInt(100)) ? userShareBalance
-    : ((userShareBalance * (DEN - debondFee)) / DEN);
-  const perc =
-    (amountAfter * FIXED_POINT_Q96) /
-    vaultSupply;
-  const userUnderlyingBalance = (vaultBalance * perc) / FIXED_POINT_Q96;
-
-  const formattedUserUnderlyingBalance = formatUnits(
-    userUnderlyingBalance,
-    await getERC20Decimals({
-      publicClient,
-      tokenAddress: lConfig.token,
-    })
-  );
-
-  console.log('User LToken Position: ', formattedUserUnderlyingBalance);
-
-  return formattedUserUnderlyingBalance;
+  const amountAfter =
+    shares >= (vaultSupply * BigInt(98)) / BigInt(100)
+      ? shares
+      : (shares * (DEN - debondFee)) / DEN;
+  const perc = (amountAfter * FIXED_POINT_Q96) / vaultSupply;
+  const amount = (vaultBalance * perc) / FIXED_POINT_Q96;
+  console.log('Yel Position: ', amount);
+  return [amount];
 }
