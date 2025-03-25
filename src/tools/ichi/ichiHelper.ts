@@ -37,7 +37,30 @@ export async function getIchiSwapAmountAfterWithdraw({
         account: ichiVaultConfig.gauge,
     });
 
-    const amounts = [result[0], result[1]] as [bigint, bigint];
+    const token0 = await publicClient.readContract({
+        address: vaultAddress,
+        abi: ichiVaultAbi,
+        functionName: 'token0',
+        args: [],
+    }) as Address;
+
+    const token1 = await publicClient.readContract({
+        address: vaultAddress,
+        abi: ichiVaultAbi,
+        functionName: 'token1',
+        args: [],
+    }) as Address;
+
+    const amounts = [
+        {
+            amountIn: result[0],
+            tokenIn: token0
+        },
+        {
+            amountIn: result[1],
+            tokenIn: token1
+        }
+    ]
     console.log("Ichi Position: ", amounts);
     return amounts;
 }

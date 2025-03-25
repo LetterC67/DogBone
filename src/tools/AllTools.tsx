@@ -55,6 +55,9 @@ import { DOGBONE_VAULT } from './constants.ts';
 import { getMachFiWithdrawAmount } from './machfi/machFiHelper.ts';
 import { getSiloWithdrawAmount } from './silo/siloHelper.ts';
 import { getAaveWithdrawAmount } from './aave/aaveHelper.ts';
+import { getIchiSwapAmountAfterWithdraw } from './ichi/ichiHelper.ts';
+import { getBeefyIchiSwapAmountAfterWithdraw } from './beefy/beefyIchiHelper.ts';
+import { getYelSwapAmountAfterWithdraw } from './yel/yelHelper.ts';
 export const AllTools = () => {
   const { ready, wallets } = useWallets();
   const { exportWallet } = usePrivy();
@@ -593,9 +596,9 @@ export const AllTools = () => {
           className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
           onClick={() => zapOut(
             wallet,
-            "Pendle PT-wstkscUSD",
-            100n,
-            "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+            "Vicuna scUSD Vault",
+            5000n,
+            "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE",
             10
           )}
         >
@@ -629,6 +632,36 @@ export const AllTools = () => {
           })}
         >
           Aave withdraw amount
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getIchiSwapAmountAfterWithdraw({
+            vaultAddress: "0x776C31466F19D4e2c71bCE16c0549a8Bc0E37e17",
+            shares: 201268873n,
+            userAddr: "0x4C2849336824bDc58fC3F024b563351bFEad54b7"
+          })}
+        >
+          View Ichi withdraw
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getBeefyIchiSwapAmountAfterWithdraw({
+            vaultAddress: "0xcb076273698360801A24571F20DD3dd35Be94B80",
+            shares: 292936325n,
+            userAddr: "0x4C2849336824bDc58fC3F024b563351bFEad54b7"
+          })}
+        >
+          View Beefy withdraw
+        </button>
+        <button
+          className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+          onClick={() => getYelSwapAmountAfterWithdraw({
+            vaultAddress: "0x555733fBa1CA24ec45e7027E00C4B6c5065BaC96",
+            shares: BigInt(3.1815937e17),
+            userAddr: "0x4C2849336824bDc58fC3F024b563351bFEad54b7"
+          })}
+        >
+          View Yel withdraw
         </button>
       </div>
     </div>

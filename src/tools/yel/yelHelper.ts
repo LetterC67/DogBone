@@ -67,6 +67,16 @@ export async function getYelSwapAmountAfterWithdraw({
       : (shares * (DEN - debondFee)) / DEN;
   const perc = (amountAfter * FIXED_POINT_Q96) / vaultSupply;
   const amount = (vaultBalance * perc) / FIXED_POINT_Q96;
-  console.log('Yel Position: ', amount);
-  return [amount];
+  console.log('Yel Position: ', [
+    {
+      amountIn: amount,
+      tokenIn: lConfig.token,
+    }
+  ]);
+  return [
+    {
+      amountIn: amount,
+      tokenIn: lConfig.token,
+    }
+  ];
 }

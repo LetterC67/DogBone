@@ -60,10 +60,13 @@ import { depositDogBone_Bone6 } from './dogbone/dogbone6/Deposit_DogBone6';
 import { getBone6APY } from './dogbone/dogbone6/getBone6APY';
 import { getDogBoneWithdrawFuncSelector } from './dogbone/getDogBoneFuncSelector';
 import { GetWithdrawAmountParams } from './ToolAPI';
-import { getMachFiWithdrawAmount } from './machfi/machFiHelper';
-import { getSiloWithdrawAmount } from './silo/siloHelper';
-import { getAaveWithdrawAmount } from './aave/aaveHelper';
-import { getVicunaWithdrawAmount } from './vicuna/vicunaHelper';
+import { getMachFiSwapAmountAfterWithdraw, getMachFiWithdrawAmount } from './machfi/machFiHelper';
+import { getSiloSwapAmountAfterWithdraw, getSiloWithdrawAmount } from './silo/siloHelper';
+import { getAaveSwapAmountAfterWithdraw, getAaveWithdrawAmount } from './aave/aaveHelper';
+import { getVicunaSwapAmountAfterWithdraw, getVicunaWithdrawAmount } from './vicuna/vicunaHelper';
+import { getBeefyIchiSwapAmountAfterWithdraw } from './beefy/beefyIchiHelper';
+import { getIchiSwapAmountAfterWithdraw } from './ichi/ichiHelper';
+import { getYelSwapAmountAfterWithdraw } from './yel/yelHelper';
 
 export const notLeveraged = (strategy: string, amount: string) => {
   return {
@@ -88,6 +91,15 @@ export async function sameWithdrawAmount(params: GetWithdrawAmountParams) {
   return params.shares;
 }
 
+export async function sameSwapWithdrawAmount(params: GetWithdrawAmountParams) {
+  return [
+    {
+      amountIn: params.shares,
+      tokenIn: params.lpTokens[0]
+    }
+  ];
+}
+
 export const strategyFunctions = {
   beefy: {
     deposit: depositIchiLPBeefy,
@@ -99,6 +111,7 @@ export const strategyFunctions = {
     withdrawFuncSelector: getBeefyIchiWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
     scaleFlag: 1,
+    swapWithdrawAmount: getBeefyIchiSwapAmountAfterWithdraw
   },
   ichi: {
     deposit: depositIchi,
@@ -110,6 +123,7 @@ export const strategyFunctions = {
     withdrawFuncSelector: getIchiWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
     scaleFlag: 1,
+    swapWithdrawAmount: getIchiSwapAmountAfterWithdraw
   },
   beets: {
     deposit: depositLST,
@@ -120,7 +134,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: noneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   origin: {
     deposit: depositLST,
@@ -131,7 +146,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: noneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   ans: {
     deposit: depositLST,
@@ -142,7 +158,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: noneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   MachFi: {
     deposit: depositMachFi,
@@ -153,7 +170,8 @@ export const strategyFunctions = {
     withdraw: withdrawMachFi,
     withdrawFuncSelector: getMachFiWithdrawFuncSelector,
     withdrawAmount: getMachFiWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: getMachFiSwapAmountAfterWithdraw
   },
   rings: {
     deposit: depositRingsSC,
@@ -164,7 +182,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: noneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   silo: {
     deposit: depositSilo,
@@ -175,7 +194,8 @@ export const strategyFunctions = {
     withdraw: withdrawSilo,
     withdrawFuncSelector: getSiloWithdrawFuncSelector,
     withdrawAmount: getSiloWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: getSiloSwapAmountAfterWithdraw
   },
   yel: {
     deposit: DepositLToken,
@@ -186,7 +206,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: getLTokenWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 1
+    scaleFlag: 1,
+    swapWithdrawAmount: getYelSwapAmountAfterWithdraw
   },
   Bone1: {
     deposit: depositDogBone_Bone1,
@@ -197,7 +218,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: getDogBoneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 1
+    scaleFlag: 1,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   Bone2: {
     deposit: depositDogBone_Bone2,
@@ -208,7 +230,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: getDogBoneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 1
+    scaleFlag: 1,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   Bone3: {
     deposit: depositDogBone_Bone3,
@@ -219,7 +242,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: getDogBoneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 1
+    scaleFlag: 1,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   Bone4: {
     deposit: depositDogBone_Bone4,
@@ -230,7 +254,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: getDogBoneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 1
+    scaleFlag: 1,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   Bone5: {
     deposit: depositDogBone_Bone5,
@@ -241,7 +266,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: getDogBoneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 1
+    scaleFlag: 1,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   Bone6: {
     deposit: depositDogBone_Bone6,
@@ -252,7 +278,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: getDogBoneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 1
+    scaleFlag: 1,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   pendle: {
     deposit: depositPendle,
@@ -263,7 +290,8 @@ export const strategyFunctions = {
     withdraw: withdrawPendle,
     withdrawFuncSelector: noneWithdrawFuncSelector,
     withdrawAmount: sameWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: sameSwapWithdrawAmount
   },
   aave: {
     deposit: depositAave,
@@ -274,7 +302,8 @@ export const strategyFunctions = {
     withdraw: withdrawAave,
     withdrawFuncSelector: getAaveWithdrawFuncSelector,
     withdrawAmount: getAaveWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: getAaveSwapAmountAfterWithdraw
   },
   vicuna: {
     deposit: depositVicuna,
@@ -285,7 +314,8 @@ export const strategyFunctions = {
     withdraw: withdrawVicuna,
     withdrawFuncSelector: getVicunaWithdrawFuncSelector,
     withdrawAmount: getVicunaWithdrawAmount,
-    scaleFlag: 0
+    scaleFlag: 0,
+    swapWithdrawAmount: getVicunaSwapAmountAfterWithdraw
   }
 };
 

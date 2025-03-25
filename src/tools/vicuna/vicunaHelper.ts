@@ -20,12 +20,25 @@ export async function getVicunaSwapAmountAfterWithdraw({
     percent,
     userAddr
 }: GetWithdrawAmountParams) {
+    const vaultConfig = aaveVaultList.find(
+        (vault: AaveVaultConfig) => vault.vault === vaultAddress
+      );
+      if (!vaultConfig) {
+        throw new Error('Aave vault either not found or not supported');
+      }
+
+
     const amount = await getVicunaWithdrawAmount({
         vaultAddress,
         percent,
         userAddr
     });
-    const amounts = [amount];
+    const amounts = [
+        {
+            amountIn: amount,
+            tokenIn: vaultConfig.token
+        }
+    ];
     return amounts;
 }
 

@@ -1,7 +1,8 @@
 import { Address } from "viem";
+import { NATIVE_TOKEN } from "../../constants";
 
 
-interface V1GetData {
+export interface V1GetData {
     tokenIn: Address,
     tokenOut: Address,
     amountIn: bigint,
@@ -12,14 +13,21 @@ interface V1GetData {
 
 export async function V1Get(data: V1GetData) {
     const API_URL = "https://aggregator-api.kyberswap.com/sonic/api/v1/routes/";
-
+    if (data.tokenIn === NATIVE_TOKEN) {
+        data.tokenIn = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+    }
+    if (data.tokenOut === NATIVE_TOKEN) {
+        data.tokenOut = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+    }
+    
     const query = {
         tokenIn: data.tokenIn,
         tokenOut: data.tokenOut,
         amountIn: data.amountIn.toString(),
         feeAmount: data.feeAmount.toString(),
         chargeFeeBy: data.chargeFeeBy,
-        feeReceiver: data.feeReceiver
+        feeReceiver: data.feeReceiver,
+        isInBps: "true"
     }
 
     const fetchOptions = {
@@ -42,7 +50,7 @@ interface V1PostData {
     sender: Address,
     recipient: Address,
     source: string,
-    slippage: number,
+    slippageTolerance: number,
 }
 
 export async function V1Post(data: V1PostData) {
@@ -67,7 +75,7 @@ export async function V1Post(data: V1PostData) {
     return result;
 }
 
-interface KyberData {
+export interface KyberData {
     getData: V1GetData,
     sender: Address,
     recipient: Address,
@@ -81,7 +89,7 @@ export async function V1GetQuote(data: KyberData) {
         sender: data.sender,
         recipient: data.recipient,
         source: "dogbone",
-        slippage: data.slippage
+        slippageTolerance: data.slippage
     });
 
     return finalData;

@@ -4,6 +4,7 @@ import {
   custom,
   encodeAbiParameters,
   encodeFunctionData,
+  parseAbiParameters,
   parseUnits,
   PublicClient,
 } from 'viem';
@@ -23,11 +24,13 @@ import {
   getERC20Decimals,
 } from './utils/erc20Utils';
 import ZapAbi from './zap.abi.json';
-import { NATIVE_TOKEN, SONIC_POINTS_APR, ZAP_CONTRACT } from './constants';
+import { DOGBONE_VAULT, NATIVE_TOKEN, SONIC_POINTS_APR, ZAP_CONTRACT, ZAP_OUT_CONTRACT } from './constants';
 import { bridge } from './bridge/bridge';
 import { getPendleRoute } from './pendle/depositPendle';
-
+import { KyberData, V1GetData, V1GetQuote } from './swap/kyber/Kyber';
+import ZapOutAbi from './zapOut.abi.json';
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
+const zapOutAbi = JSON.parse(JSON.stringify(ZapOutAbi));
 
 export async function depositVault(
   walletClient: ConnectedWallet,
@@ -78,6 +81,7 @@ export interface GetWithdrawAmountParams {
   vaultAddress: Address;
   percent?: bigint;
   userAddr?: Address;
+  lpTokens?: Address[];
 }
 
 export async function zapOut(
@@ -87,6 +91,12 @@ export async function zapOut(
   tokenOut: Address,
   slippage: number
 ) {
+  if (
+    walletClient.chainId.slice(7, walletClient.chainId.length) !==
+    sonic.id.toString()
+  ) {
+    await walletClient.switchChain(sonic.id);
+  }
 
   const userAddr = walletClient.address as Address;
   const provider = await walletClient.getEthereumProvider();
@@ -103,11 +113,12 @@ export async function zapOut(
 
   const strategyFunction =
     strategyFunctions[strategy as keyof typeof strategyFunctions];
-  const { vault, lpTokens } = nameToConfigMapping[strategyName];
+  const { vault, lpTokens, token } = nameToConfigMapping[strategyName];
 
   const funcSelector = await strategyFunction.withdrawFuncSelector(vault);
   console.log('FuncSelector:', funcSelector);
 
+  /////// BUILD LP HERE ///////
   const lpBalance = await getERC20Balance({
     publicClient,
     account: userAddr,
@@ -117,10 +128,183 @@ export async function zapOut(
   console.log("LP Balance: ", lpBalance);
 
   const lpWithdraw = BigInt((lpBalance * percent) / 10000n);
+  
+  const ERC20InputStruct = parseAbiParameters([
+    'ERC20Input erc20Input',
+    'struct ERC20Input { address[]; uint256[]; }'
+  ])
+  console.log(ERC20InputStruct);
+  const erc20InputData = encodeAbiParameters(ERC20InputStruct, [
+    [
+      [lpTokens[0]],
+      [lpWithdraw]
+    ]
+  ]);
+
+  console.log('lpWithdraw:', lpWithdraw);
+  console.log('ERC20 Input Data:', erc20InputData);
+  //////////////////////////////
 
 
+  let withdrawData = '';
   if (funcSelector !== '') {
+    const amountToWithdraw = await strategyFunction.withdrawAmount({
+      shares: lpWithdraw,
+      vaultAddress: vault,
+      percent: percent,
+      userAddr: userAddr,
+      lpTokens: lpTokens
+    }) as bigint;
+
+    console.log("Amount to WITHDRAW: ", amountToWithdraw);
+    //////// BUILD WITHDRAW HERE ////////
+    const StrategyWithdrawStruct = parseAbiParameters([
+      'AaveWithdrawData withdrawData',
+      'struct AaveWithdrawData { address; address; uint256; }'
+    ]);
+    const WithdrawStruct = parseAbiParameters([
+      'WithdrawData withdrawData',
+      'struct WithdrawData { bytes4; bytes; }'
+    ]);
+
+    console.log('vault', vault);
+    console.log('token', token);
+    console.log('amountToWithdraw', amountToWithdraw);
+    const strategyWithdrawData = encodeAbiParameters(StrategyWithdrawStruct, [[
+      vault,
+      token,
+      amountToWithdraw
+    ]]);
+
+    withdrawData = encodeAbiParameters(WithdrawStruct, [[
+      funcSelector as Address, 
+      strategyWithdrawData
+    ]]);
+
+    console.log("withdrawData: ", withdrawData);
+  }
+
+  const amountsToSwap = await strategyFunction.swapWithdrawAmount({
+    shares: lpWithdraw,
+    vaultAddress: vault,
+    percent: percent,
+    userAddr: userAddr,
+    lpTokens: lpTokens
+  });
+
+  console.log('Amounts to Swap:', amountsToSwap);
+
+  // // BUILD SWAP DATA HERE
+  const SwapDataStruct = parseAbiParameters([
+    'SwapData swapData',
+    'struct SwapData { address; address; uint256; uint8; bytes; }'
+  ]);
+
+  const FEE_ZAP = 5; // 0.05
+  const quotes = [];
+  const swapDatas = [];
+  const scaleFlag = strategyFunction.scaleFlag;
+  let totalAmountOut: bigint = BigInt(0);
+  for (let i = 0; i < amountsToSwap.length; i++) {
+    if (amountsToSwap[i].tokenIn.toLowerCase() === tokenOut.toLowerCase()) {
+      totalAmountOut += amountsToSwap[i].amountIn as any as bigint;
+      continue;
+    }
+    console.log("amount to swap: ", amountsToSwap[i]);
+    const getData: V1GetData = {
+      tokenIn: amountsToSwap[i].tokenIn,
+      amountIn: amountsToSwap[i].amountIn as any as bigint,
+      tokenOut: tokenOut,
+      feeAmount: FEE_ZAP,
+      chargeFeeBy: "currency_out",
+      feeReceiver: DOGBONE_VAULT
+    };
+
+    const kyberData: KyberData = {
+      getData: getData,
+      slippage: slippage,
+      sender: ZAP_OUT_CONTRACT,
+      recipient: ZAP_OUT_CONTRACT
+    };
     
+    const quote = await V1GetQuote(kyberData);
+    const swapData = encodeAbiParameters(SwapDataStruct, [[
+      quote.data.routerAddress, amountsToSwap[i].tokenIn, amountsToSwap[i].amountIn as any as bigint, scaleFlag, quote.data.data
+    ]]);
+    quotes.push(quote);
+    swapDatas.push(swapData);
+    console.log('Quote:', quote);
+  }
+
+  // BUILD VALIDATION
+  for (let i = 0; i < quotes.length; i++) {
+    totalAmountOut += BigInt(quotes[i].data.amountOut);
+  }
+
+  const BPS = BigInt(10000);
+  const minimumAmountOut = BigInt((BPS - BigInt(slippage)) * totalAmountOut / BPS);
+
+  
+  const ZapOutValidationStruct = parseAbiParameters([
+    'ZapOutValidation zapOutValidation',
+    'struct ZapOutValidation { address; uint256; }'
+  ]);
+  const zapOutValidationData = encodeAbiParameters(ZapOutValidationStruct, [[tokenOut, minimumAmountOut]]);
+
+  console.log('Total Amount:', totalAmountOut);
+  console.log('Minimum Amount:', minimumAmountOut);
+
+
+  const ZapOutStruct = parseAbiParameters([
+    'ZapOutData zapOutData',
+    'struct ZapOutData { address; bytes; bytes; bytes[]; bytes; }'
+  ])
+
+  const zapOutData = encodeAbiParameters(ZapOutStruct, [[userAddr, erc20InputData, withdrawData as Address, swapDatas, zapOutValidationData]]);
+
+  console.log('Zap Out Data:', zapOutData);
+
+  if (await checkNeedApproval({
+    publicClient,
+    account: userAddr,
+    tokenAddress: lpTokens[0],
+    spender: ZAP_OUT_CONTRACT,
+    amount: lpWithdraw
+  })) {
+    try {
+      const approveTx = await approveERC20({
+        provider,
+        tokenAddress: lpTokens[0],
+        spender: ZAP_OUT_CONTRACT,
+        amount: lpWithdraw
+      });
+      await publicClient.waitForTransactionReceipt({ hash: approveTx });
+    } catch (error) {
+      throw new Error('Failed to approve transaction: ' + error);
+    }
+  }
+
+  const transactionData = encodeFunctionData({
+    abi: zapOutAbi,
+    functionName: 'zapOut',
+    args: [zapOutData]
+  });
+
+  const transactionRequest = {
+    to: ZAP_OUT_CONTRACT,
+    data: transactionData,
+    value: 0n
+  };
+
+  try {
+    const transactionHash = await provider.request({
+      method: 'eth_sendTransaction',
+      params: [transactionRequest]
+    });
+
+    return transactionHash;
+  } catch (error) {
+    throw new Error('Failed to zap out: ' + error);
   }
 }
 
