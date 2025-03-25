@@ -7,20 +7,29 @@
           "name": "Aave USDC.e Vault",
           "vault": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
           "token": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+          "lpTokens": [
+            "0x578Ee1ca3a8E1b54554Da1Bf7C583506C4CD11c6"
+          ],
           "points": 10
-      },
-      {
+        },
+        {
           "name": "Aave wS Vault",
           "vault": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
           "token": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+          "lpTokens": [
+            "0x6C5E14A212c1C3e4Baf6f871ac9B1a969918c131"
+          ],
           "points": 8
-      },
-      {
+        },
+        {
           "name": "Aave WETH Vault",
           "vault": "0x50c42dEAcD8Fc9773493ED674b675bE577f2634b",
           "token": "0x50c42dEAcD8Fc9773493ED674b675bE577f2634b",
+          "lpTokens": [
+            "0xe18Ab82c81E7Eecff32B8A82B1b7d2d23F1EcE96"
+          ],
           "points": 4
-      }
+        }
       ]
     },
     {
@@ -31,36 +40,54 @@
           "name": "Vicuna USDC.e Vault",
           "vault": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
           "token": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+          "lpTokens": [
+            
+          ],
           "points": 10
         },
         {
           "name": "Vicuna wS Vault",
           "vault": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
           "token": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+          "lpTokens": [
+            
+          ],
           "points": 8
         },
         {
           "name": "Vicuna WETH Vault",
           "vault": "0x50c42dEAcD8Fc9773493ED674b675bE577f2634b",
           "token": "0x50c42dEAcD8Fc9773493ED674b675bE577f2634b",
+          "lpTokens": [
+            
+          ],
           "points": 4
         },
         {
           "name": "Vicuna scUSD Vault",
           "vault": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
           "token": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+          "lpTokens": [
+            
+          ],
           "points": 12
         },
         {
           "name": "Vicuna wOS Vault",
           "vault": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1",
           "token": "0x9F0dF7799f6FDAd409300080cfF680f5A23df4b1",
+          "lpTokens": [
+            
+          ],
           "points": 8
         },
         {
           "name": "Vicuna stS Vault",
           "vault": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
           "token": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+          "lpTokens": [
+            
+          ],
           "points": 8
         }
       ]
