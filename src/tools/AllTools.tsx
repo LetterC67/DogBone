@@ -51,7 +51,7 @@ import { depositDogBone_Bone4 } from './dogbone/dogbone4/Deposit_DogBone4.ts';
 import { getBone3APY } from './dogbone/dogbone_silo_ptwstkscUSD_fraxUSD_looping/getBone3APY.ts';
 import { getBone4APY } from './dogbone/dogbone4/getBone4APY.ts';
 import { V1Get, V1GetQuote } from './swap/kyber/Kyber.ts';
-import { DOGBONE_VAULT } from './constants.ts';
+import { DOGBONE_VAULT, NATIVE_TOKEN } from './constants.ts';
 import { getMachFiWithdrawAmount } from './machfi/machFiHelper.ts';
 import { getSiloWithdrawAmount } from './silo/siloHelper.ts';
 import { getAaveWithdrawAmount } from './aave/aaveHelper.ts';
@@ -596,9 +596,9 @@ export const AllTools = () => {
           className='block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
           onClick={() => zapOut(
             wallet,
-            "Vicuna scUSD Vault",
-            5000n,
-            "0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE",
+            "Pendle PT-aUSDC",
+            8000n,
+            NATIVE_TOKEN,
             10
           )}
         >

@@ -29,6 +29,7 @@ import { bridge } from './bridge/bridge';
 import { getPendleRoute } from './pendle/depositPendle';
 import { KyberData, V1GetData, V1GetQuote } from './swap/kyber/Kyber';
 import ZapOutAbi from './zapOut.abi.json';
+import { getWithdrawPendleSwapData } from './pendle/withdrawPendle';
 const zapAbi = JSON.parse(JSON.stringify(ZapAbi));
 const zapOutAbi = JSON.parse(JSON.stringify(ZapOutAbi));
 
@@ -211,6 +212,24 @@ export async function zapOut(
       continue;
     }
     console.log("amount to swap: ", amountsToSwap[i]);
+
+    if (strategy === "pendle") {
+      const quote = await getWithdrawPendleSwapData({
+        vaultAddress: vault,
+        amount: amountsToSwap[i].amountIn as any as bigint,
+        tokenOut: tokenOut,
+        receiver: ZAP_OUT_CONTRACT,
+        slippage: slippage / 10000
+      })
+      const swapData = encodeAbiParameters(SwapDataStruct, [[
+        quote.tx.to, amountsToSwap[i].tokenIn, amountsToSwap[i].amountIn as any as bigint, scaleFlag, quote.tx.data
+      ]]);
+      swapDatas.push(swapData);
+      quotes.push(quote);
+
+      console.log('Quote:', quote);
+      continue;
+    }
     const getData: V1GetData = {
       tokenIn: amountsToSwap[i].tokenIn,
       amountIn: amountsToSwap[i].amountIn as any as bigint,

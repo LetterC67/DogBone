@@ -118,3 +118,40 @@ export async function withdrawPendle({
     throw new Error('Failed to deposit token into Silo: ' + error);
   }
 }
+
+export async function getWithdrawPendleSwapData({
+  vaultAddress,
+  amount,
+  tokenOut,
+  receiver,
+  slippage,
+}: {
+  vaultAddress: Address,
+  amount: bigint,
+  tokenOut: Address;
+  
+  receiver: Address;
+  slippage: number
+}) {
+  // Check if vault address is in vault list
+  const vaultConfig = vaultList.find(
+    (vault: VaultConfig) => vault.vault === vaultAddress
+  );
+  if (!vaultConfig) {
+    throw new Error('Vault either not found or not supported');
+  }
+
+  const PT = vaultConfig.pt;
+
+  const PENDLE_API_URL = 'https://api-v2.pendle.finance/core';
+
+  const swapResponse = await fetch(
+    `${PENDLE_API_URL}/v1/sdk/${sonic.id}/markets/${vaultConfig.name}/swap?receiver=${receiver}&slippage=${slippage}&enableAggregator=true&tokenIn=${PT}&tokenOut=${tokenOut}&amountIn=${amount}`
+  );
+  if (!swapResponse.ok) {
+    throw new Error('Failed to swap');
+  }
+
+  const data = await swapResponse.json();
+  return data;
+}
