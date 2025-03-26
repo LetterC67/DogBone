@@ -327,6 +327,7 @@ function Deposit() {
                 );
                 refetchPosition(strategy);
                 refetchBalance(strategy.token);
+                refetchBalance(strategyToken);
             } catch(error) {
                 console.error(error);
                 if (reject) {
