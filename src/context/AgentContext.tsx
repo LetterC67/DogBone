@@ -91,6 +91,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         setStrategyTab,
         lang,
         setLeverage,
+        setSlippage
     } = useControl();
     const {t } = useTranslation();
 
@@ -300,9 +301,29 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         });
     }
 
-    async function __WITHDRAW__(strategyName, amount, message) {
+    async function __WITHDRAW__(strategyName, token, amount, slippage,message) {
+        let inp = null;
+        
+        if (token != null) {
+            inp = await getTokenBySymbol(token, 146);
+            if (!inp) {
+                __MESSAGE__(`${t('cannot_find_token')} ${token}`);
+                throw new Error(`Cannot find token ${token}`);
+            }
+        }
+        
+        inp.icon = inp.logoURI;
+
+        setStrategyToken(inp);
+
         console.log(`Withdrawing ${amount} from ${strategyName}`);
 
+        if (slippage < 0 || slippage > 10) {
+            __MESSAGE__(`${t('slippage_out_of_range')} 0 - 10`);
+            throw new Error(`${t('slippage_out_of_range')} 0 - 10`);
+        }
+
+        setSlippage(slippage);
         const strategy = strategyList.find((strategy) => strategy.name === strategyName);
 
         if (!strategy) {
@@ -327,7 +348,7 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
 
         return new Promise((resolve, reject) => {
             setResolve(() => 
-                async () => {
+                async (amount) => {
                     toast.dismiss(toastId);
                     await __MESSAGE__(t('withdrawn_successfully'))
                     await new Promise(r => setTimeout(r, 2000));
@@ -350,8 +371,15 @@ export const AgentProvider = ({ children }: { children: React.ReactNode }) => {
         });
     }
 
-    async function __DEPOSIT__(inputToken, inputChain, amount, strategyName, leverage, message) {
+    async function __DEPOSIT__(inputToken, inputChain, amount, strategyName, leverage, slippage, message) {
         console.log(`Depositing ${amount} ${inputToken} to ${strategyName}`);
+
+        if (slippage < 0 || slippage > 10) {
+            __MESSAGE__(`${t('slippage_out_of_range')} 0 - 10`);
+            throw new Error(`${t('slippage_out_of_range')} 0 - 10`);
+        }
+
+        setSlippage(slippage);
 
         let inp = null;
 

@@ -136,6 +136,10 @@
         "pause": "pausar"
     },
     "do_you_know": "¿Sabías que?",
-    "leverage": "Apalancamiento"
-
+    "leverage": "Apalancamiento",
+    "settings": "Configuración",
+    "slippageTolerance": "Tolerancia al deslizamiento",
+    "highSlippageTolerance": "Alta tolerancia al deslizamiento",
+    "to_receive": "Para recibir",
+    "slippage_out_of_range": "La tolerancia al deslizamiento debe estar entre 0 y 10"
 }

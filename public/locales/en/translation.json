@@ -136,5 +136,10 @@
         "pause": "pause"
     },
     "do_you_know": "Did you know?",
-    "leverage": "Leverage"
+    "leverage": "Leverage",
+    "settings": "Settings",
+    "slippageTolerance": "Slippage Tolerance",
+    "highSlippageWarning": "High Slippage Warning",
+    "to_receive": "To receive",
+    "slippage_out_of_range": "Slippage out of range"
 }

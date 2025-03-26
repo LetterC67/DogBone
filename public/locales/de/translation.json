@@ -136,5 +136,10 @@
         "pause": "pausieren"
     },
     "do_you_know": "Wusstest du schon?",
-    "leverage": "Hebelwirkung"
+    "leverage": "Hebelwirkung",
+    "settings": "Einstellungen",
+    "slippageTolerance": "Schlupftoleranz",
+    "highSlippageWarning": "Warnung bei hohem Schlupf",
+    "to_receive": "Um zu erhalten",
+    "slippage_out_of_range": "Schlupf außerhalb des Bereichs"
 }

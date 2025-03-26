@@ -136,5 +136,10 @@
         "pause": "metti in pausa"
     },
     "do_you_know": "Lo sapevi?",
-    "leverage": "Leva"
+    "leverage": "Leva",
+    "settings": "Impostazioni",
+    "slippageTolerance": "Tolleranza allo slippage",
+    "highSlippageWarning": "Avviso di slippage elevato",
+    "to_receive": "Per ricevere",
+    "slippage_out_of_range": "La tolleranza allo slippage deve essere compresa tra 0 e 10"
 }
