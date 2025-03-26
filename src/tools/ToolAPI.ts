@@ -329,6 +329,10 @@ export async function zapOut(
       hash: transactionHash,
     });
 
+    if (receipt.status !== "success") {
+      throw new Error('Transaction failed');
+    }
+
     const DexAbi = {
       "anonymous": false,
       "inputs": [
