@@ -41,6 +41,7 @@ function Deposit() {
     const [zapoutAmount, setZapoutAmount] = useState<number>(null);
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [activeSettings, setActiveSettings] = useState<boolean>(false);
+    const [zapoutUsdValue, setZapoutUsdValue] = useState<number>(0);
     
     const {strategyTab,
         setStrategyTab,
@@ -79,17 +80,18 @@ function Deposit() {
     }, [strategyChain]);
 
     useEffect(() => {
-        if (strategyTab != "Deposit") {
-            return;
-        }
-
         let valid = true;
 
+        let symbol = strategyToken.symbol;
+
+        if (strategyTab == "Withdraw") {
+            symbol = strategy.token.symbol;
+        }
+
         if (strategyToken && strategyAmount) {
-            getTokenPriceBySymbol(strategyToken.symbol).then((price) => {
-                if (!valid) return;
-                setValueUSD(parseFloat(price) * parseFloat(strategyAmount));
-            });
+            const price = tokenPriceSonic[symbol];
+            setValueUSD(parseFloat(price) * parseFloat(strategyAmount));
+            
         } else {
             setValueUSD(0);
         }
@@ -98,6 +100,25 @@ function Deposit() {
             valid = false;
         };
     }, [strategyToken, strategyAmount]);
+
+    useEffect(() => {
+        if (strategyTab != "Withdraw") {
+            return;
+        }
+
+        let valid = true;
+
+        if (zapoutAmount) {
+            const price = tokenPriceSonic[strategyToken.symbol];
+            setZapoutUsdValue(parseFloat(price) * parseFloat(zapoutAmount));
+        } else {
+            setZapoutUsdValue(0);
+        }
+
+        return () => {
+            valid = false;
+        };
+    }, [strategy, zapoutAmount]);
     
     useEffect(() => {
         if (strategyTab != "Withdraw") {
@@ -109,6 +130,7 @@ function Deposit() {
         }
 
         let p = strategyAmount / depositedSonic[strategy.name] * 100;
+        p = Math.min(100, Math.max(0, p));
         if (Math.abs(p - withdrawPercentage) > 0.01) {
             setWithdrawPercentage(p);
         }
@@ -265,7 +287,7 @@ function Deposit() {
                     }
                 );
                 refetchPosition(strategy);
-                console.log(strategyToken);
+                //console.log(strategyToken);
                 if (strategyToken.chainId == 146) {
                     refetchBalance(strategyToken);
                 }
@@ -310,7 +332,7 @@ function Deposit() {
                 if (reject) {
                     reject();
                 }
-                toast.error(t("withdrawal_coming_soon"),
+                toast.error(t("failed_to_withdraw"),
                     {
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -524,7 +546,7 @@ function Deposit() {
                             />
                                 <div className="w-full flex flex-row justify-between items-center content-center">
                                     <div className="text-xs mt-2" style={{ color: "var(--less-highlight)" }}>
-                                        ~${valueUSD.toFixed(2)}
+                                        ~${zapoutUsdValue.toFixed(2)}
                                     </div>
                                     {strategyTab == 'Deposit' && 
                                     <div className="text-xs mt-1" style={{ color: "var(--less-highlight)" }}>
